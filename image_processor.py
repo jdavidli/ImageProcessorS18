@@ -64,7 +64,7 @@ def open_images(filepaths):
 
 
 def histogram_equalization(filepaths):
-    """ Performs histogram equalization on images.
+    """ Performs histogram equalization on the images.
         For color images, RGBA is converted to RGB.
         RGB is converted to HSV.
         Histogram equalization is performed on V.
@@ -196,8 +196,45 @@ def reverse_video(filepaths):
     return p_images, p_status, p_time
 
 
-def canny_edge_detection():
-    pass
+def canny_edge_detection(filepaths):
+    """ Performs Canny edge detection on the images
+
+    :param filepaths: paths to image files to process
+    :type filepaths: string, or list of strings
+    :returns: edge-detected images, processing status,
+              and processing times
+    """
+
+    from skimage.color import rgb2gray
+    from skimage.feature import canny
+
+    images = open_images(filepaths)
+
+    p_images = []
+    p_status = []
+    p_time = []
+
+    for i in images:
+
+        start_time = time()
+
+        try:
+            i_gray = rgb2gray(i)
+            i_edge = canny(i_gray)
+            p_image = 255*i_edge.astype(int)
+            status = True
+        except:
+            p_image = i
+            status = False
+
+        end_time = time()
+        elapsed_time = end_time - start_time
+
+        p_images.append(p_image)
+        p_status.append(status)
+        p_time.append(elapsed_time)
+
+    return p_images, p_status, p_time
 
 
 def skeletonize():
