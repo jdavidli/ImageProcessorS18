@@ -99,6 +99,7 @@ def histogram_equalization(filepaths):
                 p_image = hsv2rgb(i_hsv)
             else:
                 p_image = equalize_hist(i)
+            p_image = 255*p_image
             status = True
         except:
             p_image = i
@@ -107,7 +108,7 @@ def histogram_equalization(filepaths):
         end_time = time()
         elapsed_time = end_time - start_time
 
-        p_images.append(p_image)
+        p_images.append(p_image.astype(int))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -235,7 +236,3 @@ def canny_edge_detection(filepaths):
         p_time.append(elapsed_time)
 
     return p_images, p_status, p_time
-
-
-def skeletonize():
-    pass
