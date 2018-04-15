@@ -10,7 +10,7 @@ def run_image_processing(filepaths, command):
     :param command: image processing command
     :param user_input: dictionary of user-selected values
                        (only required for certain commands)
-    :type filepaths: string or list of strings
+    :type filepaths: string, or list of strings
     :type command: int
     :returns: filepaths, command, processed images, processing status,
               and processing times
@@ -45,7 +45,7 @@ def open_images(filepaths):
     """ Reads images from files and returns the list of images
 
     :param filepaths: paths to image files
-    :type filepaths: list of strings
+    :type filepaths: string, or list of strings
     :returns: list of images
     :rtype: list
     """
@@ -70,7 +70,7 @@ def histogram_equalization(filepaths):
         Histogram equalization is performed on V.
 
     :param filepaths: paths to image files to process
-    :type filepaths: list of strings
+    :type filepaths: string, or list of strings
     :returns: histogram-equalized images, processing status,
               and processing times
     """
@@ -114,7 +114,14 @@ def histogram_equalization(filepaths):
     return p_images, p_status, p_time
 
 
-def contrast_stretching(filepaths, **kwargs):
+def contrast_stretching(filepaths):
+    """ Rescales the intensity of the images to the maximum range
+
+    :param filepaths: paths to image files to process
+    :type filepaths: string, or list of strings
+    :returns: contrast-stretched images, processing status,
+              and processing times
+    """
 
     from skimage.exposure import rescale_intensity
 
@@ -149,8 +156,44 @@ def log_compression():
     pass
 
 
-def reverse_video():
-    pass
+def reverse_video(filepaths):
+    """ Inverts the color of the images i.e. negative
+
+    :param filepaths: paths to image files to process
+    :type filepaths: string, or list of strings
+    :returns: inverted images, processing status,
+              and processing times
+    """
+
+    from skimage.color import rgba2rgb
+
+    images = open_images(filepaths)
+
+    p_images = []
+    p_status = []
+    p_time = []
+
+    for i in images:
+
+        start_time = time()
+
+        try:
+            if(i.shape[2] == 4):
+                i = 255*rgba2rgb(i)
+            p_image = 255 - i
+            status = True
+        except:
+            p_image = i
+            status = False
+
+        end_time = time()
+        elapsed_time = end_time - start_time
+
+        p_images.append(p_image.astype(int))
+        p_status.append(status)
+        p_time.append(elapsed_time)
+
+    return p_images, p_status, p_time
 
 
 def canny_edge_detection():
