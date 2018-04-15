@@ -28,8 +28,6 @@ def run_image_processing(filepaths, command):
         p_images, p_status, p_time = reverse_video(filepaths)
     elif(command == 5):
         p_images, p_status, p_time = canny_edge_detection(filepaths)
-    elif(command == 6):
-        p_images, p_status, p_time = skeletonize(filepaths)
     else:
         raise ValueError('Invalid command.')
 
