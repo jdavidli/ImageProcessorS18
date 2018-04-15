@@ -23,11 +23,6 @@ def test_canny_edge_detection():
     pass
 
 
-def test_convert_to_grayscale():
-    from image_processor import convert_to_grayscale
-    pass
-
-
 def test_skeletonize():
     from image_processor import skeletonize
     pass

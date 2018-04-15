@@ -8,7 +8,9 @@ def run_image_processing(filepaths, command):
 
     :param filepaths: paths to image files to process
     :param command: image processing command
-    :type filepaths: list of strings
+    :param user_input: dictionary of user-selected values
+                       (only required for certain commands)
+    :type filepaths: string or list of strings
     :type command: int
     :returns: filepaths, command, processed images, processing status,
               and processing times
@@ -27,8 +29,6 @@ def run_image_processing(filepaths, command):
     elif(command == 5):
         p_images, p_status, p_time = canny_edge_detection(filepaths)
     elif(command == 6):
-        p_images, p_status, p_time = convert_to_grayscale(filepaths)
-    elif(command == 7):
         p_images, p_status, p_time = skeletonize(filepaths)
     else:
         raise ValueError('Invalid command.')
@@ -53,10 +53,13 @@ def open_images(filepaths):
     from skimage import io
 
     images = []
-    for f in filepaths:
-        image = io.imread(f)
+    if(type(filepaths) is str):
+        image = io.imread(filepaths)
         images.append(image)
-
+    else:
+        for f in filepaths:
+            image = io.imread(f)
+            images.append(image)
     return images
 
 
@@ -111,8 +114,35 @@ def histogram_equalization(filepaths):
     return p_images, p_status, p_time
 
 
-def contrast_stretching():
-    pass
+def contrast_stretching(filepaths, **kwargs):
+
+    from skimage.exposure import rescale_intensity
+
+    images = open_images(filepaths)
+
+    p_images = []
+    p_status = []
+    p_time = []
+
+    for i in images:
+
+        start_time = time()
+
+        try:
+            p_image = rescale_intensity(i)
+            status = True
+        except:
+            p_image = i
+            status = False
+
+        end_time = time()
+        elapsed_time = end_time - start_time
+
+        p_images.append(p_image)
+        p_status.append(status)
+        p_time.append(elapsed_time)
+
+    return p_images, p_status, p_time
 
 
 def log_compression():
@@ -124,10 +154,6 @@ def reverse_video():
 
 
 def canny_edge_detection():
-    pass
-
-
-def convert_to_grayscale():
     pass
 
 
