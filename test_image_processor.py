@@ -33,9 +33,7 @@ def test_contrast_stretching():
 
 
 def test_log_compression():
-
     from image_processor import log_compression
-
     pass
 
 
