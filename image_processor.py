@@ -1,5 +1,5 @@
 import numpy as np
-from skimage import io
+from time import time
 
 
 def run_image_processing(filepaths, command):
@@ -41,8 +41,74 @@ def run_image_processing(filepaths, command):
     return processed_data
 
 
-def histogram_equalization():
-    pass
+def open_images(filepaths):
+    """ Reads images from files and returns the list of images
+
+    :param filepaths: paths to image files
+    :type filepaths: list of strings
+    :returns: list of images
+    :rtype: list
+    """
+
+    from skimage import io
+
+    images = []
+    for f in filepaths:
+        image = io.imread(f)
+        images.append(image)
+
+    return images
+
+
+def histogram_equalization(filepaths):
+    """ Performs histogram equalization on images.
+        For color images, RGBA is converted to RGB.
+        RGB is converted to HSV.
+        Histogram equalization is performed on V.
+
+    :param filepaths: paths to image files to process
+    :type filepaths: list of strings
+    :returns: histogram-equalized images, processing status,
+              and processing times
+    """
+
+    from skimage.exposure import equalize_hist
+    from skimage.color import rgba2rgb
+    from skimage.color import hsv2rgb
+    from skimage.color import rgb2hsv
+
+    images = open_images(filepaths)
+
+    p_images = []
+    p_status = []
+    p_time = []
+
+    for i in images:
+
+        start_time = time()
+
+        try:
+            if(i.shape[2] == 4):
+                i = rgba2rgb(i)
+            if(i.shape[2] == 3):
+                i_hsv = rgb2hsv(i)
+                i_hsv[:, :, 2] = equalize_hist(i_hsv[:, :, 2])
+                p_image = hsv2rgb(i_hsv)
+            else:
+                p_image = equalize_hist(i)
+            status = True
+        except:
+            p_image = i
+            status = False
+
+        end_time = time()
+        elapsed_time = end_time - start_time
+
+        p_images.append(p_image)
+        p_status.append(status)
+        p_time.append(elapsed_time)
+
+    return p_images, p_status, p_time
 
 
 def contrast_stretching():
