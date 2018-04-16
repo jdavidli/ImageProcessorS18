@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "standard.js"
   },
   "repository": {
     "type": "git",
@@ -22,6 +22,7 @@
     "material-ui": "^1.0.0-beta.38",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "react-scripts": "1.1.1"
+    "react-scripts": "1.1.1",
+    "standard": "^11.0.1"
   }
 }
