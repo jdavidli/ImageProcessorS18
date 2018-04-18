@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-
 from pymodm import connect, errors
-# need to make models of the class we create
 import models
 import datetime
+import numpy as np
+import os
+import base64
 
 app = Flask(__name__)
 CORS(app)
@@ -23,34 +24,34 @@ def post_user():
         command_v = input["command"]
         time_v = input["timestamp"] #in datetime format
         image = input["images"] #list of base64 strings
-        user = models.User.objects.raw({"_id": user_email}).first()
-        #user exists
-        cd to folder in vm
-        pwd
-        realtive path /images/user
-        #create image paths and save them
 
-        import uuid
-        name each iamge a uuid
+        num_images = len(image)
+        user = models.User.objects.raw({"_id": user_email}).first()
+        start_i = len(user.orig_img_paths)   #index where new iamges start in array 
+        #user exists
+
+        filename = email.split("@")[0]
+        folder_path = "/home/vcm/images/" + filename
+        image = base64.b64decode(image)
+        #save image
+
+
+        #for input list of images save them in the folder
+        #create image paths and save them
+        #create array of command
+        #create array of times
 
         add_images(email_v, img_paths, command_v, time_v)
 
     except:
         create_user(email=email_v, age=age_v, heart_rate=hr_v)
+        #create folder
+        filename = email.split("@")[0]
+        folder_path = "/home/vcm/images/" + filename
+
+        os.makedirs(folder_path)
 
 
-
-
-        user = models.User.objects.raw({"_id": email_v}).first()
-        interval_average = calculate_interval_avg(user.heart_rate,
-                                                  user.heart_rate_times,
-                                                  since_v)
-        tachy_flag = check_tachycardia(interval_average, user.age)
-        done = {"user": email_v,
-                "status": "verified and average calculated",
-                "interval_average": interval_average,
-                "tachycardia_check": tachy_flag
-                }
     #check if user exists
         #save image in existing folder
 
@@ -59,7 +60,7 @@ def post_user():
         #create folder
         #save image
 
-    #send jessica image paths to process
+    #send jessica image paths to process adn command
 #jessica returns image and i need to save it
 #save proc imag path
 
