@@ -8,8 +8,6 @@ def run_image_processing(filepaths, command):
 
     :param filepaths: paths to image files to process
     :param command: image processing command
-    :param user_input: dictionary of user-selected values
-                       (only required for certain commands)
     :type filepaths: string, or list of strings
     :type command: int
     :returns: filepaths, command, processed images, processing status,
