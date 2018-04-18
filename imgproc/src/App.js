@@ -7,6 +7,7 @@ import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import Menu, { MenuItem } from 'material-ui/Menu'
 import SimpleMenu from './upload.js';
+import ClippedDrawer from './ClippedDrawer.js'
 
 const styles = {
   root: {
@@ -21,7 +22,7 @@ function ButtonAppBar (props) {
   const { classes } = props
   return (
     <div className={classes.root}>
-      <AppBar position='static'>
+      <AppBar position='absolute'>
         <Toolbar>
           <Typography variant='title' color='inherit' className={classes.flex}>
             Image Processor
@@ -30,6 +31,8 @@ function ButtonAppBar (props) {
           </SimpleMenu>
         </Toolbar>
       </AppBar>
+      <ClippedDrawer>
+      </ClippedDrawer>
     </div>
   )
 }
