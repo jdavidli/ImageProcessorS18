@@ -12,13 +12,13 @@ CORS(app)
 comp_with_db = "mongodb://vcm-3580.vm.duke.edu:27017/image_processor"
 connect(comp_with_db)
 
-@app.route("/api/process_image", methods=["POST"])
+@app.route("/process_image", methods=["POST"])
 def post_user():
     input = request.get_json()
 
     #verify input
-    email_v= input["ip_email"]
-    command_v = input["command"]
+    email_v= input["email"]
+    command_v = input["command"] #check int between what numbers
     time_v = input["timestamp"] #in datetime format
     images = input["images"] #list of base64 strings
     num_images = len(image)
@@ -44,30 +44,33 @@ def post_user():
     return jsonify(input), 200
 
 
-    
-
 def get_folder_path(email):
     filename = email.split("@")[0]
     folder_path = "/home/vcm/images/" + filename
     return folder_path
 
 def decode_save_images(folder_path, images, num_images, start):
-    for i in image
-        image = base64.b64decode(images[i])
-        #save image with approp index#
-        #save path to image in array of strings
+    fext = '.jpg'
+    image_paths= []
+    for i in images:
+        image_dec = base64.b64decode(images[i])
+        image_name = 'image' + str(start + i)
+        full_img_name = folder_path + image_name + fext
+        img_file = open(full_img_name, 'wb')
+        img_file.write(image_dec)
+        image_paths[i] = full_img_name
     return image_paths
 
 def create_folder_path(email):
     filename = email.split("@")[0]
-    folder_path = "/home/vcm/images/" + filename
+    folder_path = "/home/vcm/user_images/" + filename
     os.makedirs(folder_path)
     return folder_path
 
 def create_command_arr(command_v, num_images):
-    #create array
-    return comm_arr
+    return command_v*np.ones([1,num_images])
 
 def create_datetime_arr(time_v, num_images):
-    #create array
+    for x in xrange(num_images):
+        dt_arr[x]= time_v
     return dt_arr
