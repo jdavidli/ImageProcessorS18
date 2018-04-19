@@ -10,7 +10,7 @@ def run_image_processing(filepaths, command):
     :param command: image processing command
     :type filepaths: string, or list of strings
     :type command: int
-    :returns: filepaths, command, processed images, processing status,
+    :returns: processed images, processing status,
               and processing times
     :rtype: dict
     :raises ValueError: if command is an invalid integer
@@ -29,9 +29,7 @@ def run_image_processing(filepaths, command):
     else:
         raise ValueError('Invalid command.')
 
-    processed_data = {"filepaths": filepaths,
-                      "command": command,
-                      "processed_images": p_images,
+    processed_data = {"processed_images": p_images,
                       "processing_status": p_status,
                       "processing_times": p_time}
     return processed_data
@@ -149,8 +147,40 @@ def contrast_stretching(filepaths):
     return p_images, p_status, p_time
 
 
-def log_compression():
-    pass
+def log_compression(filepaths):
+    """ Returns the logarithm of the image
+
+    :param filepaths: path to image files to process
+    :type filepaths: string, or list of strings
+    :returns: log images, processing status,
+              and processing times
+    """
+
+    images = open_images(filepaths)
+
+    p_images = []
+    p_status = []
+    p_time = []
+
+    for i in images:
+
+        start_time = time()
+
+        try:
+            p_image = np.log(i.astype(float) + 1)
+            status = True
+        except:
+            p_image = i
+            status = False
+
+        end_time = time()
+        elapsed_time = end_time - start_time
+
+        p_images.append(p_image)
+        p_status.append(status)
+        p_time.append(elapsed_time)
+
+    return p_images, p_status, p_time
 
 
 def reverse_video(filepaths):
