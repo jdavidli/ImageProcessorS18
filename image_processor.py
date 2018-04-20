@@ -1,10 +1,12 @@
 import numpy as np
 from time import time
 
+DEFAULT_COMMAND = 1
+
 
 def run_image_processing(filepaths, command):
-    """ Reads uploaded images from file and returns processed images
-        with associated metadata. If an image fails to be processed,
+    """ Reads uploaded images from file (if file exists) and returns processed
+        images with associated metadata. If an image fails to be processed,
         the processed image will be the same as the uploaded image.
 
     :param filepaths: paths to image files to process
@@ -14,23 +16,42 @@ def run_image_processing(filepaths, command):
     :returns: processed images, processing status,
               and processing times
     :rtype: dict
-    :raises ValueError: if command is an invalid integer
     """
 
-    if(command == 1):
-        p_images, p_status, p_time = histogram_equalization(filepaths)
-    elif(command == 2):
-        p_images, p_status, p_time = contrast_stretching(filepaths)
-    elif(command == 3):
-        p_images, p_status, p_time = log_compression(filepaths)
-    elif(command == 4):
-        p_images, p_status, p_time = reverse_video(filepaths)
-    elif(command == 5):
-        p_images, p_status, p_time = canny_edge_detection(filepaths)
-    else:
-        raise ValueError('Invalid command.')
+    # Read valid filepaths and open images:
+    p_filepaths, images = open_images(filepaths)
 
-    processed_data = {"processed_images": p_images,
+    # Process images:
+    if(len(p_filepaths) == 0):
+        message = "No images to process."
+        command = []
+        p_images = []
+        p_status = []
+        p_time = []
+    else:
+        if not (command > 0 and command < 6):
+            command = DEFAULT_COMMAND
+            message = ("Invalid command. Processing images with default "
+                       "command = %s" % str(command))
+        else:
+            message = ("Processing images with command = %s" % str(command))
+
+        if(command == 1):
+            p_images, p_status, p_time = histogram_equalization(images)
+        elif(command == 2):
+            p_images, p_status, p_time = contrast_stretching(images)
+        elif(command == 3):
+            p_images, p_status, p_time = log_compression(images)
+        elif(command == 4):
+            p_images, p_status, p_time = reverse_video(images)
+        elif(command == 5):
+            p_images, p_status, p_time = canny_edge_detection(images)
+
+    # Return data:
+    processed_data = {"message": message,
+                      "valid_filepaths": p_filepaths,
+                      "command": command,
+                      "processed_images": p_images,
                       "processing_status": p_status,
                       "processing_times": p_time}
     return processed_data
@@ -41,31 +62,42 @@ def open_images(filepaths):
 
     :param filepaths: paths to image files
     :type filepaths: string, or list of strings
-    :returns: list of images
+    :returns: list of valid filepaths and images
     :rtype: list
     """
 
     from skimage import io
 
+    valid_filepaths = []
     images = []
+
     if(type(filepaths) is str):
-        image = io.imread(filepaths)
-        images.append(image)
+        try:
+            image = io.imread(filepaths)
+            images.append(image)
+            valid_filepaths.append(filepaths)
+        except FileNotFoundError:
+            pass
     else:
         for f in filepaths:
-            image = io.imread(f)
-            images.append(image)
-    return images
+            try:
+                image = io.imread(f)
+                images.append(image)
+                valid_filepaths.append(f)
+            except FileNotFoundError:
+                continue
+
+    return valid_filepaths, images
 
 
-def histogram_equalization(filepaths):
+def histogram_equalization(images):
     """ Performs histogram equalization on the images.
         For color images, RGBA is converted to RGB.
         RGB is converted to HSV.
         Histogram equalization is performed on V.
 
-    :param filepaths: paths to image files to process
-    :type filepaths: string, or list of strings
+    :param images: images to process
+    :type images: array
     :returns: histogram-equalized images, processing status,
               and processing times
     """
@@ -74,8 +106,6 @@ def histogram_equalization(filepaths):
     from skimage.color import rgba2rgb
     from skimage.color import hsv2rgb
     from skimage.color import rgb2hsv
-
-    images = open_images(filepaths)
 
     p_images = []
     p_status = []
@@ -110,18 +140,16 @@ def histogram_equalization(filepaths):
     return p_images, p_status, p_time
 
 
-def contrast_stretching(filepaths):
+def contrast_stretching(images):
     """ Rescales the intensity of the images to the maximum range
 
-    :param filepaths: paths to image files to process
-    :type filepaths: string, or list of strings
+    :param images: images to process
+    :type images: array
     :returns: contrast-stretched images, processing status,
               and processing times
     """
 
     from skimage.exposure import rescale_intensity
-
-    images = open_images(filepaths)
 
     p_images = []
     p_status = []
@@ -148,16 +176,14 @@ def contrast_stretching(filepaths):
     return p_images, p_status, p_time
 
 
-def log_compression(filepaths):
+def log_compression(images):
     """ Returns the logarithm of the image
 
-    :param filepaths: path to image files to process
-    :type filepaths: string, or list of strings
+    :param images: images to process
+    :type images: array
     :returns: log images, processing status,
               and processing times
     """
-
-    images = open_images(filepaths)
 
     p_images = []
     p_status = []
@@ -184,18 +210,16 @@ def log_compression(filepaths):
     return p_images, p_status, p_time
 
 
-def reverse_video(filepaths):
+def reverse_video(images):
     """ Inverts the color of the images i.e. negative
 
-    :param filepaths: paths to image files to process
-    :type filepaths: string, or list of strings
+    :param images: images to process
+    :type images: array
     :returns: inverted images, processing status,
               and processing times
     """
 
     from skimage.color import rgba2rgb
-
-    images = open_images(filepaths)
 
     p_images = []
     p_status = []
@@ -224,19 +248,17 @@ def reverse_video(filepaths):
     return p_images, p_status, p_time
 
 
-def canny_edge_detection(filepaths):
+def canny_edge_detection(images):
     """ Performs Canny edge detection on the images
 
-    :param filepaths: paths to image files to process
-    :type filepaths: string, or list of strings
+    :param images: images to process
+    :type images: array
     :returns: edge-detected images, processing status,
               and processing times
     """
 
     from skimage.color import rgb2gray
     from skimage.feature import canny
-
-    images = open_images(filepaths)
 
     p_images = []
     p_status = []
