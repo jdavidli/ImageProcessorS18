@@ -6,12 +6,32 @@ test_filepaths.append('test_images/test_image1.tif')
 test_filepaths.append('test_images/test_image2.png')
 test_filepaths.append('test_images/test_image3.jpg')
 
+invalid_filepaths = []
+invalid_filepaths.append('test_images/test_image1.tif')
+invalid_filepaths.append('test_images/does_not_exist.tif')
+invalid_filepaths.append('test_images/test_image2.png')
+invalid_filepaths.append('test_images/does_not_exist.png')
+invalid_filepaths.append('test_images/test_image3.jpg')
+invalid_filepaths.append('test_images/does_not_exist.jpg')
+
+
+def test_open_images():
+
+    from image_processor import open_images
+
+    valid_filepaths, _ = open_images(invalid_filepaths)
+    assert(test_filepaths == valid_filepaths)
+
+    valid_filepaths, _ = open_images('test_images/does_not_exist.png')
+    assert(len(valid_filepaths) == 0)
+
 
 def test_histogram_equalization():
 
-    from image_processor import histogram_equalization
+    from image_processor import open_images, histogram_equalization
 
-    p_images, p_status, _ = histogram_equalization(test_filepaths)
+    _, images = open_images(test_filepaths)
+    p_images, p_status, _ = histogram_equalization(images)
 
     eq1 = io.imread('test_images/eq1.png')
     eq2 = io.imread('test_images/eq2.png')
@@ -25,9 +45,10 @@ def test_histogram_equalization():
 
 def test_contrast_stretching():
 
-    from image_processor import contrast_stretching
+    from image_processor import open_images, contrast_stretching
 
-    p_images, p_status, _ = contrast_stretching('test_images/test_image4.png')
+    _, images = open_images('test_images/test_image4.png')
+    p_images, p_status, _ = contrast_stretching(images)
 
     cs4 = io.imread('test_images/cs4.png')
 
@@ -37,9 +58,10 @@ def test_contrast_stretching():
 
 def test_log_compression():
 
-    from image_processor import log_compression
+    from image_processor import open_images, log_compression
 
-    p_images, p_status, _ = log_compression(test_filepaths)
+    _, images = open_images(test_filepaths)
+    p_images, p_status, _ = log_compression(images)
 
     lc1 = np.load('test_images/lc1.npy')
     lc2 = np.load('test_images/lc2.npy')
@@ -53,9 +75,10 @@ def test_log_compression():
 
 def test_reverse_video():
 
-    from image_processor import reverse_video
+    from image_processor import open_images, reverse_video
 
-    p_images, p_status, _ = reverse_video(test_filepaths)
+    _, images = open_images(test_filepaths)
+    p_images, p_status, _ = reverse_video(images)
 
     rv1 = io.imread('test_images/rv1.png')
     rv2 = io.imread('test_images/rv2.png')
@@ -69,9 +92,10 @@ def test_reverse_video():
 
 def test_canny_edge_detection():
 
-    from image_processor import canny_edge_detection
+    from image_processor import open_images, canny_edge_detection
 
-    p_images, p_status, _ = canny_edge_detection(test_filepaths)
+    _, images = open_images(test_filepaths)
+    p_images, p_status, _ = canny_edge_detection(images)
 
     edge1 = io.imread('test_images/edge1.png')
     edge2 = io.imread('test_images/edge2.png')
