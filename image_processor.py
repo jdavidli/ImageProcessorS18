@@ -4,7 +4,8 @@ from time import time
 
 def run_image_processing(filepaths, command):
     """ Reads uploaded images from file and returns processed images
-        with associated metadata
+        with associated metadata. If an image fails to be processed,
+        the processed image will be the same as the uploaded image.
 
     :param filepaths: paths to image files to process
     :param command: image processing command
