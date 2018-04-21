@@ -6,14 +6,14 @@ import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
 import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
+import Divider from 'material-ui/Divider'
+import TitlebarGridList from './TitlebarGridList.js'
 
 const drawerWidth = 240;
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    height: 430,
     zIndex: 1,
     overflow: 'hidden',
     position: 'relative',
@@ -60,6 +60,11 @@ function ClippedDrawer(props) {
           <ListItemText primary="Reverse Video" />
         </ListItem>
       </Drawer>
+      <main className={classes.content}>
+        <div className={classes.toolbar} />
+        <TitlebarGridList>
+        </TitlebarGridList>
+      </main>
     </div>
   );
 }

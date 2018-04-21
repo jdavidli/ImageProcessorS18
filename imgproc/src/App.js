@@ -6,8 +6,12 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import Button from 'material-ui/Button'
 import Menu, { MenuItem } from 'material-ui/Menu'
-import SimpleMenu from './upload.js';
+import SimpleMenu from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
+import RecipeReviewCard from './previewcard.js'
+import TitlebarGridList from './TitlebarGridList.js'
+import TextField from 'material-ui/TextField';
+import FileUpload from './File.js'
 
 const styles = {
   root: {
@@ -17,6 +21,7 @@ const styles = {
     flex: 1
   }
 }
+
 
 function ButtonAppBar (props) {
   const { classes } = props
