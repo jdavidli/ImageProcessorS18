@@ -8,7 +8,7 @@ class User(MongoModel):
     orig_img_paths = fields.ListField(field=fields.CharField())
     command = field.ListField(field=fields.IntegerField())
     orig_timestamp = field.ListField(field=fields.DateTimeField())
-    proc_img_paths = fields.ListField(field=fields.CharField())
+    proc_img_paths = fields.ListField(field=fields.ListField(field=fields.CharField()))
     proc_time = field.ListField(field=fields.FloatField())
     proc_status = field.ListField(field=fields.BooleanField())
 

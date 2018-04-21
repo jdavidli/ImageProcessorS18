@@ -29,12 +29,10 @@ def post_user():
         add_images(email_v, image_paths, comm_arr, dt_arr)
         init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
+        times = proc_data["processing_times"]
+        stat =  proc_data["processing_status"]
         multi_proc_paths = save_proc_images(folder_path, proc_data["processed_images"], num_images, start_i)
-        set_proc_time(proc_data["processing_times"], user)
-        update_proc_status(proc_data["processing_status"], user, num_images, start_i)
-        #fix model for paths bc multidim
-        #update the paths in db
-        #am i correct doing u save after changing an attribute
+        add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
 
     except:
         folder_path = create_folder_path(email_v)
@@ -45,21 +43,18 @@ def post_user():
         user = models.User.objects.raw({"_id": user_email}).first()
         init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
-        #add stuff above here
-
-    #add errors! 
-
+        times = proc_data["processing_times"]
+        stat =  proc_data["processing_status"]
+        multi_proc_paths = save_proc_images(folder_path, proc_data["processed_images"], num_images, start_i)
+        add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
     return jsonify(input), 200
 
-def set_proc_time(times, u):
+def add_proc_data(u, paths, times, stati, num_images, start_i):
+    u.proc_img_paths.extend(paths)
     u.proc_time.extend(times)
-    u.save()
-    return
-
-def update_proc_status(stati, u, num_images, start_i):
     u.proc_status[start_i: start_i + num_images] = stati
     u.save()
-    return
+return
 
 def save_proc_images(folder_path, proc_imgs, num_images, start):
     #save images as 3 types
