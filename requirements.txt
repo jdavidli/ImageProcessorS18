@@ -1,0 +1,9 @@
+pymodm
+flask
+numpy
+requests
+pytest
+pytest-pep8
+pytest-cov
+gunicorn
+flask-cors

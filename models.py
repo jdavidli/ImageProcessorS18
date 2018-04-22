@@ -1,4 +1,4 @@
-from pymodm import fields, MongoModel
+from pymodm import fields, MongoModel, errors, connect 
 import datetime
 
 
@@ -6,11 +6,11 @@ class User(MongoModel):
     # bc primary_key is True, need to query this field using label _id
     email = fields.EmailField(primary_key=True)
     orig_img_paths = fields.ListField(field=fields.CharField())
-    command = field.ListField(field=fields.IntegerField())
-    orig_timestamp = field.ListField(field=fields.DateTimeField())
+    command = fields.ListField(field=fields.IntegerField())
+    orig_timestamp = fields.ListField(field=fields.DateTimeField())
     proc_img_paths = fields.ListField(field=fields.ListField(field=fields.CharField()))
-    proc_time = field.ListField(field=fields.FloatField())
-    proc_status = field.ListField(field=fields.BooleanField())
+    proc_time = fields.ListField(field=fields.FloatField())
+    proc_status = fields.ListField(field=fields.BooleanField())
 
 def create_user(email, orig_img_paths, command, orig_timestamp):
     """Create new user and save to db
@@ -20,7 +20,10 @@ def create_user(email, orig_img_paths, command, orig_timestamp):
     :param command: array of int corresponding to command
     :param orig_timestamp: array of datetimes corresponding to each input image
     """
-    u = User(email=email, orig_img_paths, command, orig_timestamp, [], [], [])  # create a new User instance
+    u = User(email, [], [], [], [], [], [])  # create a new User instance
+    u.command.extend(command)
+    u.orig_img_paths.extend(orig_img_paths)
+    u.orig_timestamp.extend(orig_timestamp)
     u.save()  # save the user to the database
 
 def add_images(email, img_paths, comms, timestamp):

@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from pymodm import connect, errors
+import create_user, add_images from models
 import models
 import datetime
 import numpy as np
@@ -12,17 +13,18 @@ app = Flask(__name__)
 CORS(app)
 comp_with_db = "mongodb://vcm-3580.vm.duke.edu:27017/image_processor"
 connect(comp_with_db)
-
 main_image_folder = "/home/vcm/images/"
 
 @app.route("/process_image", methods=["POST"])
 def post_user():
     input = request.get_json()
     email_v, command_v, time_v, images_v, num_images = verify_input(input)
+    if os.path.exists(main_image_folder) is False:
+        os.makedirs(main_image_folder)
     try:
         user = models.User.objects.raw({"_id": user_email}).first()
         start_i = len(user.orig_img_paths)   #index where new iamges start in array
-        folder_path = get_folder_path(email_v)
+        folder_path = access_folder(email_v)
         image_paths = decode_save_images(folder_path, images, num_images, start_i)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
@@ -35,7 +37,7 @@ def post_user():
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
 
     except:
-        folder_path = create_folder_path(email_v)
+        folder_path = access_folder(email_v)
         image_paths = decode_save_images(folder_path, images, num_images, 0)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
@@ -76,15 +78,17 @@ def save_proc_images(folder_path, proc_imgs, num_images, start):
         image_paths[i] = [jpg_img_name, tif_img_name, png_img_name] #does this work (make element of array a list of paths )
     return image_paths
 
+def access_folder(email):
+    folder_path = main_image_folder + email
+    if os.path.exists(folder_path) is False:
+        os.makedirs(folder_path)
+    return folder_path
+
 def init_proc_status(u, num):
     status = np.zeros([1,num_images])
     u.proc_status.extend(status)
     u.save()
     return
-
-def get_folder_path(email):
-    folder_path = main_image_folder + email
-    return folder_path
 
 def decode_save_images(folder_path, images, num_images, start):
     fext = '.png'
@@ -98,11 +102,6 @@ def decode_save_images(folder_path, images, num_images, start):
         img_file.close()
         image_paths[i] = full_img_name
     return image_paths
-
-def create_folder_path(email):
-    folder_path = main_image_folder + email
-    os.makedirs(folder_path)
-    return folder_path
 
 def create_command_arr(command_v, num_images):
     return command_v*np.ones([1,num_images])
