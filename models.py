@@ -1,4 +1,4 @@
-from pymodm import fields, MongoModel, errors, connect 
+from pymodm import fields, MongoModel, errors, connect
 import datetime
 
 
@@ -12,7 +12,7 @@ class User(MongoModel):
     proc_time = fields.ListField(field=fields.FloatField())
     proc_status = fields.ListField(field=fields.BooleanField())
 
-def create_user(email, orig_img_paths, command, orig_timestamp):
+def create_user(email, img_paths, comm, times):
     """Create new user and save to db
 
     :param email: email of user
@@ -21,12 +21,12 @@ def create_user(email, orig_img_paths, command, orig_timestamp):
     :param orig_timestamp: array of datetimes corresponding to each input image
     """
     u = User(email, [], [], [], [], [], [])  # create a new User instance
-    u.command.extend(command)
-    u.orig_img_paths.extend(orig_img_paths)
-    u.orig_timestamp.extend(orig_timestamp)
+    u.command.extend(comm)
+    u.orig_img_paths.extend(img_paths)
+    u.orig_timestamp.extend(times)
     u.save()  # save the user to the database
 
-def add_images(email, img_paths, comms, timestamp):
+def add_images(email, img_paths, comms, times):
     """Appends new images to existing User and save to db
 
     :param email: email of user
@@ -38,5 +38,5 @@ def add_images(email, img_paths, comms, timestamp):
     user = User.objects.raw({"_id": email}).first()
     user.orig_img_paths.extend(img_paths)
     user.command.extend(comms)
-    user.timestamp.extend(timestamp)
+    user.timestamp.extend(times)
     user.save()  # save the user to the database
