@@ -20,8 +20,8 @@ class SimpleMenu extends React.Component {
             console.log(reader.result)
             const formData = new FormData();
             formData.append("file", reader.result);
-            formData.append("upload_preset", "ex6elkh6"); // Replace the preset name with your own
-            formData.append("api_key", "436934996138467"); // Replace API key with your own Cloudinary key
+            formData.append("upload_preset", "ex6elkh6");
+            formData.append("api_key", "436934996138467");
             formData.append("timestamp", (Date.now() / 1000) | 0);
 
             // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
