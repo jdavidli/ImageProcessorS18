@@ -2,11 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
 import List, { ListItem, ListItemIcon, ListItemText } from 'material-ui/List';
-import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider'
 import TitlebarGridList from './TitlebarGridList.js'
 
 const drawerWidth = 240;
