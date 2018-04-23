@@ -13,7 +13,7 @@ from api-back-end import create_datetime_arr, verify_input
 def test_verify_input():
     t = "2018-03-09 10:00:36.372339"
     t1 = datetime.datetime.strptime(t, "%Y-%m-%d %H:%M:%S.%f")
-    encoded_string = "b'/9j/4AAQSkZJRgABAQEJ8RLHYUpmS4hMQDFIQhEUCEIUICEIUIf/2Q=='"
+    encoded_string = "b'/9j/4AAQSkZJRgABAQICEIUIf/2Q=='"
     input1 = {
         "email": "suyash@suyashkumar.com",
         "command": 1,
@@ -93,3 +93,36 @@ def test_create_datetime_arr():
     assert(dt1 == [t1])
     assert(dt2 == [t1, t1, t1])
     return dt_arr
+
+
+# def save_proc_images(folder_path, proc_imgs, num_images, start):
+#     image_paths = [[] for _ in range(num_images)]
+#     for i in proc_imgs:
+#         image_name = '/proc_image' + str(start + i)
+#         jpg_img_name = folder_path + image_name + '.jpg'
+#         tif_img_name = folder_path + image_name + '.tif'
+#         png_img_name = folder_path + image_name + '.png'
+#         img_file = open(jpg_img_name, 'wb')
+#         img_file.write(proc_imgs[i])
+#         img_file.close()
+#         img_file = open(tif_img_name, 'wb')
+#         img_file.write(proc_imgs[i])
+#         img_file.close()
+#         img_file = open(png_img_name, 'wb')
+#         img_file.write(proc_imgs[i])
+#         img_file.close()
+#         image_paths[i] = [jpg_img_name, tif_img_name, png_img_name]
+#     return image_paths
+#
+# def decode_save_images(folder_path, images, num_images, start):
+#     fext = '.png'
+#     image_paths = []
+#     for i in images:  # want i to start at 0, double check this is true
+#         image_dec = base64.b64decode(images[i])
+#         image_name = '/image' + str(start + i)
+#         full_img_name = folder_path + image_name + fext
+#         img_file = open(full_img_name, 'wb')
+#         img_file.write(image_dec)
+#         img_file.close()
+#         image_paths[i] = full_img_name
+#     return image_paths

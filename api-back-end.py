@@ -24,9 +24,8 @@ def post_user():
         os.makedirs(main_image_folder)
     try:
         user = models.User.objects.raw({"_id": user_email}).first()
-        # index where new iamges start in array
         start_i = len(user.orig_img_paths)
-        folder_path = access_folder(email_v)
+        folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(
             folder_path, images, num_images, start_i)
         comm_arr = create_command_arr(command_v, num_images)
@@ -41,7 +40,7 @@ def post_user():
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
 
     except:
-        folder_path = access_folder(email_v)
+        folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(folder_path, images, num_images, 0)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
@@ -81,13 +80,12 @@ def save_proc_images(folder_path, proc_imgs, num_images, start):
         img_file = open(png_img_name, 'wb')
         img_file.write(proc_imgs[i])
         img_file.close()
-        # does this work (make element of array a list of paths )
         image_paths[i] = [jpg_img_name, tif_img_name, png_img_name]
     return image_paths
 
 
-def access_folder(email):
-    folder_path = main_image_folder + email
+def access_folder(main, email):
+    folder_path = main + email
     if os.path.exists(folder_path) is False:
         os.makedirs(folder_path)
     return folder_path
