@@ -41,7 +41,7 @@ def post_user():
         image_paths = decode_save_images(folder_path, images, num_images, 0)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
-        create_user(email=email_v, orig_img_paths=image_paths, command=comm_arr, orig_timestamp = dt_arr)
+        create_user(email_v, image_paths, comm_arr, dt_arr)
         user = models.User.objects.raw({"_id": user_email}).first()
         init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
@@ -59,10 +59,9 @@ def add_proc_data(u, paths, times, stati, num_images, start_i):
 return
 
 def save_proc_images(folder_path, proc_imgs, num_images, start):
-    #save images as 3 types
-    image_paths = np.zeros(shape=(num_images, 3))
+    image_paths = [[] for _ in range(num_images)]
     for i in proc_imgs:
-        image_name = 'proc_image' + str(start + i)
+        image_name = '/proc_image' + str(start + i)
         jpg_img_name = folder_path + image_name + '.jpg'
         tif_img_name = folder_path + image_name + '.tif'
         png_img_name = folder_path + image_name + '.png'
@@ -95,7 +94,7 @@ def decode_save_images(folder_path, images, num_images, start):
     image_paths= []
     for i in images: #want i to start at 0, double check this is true
         image_dec = base64.b64decode(images[i])
-        image_name = 'image' + str(start + i)
+        image_name = '/image' + str(start + i)
         full_img_name = folder_path + image_name + fext
         img_file = open(full_img_name, 'wb')
         img_file.write(image_dec)

@@ -24,7 +24,7 @@ def create_user(email, img_paths, comm, times):
     u.command.extend(comm)
     u.orig_img_paths.extend(img_paths)
     u.orig_timestamp.extend(times)
-    u.save()  # save the user to the database
+    u.save(full_clean=False)  # save the user to the database
 
 def add_images(email, img_paths, comms, times):
     """Appends new images to existing User and save to db
