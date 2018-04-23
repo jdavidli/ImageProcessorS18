@@ -14,6 +14,26 @@ invalid_filepaths.append('test_images/does_not_exist.png')
 invalid_filepaths.append('test_images/test_image3.jpg')
 invalid_filepaths.append('test_images/does_not_exist.jpg')
 
+invalid_input_filepaths = []
+invalid_input_filepaths.append('test_images/test_image1.tif')
+invalid_input_filepaths.append(1)
+invalid_input_filepaths.append('test_images/test_image2.png')
+invalid_input_filepaths.append(4.5)
+invalid_input_filepaths.append('test_images/test_image3.jpg')
+invalid_input_filepaths.append(True)
+invalid_input_command = '1'
+
+
+def test_validate_inputs():
+
+    from image_processor import validate_inputs
+
+    valid_filepaths, valid_command = validate_inputs(invalid_input_filepaths,
+                                                     invalid_input_command)
+
+    assert(valid_filepaths == test_filepaths)
+    assert(valid_command == 0)
+
 
 def test_open_images():
 
