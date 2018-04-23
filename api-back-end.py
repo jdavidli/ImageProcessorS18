@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 import os
 import base64
-from image_processor import run_image_processing
+#from image_processor import run_image_processing
 
 app = Flask(__name__)
 CORS(app)
@@ -80,7 +80,7 @@ def save_proc_images(folder_path, proc_imgs, num_images, start):
         img_file = open(png_img_name, 'wb')
         img_file.write(proc_imgs[i])
         img_file.close()
-        image_paths[i] = [jpg_img_name, tif_img_name, png_img_name]
+        image_paths.append([jpg_img_name, tif_img_name, png_img_name])
     return image_paths
 
 
@@ -101,14 +101,14 @@ def init_proc_status(u, num):
 def decode_save_images(folder_path, images, num_images, start):
     fext = '.png'
     image_paths = []
-    for i in images:  # want i to start at 0, double check this is true
+    for i in range(num_images):  # want i to start at 0, double check this is true
         image_dec = base64.b64decode(images[i])
         image_name = '/image' + str(start + i)
         full_img_name = folder_path + image_name + fext
         img_file = open(full_img_name, 'wb')
         img_file.write(image_dec)
         img_file.close()
-        image_paths[i] = full_img_name
+        image_paths.append(full_img_name)
     return image_paths
 
 
@@ -117,8 +117,9 @@ def create_command_arr(command_v, num_images):
 
 
 def create_datetime_arr(time_v, num_images):
-    for x in xrange(num_images):
-        dt_arr[x] = time_v
+    dt_arr =[]
+    for x in range(num_images):
+        dt_arr.append(time_v)
     return dt_arr
 
 

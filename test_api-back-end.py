@@ -94,6 +94,8 @@ def test_create_datetime_arr():
     assert(dt2 == [t1, t1, t1])
     return dt_arr
 
+# with open("pup.jpg", "rb") as image_file:
+#     encoded_string = base64.b64encode(image_file.read())
 
 # def save_proc_images(folder_path, proc_imgs, num_images, start):
 #     image_paths = [[] for _ in range(num_images)]
