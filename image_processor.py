@@ -18,7 +18,8 @@ def run_image_processing(filepaths, command):
     :rtype: dict
     """
 
-    # Read valid filepaths and open images:
+    # Validate inputs and open images:
+    filepaths, command = validate_inputs(filepaths, command)
     p_filepaths, images = open_images(filepaths)
 
     # Process images:
@@ -55,6 +56,30 @@ def run_image_processing(filepaths, command):
                       "processing_status": p_status,
                       "processing_times": p_time}
     return processed_data
+
+
+def validate_inputs(filepaths, command):
+    """ Validate input parameter types. Removes invalid filepaths and
+        sets invalid command to default.
+
+    :param filepaths: paths to image files
+    :param command: image processing command
+    :type filepaths: string, or list of strings
+    :type command: int
+    :returns: valid filepaths and command
+    """
+
+    if(type(filepaths) is str):
+        valid_filepaths = filepaths
+    elif(type(filepaths) is list):
+        valid_filepaths = [f for f in filepaths if type(f) is str]
+    else:
+        valid_filepaths = []
+
+    if not (type(command) is int):
+        valid_command = 0
+
+    return valid_filepaths, valid_command
 
 
 def open_images(filepaths):
