@@ -7,7 +7,7 @@ import datetime
 import numpy as np
 import os
 import base64
-#from image_processor import run_image_processing
+from image_processor import run_image_processing
 
 app = Flask(__name__)
 CORS(app)

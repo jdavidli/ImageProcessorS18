@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 pymodm
 flask
 numpy
@@ -7,3 +8,11 @@ pytest-pep8
 pytest-cov
 gunicorn
 flask-cors
+=======
+numpy
+scikit-image
+pytest
+pytest-pep8
+pytest-cov
+ipython
+>>>>>>> 5f108de1ed0d13d9e3dabf5feea9b1d42a73bf5f
