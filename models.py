@@ -39,4 +39,4 @@ def add_images(email, img_paths, comms, times):
     user.orig_img_paths.extend(img_paths)
     user.command.extend(comms)
     user.timestamp.extend(times)
-    user.save()  # save the user to the database
+    user.save(full_clean=False)  # save the user to the database

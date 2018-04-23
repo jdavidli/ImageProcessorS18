@@ -86,7 +86,7 @@ def access_folder(email):
 def init_proc_status(u, num):
     status = np.zeros([1,num_images])
     u.proc_status.extend(status)
-    u.save()
+    u.save(full_clean=False)
     return
 
 def decode_save_images(folder_path, images, num_images, start):
