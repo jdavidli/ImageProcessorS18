@@ -8,9 +8,11 @@ class User(MongoModel):
     orig_img_paths = fields.ListField(field=fields.CharField())
     command = fields.ListField(field=fields.IntegerField())
     orig_timestamp = fields.ListField(field=fields.DateTimeField())
-    proc_img_paths = fields.ListField(field=fields.ListField(field=fields.CharField()))
+    proc_img_paths = fields.ListField(
+        field=fields.ListField(field=fields.CharField()))
     proc_time = fields.ListField(field=fields.FloatField())
     proc_status = fields.ListField(field=fields.BooleanField())
+
 
 def create_user(email, img_paths, comm, times):
     """Create new user and save to db
@@ -25,6 +27,7 @@ def create_user(email, img_paths, comm, times):
     u.orig_img_paths.extend(img_paths)
     u.orig_timestamp.extend(times)
     u.save(full_clean=False)  # save the user to the database
+
 
 def add_images(email, img_paths, comms, times):
     """Appends new images to existing User and save to db
