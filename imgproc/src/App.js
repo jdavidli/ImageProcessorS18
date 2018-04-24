@@ -10,8 +10,13 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      filesDataFromChild: []
+      filesDataFromChild: [],
+      commandFromChild: ''
     }
+  }
+
+  getCommand = (command) => {
+    console.log(command)
   }
 
   myCallback = (files) => {
@@ -24,17 +29,22 @@ class App extends React.Component {
         reader.onloadend = () => {
             console.log(reader.result)
             const formData = new FormData();
-            formData.append("file", reader.result);
-            formData.append("upload_preset", "ex6elkh6");
-            formData.append("api_key", "436934996138467");
+            formData.append("images", reader.result);
+            formData.append("email", "jdl62@duke.edu");
+            formData.append("command", 1);
+            //formData.append("upload_preset", "ex6elkh6");
+            //formData.append("api_key", "436934996138467");
             formData.append("timestamp", (Date.now() / 1000) | 0);
 
             // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
-            return axios.post("https://api.cloudinary.com/v1_1/dikxvn5xi/image/upload", formData, {
-              headers: { "X-Requested-With": "XMLHttpRequest" },
-            }).then(response => {
+            var object = {};
+            formData.forEach(function(value, key){
+              object[key] = value;
+            });
+            var json = JSON.stringify(object);
+            console.log(json)
+            return axios.post("http://vcm-3580.vm.duke.edu:5000/process_image", json).then(response => {
               const data = response.data;
-              const fileURL = data.secure_url // You should store this URL for future references in your app
               console.log(data);
             })
             // do whatever you want with the file content

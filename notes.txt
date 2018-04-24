@@ -1,0 +1,12 @@
+drawers on left with processing tasks
+button on right with upload, expanding menu?
+
+json with image, user, time, command
+
+pass data from upload button to parent
+pass processing command from menu to parent
+
+steps
+choose processing. add processing command to formData
+upload, choose files. send complete formData
+  if no processing command is empty, send equalize
