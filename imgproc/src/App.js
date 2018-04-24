@@ -17,6 +17,31 @@ class App extends React.Component {
   myCallback = (files) => {
     this.setState({filesDataFromChild: files});
     console.log(files)
+
+    files.forEach(file => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+            console.log(reader.result)
+            const formData = new FormData();
+            formData.append("file", reader.result);
+            formData.append("upload_preset", "ex6elkh6");
+            formData.append("api_key", "436934996138467");
+            formData.append("timestamp", (Date.now() / 1000) | 0);
+
+            // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+            return axios.post("https://api.cloudinary.com/v1_1/dikxvn5xi/image/upload", formData, {
+              headers: { "X-Requested-With": "XMLHttpRequest" },
+            }).then(response => {
+              const data = response.data;
+              const fileURL = data.secure_url // You should store this URL for future references in your app
+              console.log(data);
+            })
+            // do whatever you want with the file content
+        };
+        reader.onabort = () => console.log('file reading was aborted');
+        reader.onerror = () => console.log('file reading has failed');
+    });
 }
 
   render () {
