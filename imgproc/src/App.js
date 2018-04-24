@@ -10,13 +10,13 @@ class App extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      files: []
+      filesDataFromChild: []
     }
   }
 
-  myCallback = (dataFromChild) => {
-    this.setState({ files: dataFromChild });
-    console.log(dataFromChild)
+  myCallback = (files) => {
+    this.setState({filesDataFromChild: files});
+    console.log(files)
 }
 
   render () {
@@ -27,7 +27,7 @@ class App extends React.Component {
             <Typography variant='title' color='inherit' style={{flex: 1}}>
             Image Processor
             </Typography>
-            <SimpleMenu onUpload={this.myCallback}/>
+            <SimpleMenu callbackFromParent={this.myCallback}/>
           </Toolbar>
         </AppBar>
         <ClippedDrawer />

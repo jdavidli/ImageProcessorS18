@@ -4,9 +4,7 @@ import Dropzone from 'react-dropzone'
 
 class SimpleMenu extends React.Component {
   onDrop = (files) => {
-    this.props.onUpload({
-      files
-    });
+    this.props.callbackFromParent(files)
   }
 
   render() {
