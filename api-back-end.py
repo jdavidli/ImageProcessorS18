@@ -157,11 +157,11 @@ def verify_input(input):
         if any(image_flag) is True:
             raise TypeError(
                 "At least one uploaded image is not of type string.")
-        if email_flag:
+        if not email_flag:
             raise TypeError("User email not of type string.")
-        if command_flag:
+        if not command_flag:
             raise TypeError("Command not of type integer.")
-        if time_flag:
+        if not time_flag:
             raise TypeError("Timestamp input not of type datetime.")
         if command_v < 1 or command_v > 5:
             raise ValueError(
