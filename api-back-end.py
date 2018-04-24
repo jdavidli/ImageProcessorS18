@@ -21,19 +21,9 @@ def post_user():
     input = request.get_json()
     if os.path.exists(main_image_folder) is False:
         os.makedirs(main_image_folder)
-    try:
-        email_v, command_v, time_v, images_v, num_images = verify_input(input)
-    except TypeError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
-    except ValueError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
-    except KeyError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
-    except SyntaxError:
-        data = {"message": 'POST to /process_image failed.'}
+    email_v, command_v, time_v, images_v, num_images, message = verify_input(input)
+    if email_v == []:
+        data = {"message": message}
         return jsonify(data), 400
 
     try:
@@ -176,17 +166,15 @@ def verify_input(input):
             raise TypeError("Command not of type integer.")
         if time_flag:
             raise TypeError("Timestamp input not of type datetime.")
-        print("SUCCESS: Input validation passed.")
+        message = "SUCCESS: Input validation passed."
+        return email_v, command_v, time_v, images_v, num_images, message
     except ValueError as inst:
-        print(inst.message)
-        raise ValueError("ValueError: Input validation failed.")
-    except TypeError:
-        raise 
+        return [], [], [], [], [], inst
+    except TypeError as inst:
+        return [], [], [], [], [], inst
     except KeyError:
-        print("Input keys incorrect. Pass email, image processing command, timestamp and image.")
-        raise KeyError(
-            "KeyError: Passed inputs do not have correct components (key assignments).")
+        inst = "Input keys incorrect. Pass email, image processing command, timestamp and image."
+        return [], [], [], [], [], inst
     except:
-        print("Unknown syntax error during validation of expected input type and value.")
-        raise SyntaxError("UnknownError: Input validation failed.")
-    return email_v, command_v, time_v, images_v, num_images
+        inst = "Unknown syntax error during validation of expected input type and value."
+        return [], [], [], [], [], inst
