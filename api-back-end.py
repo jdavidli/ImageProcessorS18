@@ -180,9 +180,8 @@ def verify_input(input):
     except ValueError as inst:
         print(inst.message)
         raise ValueError("ValueError: Input validation failed.")
-    except TypeError as inst:
-        print(inst.message)
-        raise TypeError("TypeError: Input validation failed.")
+    except TypeError:
+        raise 
     except KeyError:
         print("Input keys incorrect. Pass email, image processing command, timestamp and image.")
         raise KeyError(
