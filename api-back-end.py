@@ -23,6 +23,20 @@ def post_user():
         os.makedirs(main_image_folder)
     try:
         email_v, command_v, time_v, images_v, num_images = verify_input(input)
+    except TypeError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+    except ValueError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+    except KeyError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+    except SyntaxError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+
+    try:
         user = models.User.objects.raw({"_id": user_email}).first()
         start_i = len(user.orig_img_paths)
         folder_path = access_folder(main_image_folder, email_v)
@@ -44,19 +58,6 @@ def post_user():
         #return image strings in list of lists
         #return proc time in list
         return jsonify(input), 200
-
-    except TypeError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
-    except ValueError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
-    except KeyError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
-    except SyntaxError:
-        data = {"message": 'POST to /process_image failed.'}
-        return jsonify(data), 400
     except:
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(folder_path, images, num_images, 0)
