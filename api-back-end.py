@@ -54,7 +54,7 @@ def post_user():
     except KeyError:
         data = {"message": 'POST to /process_image failed.'}
         return jsonify(data), 400
-    except Exception:
+    except SyntaxError:
         data = {"message": 'POST to /process_image failed.'}
         return jsonify(data), 400
     except:
@@ -187,6 +187,6 @@ def verify_input(input):
         raise KeyError(
             "KeyError: Passed inputs do not have correct components (key assignments).")
     except:
-        print("Unknown error during validation of expected input type and value.")
-        raise Exception("UnknownError: Input validation failed.")
+        print("Unknown syntax error during validation of expected input type and value.")
+        raise SyntaxError("UnknownError: Input validation failed.")
     return email_v, command_v, time_v, images_v, num_images
