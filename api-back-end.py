@@ -35,10 +35,17 @@ def post_user():
         proc_data = run_image_processing(image_paths, command_v)
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
+        #check the status and save proc images with true status
+        # proc path should be empty for not found or unprocessable images
         multi_proc_paths = save_proc_images(
-            folder_path, proc_data["processed_images"], num_images, start_i)
+            folder_path, proc_data["processed_images"], num_images, start_i, stat)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
+        #create output for david
+        #return image strings in list of lists
+        #return proc time in list
+        return jsonify(input), 200
 
+    #add errors
     except:
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(folder_path, images, num_images, 0)
@@ -53,7 +60,7 @@ def post_user():
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, start_i)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
-    return jsonify(input), 200
+        return jsonify(input), 400
 
 
 def add_proc_data(u, paths, times, stati, num_images, start_i):
@@ -61,26 +68,29 @@ def add_proc_data(u, paths, times, stati, num_images, start_i):
     u.proc_time.extend(times)
     u.proc_status[start_i: start_i + num_images] = stati
     u.save()
-    return
+    return(input, 200)
 
 
-def save_proc_images(folder_path, proc_imgs, num_images, start):
-    image_paths = [[] for _ in range(num_images)]
-    for i in proc_imgs:
-        image_name = '/proc_image' + str(start + i)
-        jpg_img_name = folder_path + image_name + '.jpg'
-        tif_img_name = folder_path + image_name + '.tif'
-        png_img_name = folder_path + image_name + '.png'
-        img_file = open(jpg_img_name, 'wb')
-        img_file.write(proc_imgs[i])
-        img_file.close()
-        img_file = open(tif_img_name, 'wb')
-        img_file.write(proc_imgs[i])
-        img_file.close()
-        img_file = open(png_img_name, 'wb')
-        img_file.write(proc_imgs[i])
-        img_file.close()
-        image_paths.append([jpg_img_name, tif_img_name, png_img_name])
+def save_proc_images(folder_path, proc_imgs, num_images, start, stat):
+    image_paths = [[]]
+    for i in range(num_images):
+        if stat[i] is True:
+            image_name = '/proc_image' + str(start + i)
+            jpg_img_name = folder_path + image_name + '.jpg'
+            tif_img_name = folder_path + image_name + '.tif'
+            png_img_name = folder_path + image_name + '.png'
+            img_file = open(jpg_img_name, 'wb')
+            img_file.write(proc_imgs[i])
+            img_file.close()
+            img_file = open(tif_img_name, 'wb')
+            img_file.write(proc_imgs[i])
+            img_file.close()
+            img_file = open(png_img_name, 'wb')
+            img_file.write(proc_imgs[i])
+            img_file.close()
+            image_paths.append([jpg_img_name, tif_img_name, png_img_name])
+        if stat[i] is False:
+            image_paths.append(['','',''])
     return image_paths
 
 
