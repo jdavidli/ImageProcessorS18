@@ -152,7 +152,7 @@ def verify_input(input):
             raise ValueError("No input images passed to post function.")
         image_flag = np.zeros((num_images, 1), dtype=bool)
         for i in images_v:
-            if isinstance(images_v[i], str) is False:
+            if isinstance(i, str) is False:
                 image_flag[i] = True
         if any(image_flag) is True:
             raise TypeError(
