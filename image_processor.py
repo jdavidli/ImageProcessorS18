@@ -78,6 +78,8 @@ def validate_inputs(filepaths, command):
 
     if not (type(command) is int):
         valid_command = 0
+    else:
+        valid_command = command
 
     return valid_filepaths, valid_command
 
