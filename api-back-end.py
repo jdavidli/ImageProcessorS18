@@ -19,7 +19,7 @@ main_image_folder = "/home/vcm/images/"
 @app.route("/process_image", methods=["POST"])
 def post_user():
     input = request.get_json()
-        if os.path.exists(main_image_folder) is False:
+    if os.path.exists(main_image_folder) is False:
         os.makedirs(main_image_folder)
     try:
         email_v, command_v, time_v, images_v, num_images = verify_input(input)
