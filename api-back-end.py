@@ -145,7 +145,7 @@ def verify_input(input):
         command_v = input["command"]
         command_flag = isinstance(command_v, int)
         time_v = input["timestamp"]
-        time_flag = isinstance(time_v, datetime.datetime)
+        time_flag = isinstance(time_v, str)
         images_v = input["images"]
         num_images = len(images_v)
         if num_images is 0:
@@ -162,11 +162,12 @@ def verify_input(input):
         if not command_flag:
             raise TypeError("Command not of type integer.")
         if not time_flag:
-            raise TypeError("Timestamp input not of type datetime.")
+            raise TypeError("Timestamp input not of type str.")
         if command_v < 1 or command_v > 5:
             raise ValueError(
                 "Integer command passed is not associated with a processing function.")
         message = "SUCCESS: Input validation passed."
+        time_v = datetime.datetime.strptime(time_v, "%Y-%m-%d %H:%M:%S.%f")
         return email_v, command_v, time_v, images_v, num_images, message
     except ValueError as inst:
         return [], [], [], [], [], str(inst)
