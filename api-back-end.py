@@ -169,12 +169,12 @@ def verify_input(input):
         message = "SUCCESS: Input validation passed."
         return email_v, command_v, time_v, images_v, num_images, message
     except ValueError as inst:
-        return [], [], [], [], [], inst
+        return [], [], [], [], [], str(inst)
     except TypeError as inst:
-        return [], [], [], [], [], inst
+        return [], [], [], [], [], str(inst)
     except KeyError:
         inst = "Input keys incorrect. Pass email, image processing command, timestamp and image."
-        return [], [], [], [], [], inst
+        return [], [], [], [], [], str(inst)
     except:
         inst = "Unknown syntax error during validation of expected input type and value."
-        return [], [], [], [], [], inst
+        return [], [], [], [], [], str(inst)
