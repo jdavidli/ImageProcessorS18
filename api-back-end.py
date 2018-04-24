@@ -31,7 +31,7 @@ def post_user():
         start_i = len(user.orig_img_paths)
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(
-            folder_path, images, num_images, start_i)
+            folder_path, images_v, num_images, start_i)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
         add_images(email_v, image_paths, comm_arr, dt_arr)
@@ -47,7 +47,7 @@ def post_user():
         return jsonify(output), 200
     except:
         folder_path = access_folder(main_image_folder, email_v)
-        image_paths = decode_save_images(folder_path, images, num_images, 0)
+        image_paths = decode_save_images(folder_path, images_v, num_images, 0)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
         create_user(email_v, image_paths, comm_arr, dt_arr)
