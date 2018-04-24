@@ -19,10 +19,10 @@ main_image_folder = "/home/vcm/images/"
 @app.route("/process_image", methods=["POST"])
 def post_user():
     input = request.get_json()
-    email_v, command_v, time_v, images_v, num_images = verify_input(input)
-    if os.path.exists(main_image_folder) is False:
+        if os.path.exists(main_image_folder) is False:
         os.makedirs(main_image_folder)
     try:
+        email_v, command_v, time_v, images_v, num_images = verify_input(input)
         user = models.User.objects.raw({"_id": user_email}).first()
         start_i = len(user.orig_img_paths)
         folder_path = access_folder(main_image_folder, email_v)
@@ -45,7 +45,18 @@ def post_user():
         #return proc time in list
         return jsonify(input), 200
 
-    #add errors
+    except TypeError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+    except ValueError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+    except KeyError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
+    except UnknownError:
+        data = {"message": 'POST to /process_image failed.'}
+        return jsonify(data), 400
     except:
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(folder_path, images, num_images, 0)
