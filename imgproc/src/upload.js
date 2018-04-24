@@ -2,7 +2,7 @@ import React from 'react';
 import Button from 'material-ui/Button';
 import Dropzone from 'react-dropzone'
 
-class SimpleMenu extends React.Component {
+class Upload extends React.Component {
   onDrop = (files) => {
     this.props.callbackFromParent(files)
   }
@@ -26,4 +26,4 @@ class SimpleMenu extends React.Component {
   }
 }
 
-export default SimpleMenu;
+export default Upload;

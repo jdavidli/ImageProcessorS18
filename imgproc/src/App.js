@@ -2,7 +2,7 @@ import React from 'react'
 import AppBar from 'material-ui/AppBar'
 import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
-import SimpleMenu from './upload.js'
+import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
 import axios from 'axios';
 
@@ -52,7 +52,7 @@ class App extends React.Component {
             <Typography variant='title' color='inherit' style={{flex: 1}}>
             Image Processor
             </Typography>
-            <SimpleMenu callbackFromParent={this.myCallback}/>
+            <Upload callbackFromParent={this.myCallback}/>
           </Toolbar>
         </AppBar>
         <ClippedDrawer />
