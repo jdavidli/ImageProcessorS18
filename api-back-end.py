@@ -67,13 +67,16 @@ def encode_proc_images(paths, num_images):
     base64_imgs = [[]]
     for i in range(num_images):
         save_set = paths[i]
-        with open(save_set[0], "rb") as image_file:
-            encoded_string1 = base64.b64encode(image_file.read())
-        with open(save_set[1], "rb") as image_file:
-            encoded_string2 = base64.b64encode(image_file.read())
-        with open(save_set[2], "rb") as image_file:
-            encoded_string3 = base64.b64encode(image_file.read())
-        base64_imgs.append([encoded_string1, encoded_string2, encoded_string3])
+        if save_set == ['', '', '']:
+            base64_imgs.append(['', '', ''])
+        else:
+            with open(save_set[0], "rb") as image_file:
+                encoded_string1 = base64.b64encode(image_file.read())
+            with open(save_set[1], "rb") as image_file:
+                encoded_string2 = base64.b64encode(image_file.read())
+            with open(save_set[2], "rb") as image_file:
+                encoded_string3 = base64.b64encode(image_file.read())
+            base64_imgs.append([encoded_string1, encoded_string2, encoded_string3])
     return base64_imgs
 
 def add_proc_data(u, paths, times, stati, num_images, start_i):
