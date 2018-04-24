@@ -39,15 +39,12 @@ def post_user():
         proc_data = run_image_processing(image_paths, command_v)
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
-        #check the status and save proc images with true status
-        # proc path should be empty for not found or unprocessable images
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, start_i, stat)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
-        #create output for david
-        #return image strings in list of lists
-        #return proc time in list
-        return jsonify(input), 200
+        base64_images = encode_proc_images(multi_proc_paths, num_images)
+        output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat}
+        return jsonify(output), 200
     except:
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(folder_path, images, num_images, 0)
@@ -62,8 +59,22 @@ def post_user():
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, start_i)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
-        return jsonify(input), 400
+        base64_images = encode_proc_images(multi_proc_paths, num_images)
+        output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat}
+        return jsonify(output), 200
 
+def encode_proc_images(paths, num_images):
+    base64_imgs = [[]]
+    for i in range(num_images):
+        save_set = paths[i]
+        with open(save_set[0], "rb") as image_file:
+            encoded_string1 = base64.b64encode(image_file.read())
+        with open(save_set[1], "rb") as image_file:
+            encoded_string2 = base64.b64encode(image_file.read())
+        with open(save_set[2], "rb") as image_file:
+            encoded_string3 = base64.b64encode(image_file.read())
+        base64_imgs.append([encoded_string1, encoded_string2, encoded_string3])
+    return base64_imgs
 
 def add_proc_data(u, paths, times, stati, num_images, start_i):
     u.proc_img_paths.extend(paths)
