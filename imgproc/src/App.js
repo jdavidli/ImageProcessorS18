@@ -27,18 +27,11 @@ class App extends React.Component {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-            const formData = new FormData();
-            formData.append("images", reader.result);
-            formData.append("email", "jdl62@duke.edu");
-            formData.append("command", 1);
-            formData.append("timestamp", (Date.now() / 1000) | 0);
-
-            // Make an AJAX upload request using Axios
-            var object = {};
-            formData.forEach(function(value, key){
-              object[key] = value;
-            });
-            //var json = JSON.stringify(object);
+          var object = {};
+          object.images = reader.result;
+          object.email = "jdl@duke.edu";
+          object.command = 1;
+          object.timestamp = Date.now();
             console.log(object)
             return axios.post("http://vcm-3580.vm.duke.edu:5000/process_image", object)
             .then(response => {
