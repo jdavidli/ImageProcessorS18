@@ -10,3 +10,6 @@ steps
 choose processing. add processing command to formData
 upload, choose files. send complete formData
   if no processing command is empty, send equalize
+
+command is not an int?
+NOT WORKING WITH AXIOS

@@ -27,27 +27,26 @@ class App extends React.Component {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-            console.log(reader.result)
             const formData = new FormData();
             formData.append("images", reader.result);
             formData.append("email", "jdl62@duke.edu");
             formData.append("command", 1);
-            //formData.append("upload_preset", "ex6elkh6");
-            //formData.append("api_key", "436934996138467");
             formData.append("timestamp", (Date.now() / 1000) | 0);
 
-            // Make an AJAX upload request using Axios (replace Cloudinary URL below with your own)
+            // Make an AJAX upload request using Axios
             var object = {};
             formData.forEach(function(value, key){
               object[key] = value;
             });
-            var json = JSON.stringify(object);
-            console.log(json)
-            return axios.post("http://vcm-3580.vm.duke.edu:5000/process_image", json).then(response => {
-              const data = response.data;
-              console.log(data);
+            //var json = JSON.stringify(object);
+            console.log(object)
+            return axios.post("http://vcm-3580.vm.duke.edu:5000/process_image", object)
+            .then(response => {
+              console.log(response);
             })
-            // do whatever you want with the file content
+            .catch(error => {
+              console.log(error.response)
+            })
         };
         reader.onabort = () => console.log('file reading was aborted');
         reader.onerror = () => console.log('file reading has failed');

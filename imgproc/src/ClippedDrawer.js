@@ -33,7 +33,14 @@ class ClippedDrawer extends React.Component {
     })
 
     return (
-      <div>
+      <div style={{
+        flexGrow: 1,
+        height: 430,
+        zIndex: 1,
+        overflow: 'hidden',
+        position: 'relative',
+        display: 'flex'
+      }}>
         <Drawer variant='permanent'>
           <div />
           <ListItem button>
@@ -47,6 +54,9 @@ class ClippedDrawer extends React.Component {
           </ListItem>
           <ListItem button>
             <ListItemText primary='Reverse Video' />
+          </ListItem>
+          <ListItem button>
+            <ListItemText primary='Edge Detection' />
           </ListItem>
         </Drawer>
         <main>
