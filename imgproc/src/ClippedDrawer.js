@@ -5,44 +5,49 @@ import Drawer from 'material-ui/Drawer'
 import List, { ListItem, ListItemText } from 'material-ui/List'
 import TitlebarGridList from './TitlebarGridList.js'
 
+const drawerWidth = 240
+const styles = theme => ({
+  root: {
+    flexGrow: 1,
+    zIndex: 1,
+    overflow: 'hidden',
+    position: 'relative',
+    display: 'flex'
+  },
+  appBar: {
+    zIndex: theme.zIndex.drawer + 1
+  },
+  drawerPaper: {
+    position: 'relative',
+    width: drawerWidth
+  },
+  content: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.default,
+    padding: theme.spacing.unit * 3,
+    minWidth: 0
+  },
+  toolbar: theme.mixins.toolbar
+})
+
 class ClippedDrawer extends React.Component {
+  constructor (props) {
+    super()
+    this.props = props
+  }
+
   render () {
-    const drawerWidth = 240
-    const styles = theme => ({
-      root: {
-        flexGrow: 1,
-        zIndex: 1,
-        overflow: 'hidden',
-        position: 'relative',
-        display: 'flex'
-      },
-      appBar: {
-        zIndex: theme.zIndex.drawer + 1
-      },
-      drawerPaper: {
-        position: 'relative',
-        width: drawerWidth
-      },
-      content: {
-        flexGrow: 1,
-        backgroundColor: theme.palette.background.default,
-        padding: theme.spacing.unit * 3,
-        minWidth: 0 // So the Typography noWrap works
-      },
-      toolbar: theme.mixins.toolbar
-    })
+    const { classes } = this.props
 
     return (
-      <div style={{
-        flexGrow: 1,
-        height: 430,
-        zIndex: 1,
-        overflow: 'hidden',
-        position: 'relative',
-        display: 'flex'
-      }}>
-        <Drawer variant='permanent'>
-          <div />
+      <div className={classes.root}>
+        <Drawer
+          variant='permanent'
+          classes={{
+            paper: classes.drawerPaper
+          }}
+        >
+          <div className={classes.toolbar} />
           <ListItem button>
             <ListItemText primary='Histogram Equalization' />
           </ListItem>
@@ -59,8 +64,8 @@ class ClippedDrawer extends React.Component {
             <ListItemText primary='Edge Detection' />
           </ListItem>
         </Drawer>
-        <main>
-          <div />
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
           <TitlebarGridList />
         </main>
       </div>
@@ -68,4 +73,8 @@ class ClippedDrawer extends React.Component {
   }
 }
 
-export default ClippedDrawer
+ClippedDrawer.propTypes = {
+  classes: PropTypes.object.isRequired
+}
+
+export default withStyles(styles)(ClippedDrawer)

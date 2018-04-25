@@ -13,3 +13,12 @@ upload, choose files. send complete formData
 
 command is not an int?
 NOT WORKING WITH AXIOS
+
+2018-03-09 10:00:36.372339
+1524584723
+
+single json for all images
+
+on upload user selects what type the want back like a string
+i need a header. i will get header and string
+on download save just the string

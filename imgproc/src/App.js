@@ -60,8 +60,8 @@ class App extends React.Component {
             </Typography>
             <Upload callbackFromParent={this.myCallback}/>
           </Toolbar>
+          <ClippedDrawer />
         </AppBar>
-        <ClippedDrawer />
       </div>
     )
   }
