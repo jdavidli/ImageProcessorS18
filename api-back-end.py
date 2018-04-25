@@ -148,7 +148,7 @@ def decode_save_images(folder_path, images, num_images, start):
         img = images[i]
         stripped_img = img.split(",", 1)[1]
         find_ext = img.split(";", 1)[0]
-        ext= find_ext.split("/", 2)[2]
+        ext= find_ext.split("/", 2)[1]
         image_dec = base64.b64decode(stripped_img)
         image_name = '/image' + str(start + i)
         full_img_name = folder_path + image_name + '.' + ext
