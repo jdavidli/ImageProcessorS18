@@ -174,6 +174,7 @@ def verify_input(input):
     email_flag = False
     command_flag = False
     time_flag = False
+    image_list_flag = False
     try:
         email_v = input["email"]
         email_flag = isinstance(email_v, str)
@@ -182,16 +183,20 @@ def verify_input(input):
         time_v = input["timestamp"]
         time_flag = isinstance(time_v, str)
         images_v = input["images"]
+        image_list_flag = isinstance(images_v, list)
         num_images = len(images_v)
+        #should we limit max num images input?
         if num_images is 0:
             raise ValueError("No input images passed to post function.")
-        image_flag = np.zeros((num_images, 1), dtype=bool)
+        image_flag = np.zeros(num_images, dtype=bool)
         for i in images_v:
             if isinstance(i, str) is False:
                 image_flag[i] = True
         if any(image_flag) is True:
             raise TypeError(
                 "At least one uploaded image is not of type string.")
+        if not image_list_flag:
+            raise TypeError("Images not uploaded as list of strings.")
         if not email_flag:
             raise TypeError("User email not of type string.")
         if not command_flag:
