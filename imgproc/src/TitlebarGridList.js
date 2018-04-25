@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList';
-import Subheader from 'material-ui/List/ListSubheader';
-import IconButton from 'material-ui/IconButton';
-import InfoIcon from '@material-ui/icons/Info';
-import GetApp from '@material-ui/icons/GetApp';
-import image from './breakfast.jpg';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { withStyles } from 'material-ui/styles'
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
+import Subheader from 'material-ui/List/ListSubheader'
+import IconButton from 'material-ui/IconButton'
+import InfoIcon from '@material-ui/icons/Info'
+import GetApp from '@material-ui/icons/GetApp'
+import image from './breakfast.jpg'
 
 const styles = theme => ({
   root: {
@@ -14,16 +14,16 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: theme.palette.background.paper
   },
   gridList: {
     width: 500,
-    height: 500,
+    height: 500
   },
   icon: {
-    color: 'rgba(255, 255, 255, 0.54)',
-  },
-});
+    color: 'rgba(255, 255, 255, 0.54)'
+  }
+})
 
 const tileData = [
   {
@@ -31,10 +31,10 @@ const tileData = [
     title: 'Image',
     author: 'author'
   }
-];
+]
 
-function TitlebarGridList(props) {
-  const { classes } = props;
+function TitlebarGridList (props) {
+  const { classes } = props
 
   return (
     <div className={classes.root}>
@@ -55,11 +55,11 @@ function TitlebarGridList(props) {
         ))}
       </GridList>
     </div>
-  );
+  )
 }
 
 TitlebarGridList.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
+  classes: PropTypes.object.isRequired
+}
 
-export default withStyles(styles)(TitlebarGridList);
+export default withStyles(styles)(TitlebarGridList)

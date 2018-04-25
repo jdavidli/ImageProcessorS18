@@ -53,7 +53,7 @@ class App extends React.Component {
   render () {
     return (
       <div>
-        <AppBar position='absolute'>
+        <AppBar position='fixed'>
           <Toolbar>
             <Typography variant='title' color='inherit' style={{flex: 1}}>
             Image Processor
