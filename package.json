@@ -29,7 +29,9 @@
   },
   "standard": {
     "ignore": [
-      "/imgproc/node_modules/"
+      "/imgproc/node_modules/",
+      "/imgproc/src/index.js",
+      "/imgproc/src/registerServiceWorker.js",
     ]
   }
 }
