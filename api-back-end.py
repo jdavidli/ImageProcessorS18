@@ -5,6 +5,7 @@ from models import create_user, add_images
 import models
 import datetime
 import numpy as np
+import scipy.misc as sp
 import os
 import base64
 from image_processor import run_image_processing
@@ -14,6 +15,9 @@ CORS(app)
 comp_with_db = "mongodb://vcm-3580.vm.duke.edu:27017/image_processor"
 connect(comp_with_db)
 main_image_folder = "/home/vcm/images/"
+jpg_header = "data:image/jpg;base64,"
+png_header = "data:image/png;base64,"
+tif_header = "data:image/tif;base64,"
 
 
 @app.route("/process_image", methods=["POST"])
@@ -50,7 +54,7 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat}
+            output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat, "headers": [jpg_header, tif_header, png_header]}
             return jsonify(output), 200
 
 
@@ -76,7 +80,7 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat}
+            output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat, "headers": [jpg_header, tif_header, png_header]}
             return jsonify(output), 200
 
 def encode_proc_images(paths, num_images):
@@ -93,10 +97,11 @@ def encode_proc_images(paths, num_images):
                     encoded_string2 = base64.b64encode(image_file.read())
                 with open(save_set[2], "rb") as image_file:
                     encoded_string3 = base64.b64encode(image_file.read())
-                base64_imgs.append([encoded_string1, encoded_string2, encoded_string3])
+                base64_imgs.append([str(encoded_string1), str(encoded_string2), str(encoded_string3)])
         return base64_imgs
     except:
         return [[]]
+
 
 def add_proc_data(u, paths, times, stati, num_images, start_i):
     u.proc_img_paths.extend(paths)
@@ -114,15 +119,9 @@ def save_proc_images(folder_path, proc_imgs, num_images, start, stat):
             jpg_img_name = folder_path + image_name + '.jpg'
             tif_img_name = folder_path + image_name + '.tif'
             png_img_name = folder_path + image_name + '.png'
-            img_file = open(jpg_img_name, 'wb')
-            img_file.write(proc_imgs[i])
-            img_file.close()
-            img_file = open(tif_img_name, 'wb')
-            img_file.write(proc_imgs[i])
-            img_file.close()
-            img_file = open(png_img_name, 'wb')
-            img_file.write(proc_imgs[i])
-            img_file.close()
+            sp.imsave(jpg_img_name, proc_imgs[i])
+            sp.imsave(tif_img_name, proc_imgs[i])
+            sp.imsave(png_img_name, proc_imgs[i])
             image_paths.append([jpg_img_name, tif_img_name, png_img_name])
         if stat[i] is False:
             image_paths.append(['','',''])
@@ -144,12 +143,15 @@ def init_proc_status(u, num):
 
 
 def decode_save_images(folder_path, images, num_images, start):
-    fext = '.png'
     image_paths = []
-    for i in range(num_images):  # want i to start at 0, double check this is true
-        image_dec = base64.b64decode(images[i])
+    for i in range(num_images):
+        img = images[i]
+        stripped_img = img.split(",", 1)[1]
+        find_ext = img.split(";", 1)[0]
+        ext= find_ext.split("/", 2)[2]
+        image_dec = base64.b64decode(stripped_img)
         image_name = '/image' + str(start + i)
-        full_img_name = folder_path + image_name + fext
+        full_img_name = folder_path + image_name + '.' + ext
         img_file = open(full_img_name, 'wb')
         img_file.write(image_dec)
         img_file.close()
@@ -201,7 +203,7 @@ def verify_input(input):
                 "Integer command passed is not associated with a processing function.")
         message = "SUCCESS: Input validation passed."
         time_v = datetime.datetime.strptime(time_v, "%Y-%m-%d %H:%M:%S.%f")
-        return email_v, command_v, time_v, images_v, num_images, message
+        return email_v, command_v, time_v, images_v, ext_v, num_images, message
     except ValueError as inst:
         return [], [], [], [], [], str(inst)
     except TypeError as inst:
