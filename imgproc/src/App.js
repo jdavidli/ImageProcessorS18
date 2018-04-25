@@ -11,15 +11,12 @@ class App extends React.Component {
     super(props)
     this.state = {
       filesDataFromChild: [],
-      commandFromChild: ''
+      commandFromChild: '1'
     }
   }
 
-  getCommand = (command) => {
-    console.log(command)
-  }
-
   myCallbackCommand = (cmd) => {
+    this.setState({commandFromChild: cmd});
     console.log(cmd)
   }
 
@@ -32,7 +29,7 @@ class App extends React.Component {
         reader.onloadend = () => {
           object.images = "["+ reader.result +"]";
           object.email = "jdl@duke.edu";
-          object.command = 1;
+          object.command = this.state.commandFromChild;
           var date = new Date();
           var pyDate = date.toISOString();
           pyDate = pyDate.replace('T',' ');
