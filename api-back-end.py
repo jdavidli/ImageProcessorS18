@@ -137,7 +137,7 @@ def access_folder(main, email):
 
 
 def init_proc_status(u, num):
-    status = np.zeros([1, num_images])
+    status = np.zeros([1, num])
     u.proc_status.extend(status)
     u.save(full_clean=False)
     return
