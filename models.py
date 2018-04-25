@@ -41,5 +41,5 @@ def add_images(email, img_paths, comms, times):
     user = User.objects.raw({"_id": email}).first()
     user.orig_img_paths.extend(img_paths)
     user.command.extend(comms)
-    user.timestamp.extend(times)
+    user.orig_timestamp.extend(times)
     user.save(full_clean=False)  # save the user to the database
