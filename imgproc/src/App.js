@@ -31,15 +31,19 @@ class App extends React.Component {
           object.images = reader.result;
           object.email = "jdl@duke.edu";
           object.command = 1;
-          object.timestamp = Date.now();
-            console.log(object)
-            return axios.post("http://vcm-3580.vm.duke.edu:5000/process_image", object)
-            .then(response => {
-              console.log(response);
-            })
-            .catch(error => {
-              console.log(error.response)
-            })
+          var date = new Date();
+          var pyDate = date.toISOString();
+          pyDate = pyDate.replace('T',' ');
+          pyDate = pyDate.replace('Z','');
+          object.timestamp = pyDate;
+          console.log(object)
+          return axios.post("http://vcm-3580.vm.duke.edu:5000/process_image", object)
+          .then(response => {
+            console.log(response);
+          })
+          .catch(error => {
+            console.log(error.response)
+          })
         };
         reader.onabort = () => console.log('file reading was aborted');
         reader.onerror = () => console.log('file reading has failed');
