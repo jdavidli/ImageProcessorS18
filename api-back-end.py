@@ -27,7 +27,7 @@ def post_user():
         return jsonify(data), 400
 
     try:
-        user = models.User.objects.raw({"_id": email}).first()
+        user = models.User.objects.raw({"_id": email_v}).first()
         start_i = len(user.orig_img_paths)
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(
@@ -60,7 +60,7 @@ def post_user():
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
         create_user(email_v, image_paths, comm_arr, dt_arr)
-        user = models.User.objects.raw({"_id": email}).first()
+        user = models.User.objects.raw({"_id": email_v}).first()
         init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
         times = proc_data["processing_times"]
