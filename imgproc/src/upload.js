@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone'
 
 class Upload extends React.Component {
   onDrop = (files) => {
-    this.props.callbackFromParent(files)
+    this.props.callbackFromUpload(files)
   }
 
   render() {

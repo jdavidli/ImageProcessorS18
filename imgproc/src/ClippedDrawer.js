@@ -36,6 +36,10 @@ class ClippedDrawer extends React.Component {
     this.props = props
   }
 
+  onCommand = (cmd) => {
+    this.props.callbackFromCommand(cmd)
+  }
+
   render () {
     const { classes } = this.props
 
@@ -48,19 +52,19 @@ class ClippedDrawer extends React.Component {
           }}
         >
           <div className={classes.toolbar} />
-          <ListItem button>
+          <ListItem button onClick={() => { this.onCommand(1)}}>
             <ListItemText primary='Histogram Equalization' />
           </ListItem>
-          <ListItem button>
+          <ListItem button onClick={() => { this.onCommand(2)}}>
             <ListItemText primary='Contrast Stretching' />
           </ListItem>
-          <ListItem button>
+          <ListItem button onClick={() => { this.onCommand(3)}}>
             <ListItemText primary='Log Compression' />
           </ListItem>
-          <ListItem button>
+          <ListItem button onClick={() => { this.onCommand(4)}}>
             <ListItemText primary='Reverse Video' />
           </ListItem>
-          <ListItem button>
+          <ListItem button onClick={() => { this.onCommand(5)}}>
             <ListItemText primary='Edge Detection' />
           </ListItem>
         </Drawer>

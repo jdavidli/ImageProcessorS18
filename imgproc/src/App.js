@@ -19,16 +19,18 @@ class App extends React.Component {
     console.log(command)
   }
 
-  myCallback = (files) => {
-    this.setState({filesDataFromChild: files});
-    console.log(files)
+  myCallbackCommand = (cmd) => {
+    console.log(cmd)
+  }
 
+  myCallbackUpload = (files) => {
+    this.setState({filesDataFromChild: files});
+    var object = {};
     files.forEach(file => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          var object = {};
-          object.images = reader.result;
+          object.images = "["+ reader.result +"]";
           object.email = "jdl@duke.edu";
           object.command = 1;
           var date = new Date();
@@ -58,9 +60,9 @@ class App extends React.Component {
             <Typography variant='title' color='inherit' style={{flex: 1}}>
             Image Processor
             </Typography>
-            <Upload callbackFromParent={this.myCallback}/>
+            <Upload callbackFromUpload={this.myCallbackUpload}/>
           </Toolbar>
-          <ClippedDrawer />
+          <ClippedDrawer callbackFromCommand={this.myCallbackCommand}/>
         </AppBar>
       </div>
     )

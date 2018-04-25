@@ -2,10 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
-import Subheader from 'material-ui/List/ListSubheader'
 import IconButton from 'material-ui/IconButton'
 import InfoIcon from '@material-ui/icons/Info'
-import GetApp from '@material-ui/icons/GetApp'
 import image from './breakfast.jpg'
 
 const styles = theme => ({
@@ -39,8 +37,7 @@ function TitlebarGridList (props) {
   return (
     <div className={classes.root}>
       <GridList cellHeight={180} className={classes.gridList}>
-        <GridListTile key="Subheader" cols={2} style={{ height: 'auto' }}>
-        </GridListTile>
+        <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
         {tileData.map(tile => (
           <GridListTile key={tile.img}>
             <img src={tile.img} alt={tile.title} />
