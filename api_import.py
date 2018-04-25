@@ -50,7 +50,7 @@ def post_user():
             folder_path, proc_data["processed_images"], num_images, start_i, stat)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
-        if base64_imgs == [[]]:
+        if base64_imgs == []:
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
@@ -76,7 +76,7 @@ def post_user():
             folder_path, proc_data["processed_images"], num_images, start_i, stat)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
-        if base64_imgs == [[]]:
+        if base64_imgs == []:
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
@@ -84,7 +84,7 @@ def post_user():
             return jsonify(output), 200
 
 def encode_proc_images(paths, num_images):
-    base64_imgs = [[]]
+    base64_imgs = []
     try:
         for i in range(num_images):
             save_set = paths[i]
@@ -100,7 +100,7 @@ def encode_proc_images(paths, num_images):
                 base64_imgs.append([str(encoded_string1), str(encoded_string2), str(encoded_string3)])
         return base64_imgs
     except:
-        return [[]]
+        return []
 
 
 def add_proc_data(u, paths, times, stati, num_images, start_i):
@@ -112,7 +112,7 @@ def add_proc_data(u, paths, times, stati, num_images, start_i):
 
 
 def save_proc_images(folder_path, proc_imgs, num_images, start, stat):
-    image_paths = [[]]
+    image_paths = []
     for i in range(num_images):
         if stat[i] is True:
             image_name = '/proc_image' + str(start + i)
