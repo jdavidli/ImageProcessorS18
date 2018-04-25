@@ -23,13 +23,15 @@ class App extends React.Component {
   myCallbackUpload = (files) => {
     this.setState({filesDataFromChild: files});
     var object = {};
+    var images = [];
     files.forEach(file => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = () => {
-          object.images = "["+ reader.result +"]";
+          images.push(reader.result);
+          object.images = images;
           object.email = "jdl@duke.edu";
-          object.command = this.state.commandFromChild;
+          object.command = Number(this.state.commandFromChild);
           var date = new Date();
           var pyDate = date.toISOString();
           pyDate = pyDate.replace('T',' ');
