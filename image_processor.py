@@ -232,7 +232,11 @@ def log_compression(images):
             status = False
         else:
             try:
-                p_image = np.log(i.astype(float) + 1)
+                log_image = np.log(i.astype(float) + 1)
+                min_val = np.min(log_image)
+                max_val = np.max(log_image)
+                p_image = 255*(log_image - min_val)/(max_val - min_val)
+                p_image = p_image.astype(int)
                 status = True
             except:
                 p_image = i
