@@ -73,12 +73,8 @@ class App extends React.Component {
             </Typography>
             <Upload callbackFromUpload={this.myCallbackUpload} />
           </Toolbar>
-
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
-        <div>
-        HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello
-        </div>
       </div>
     )
   }

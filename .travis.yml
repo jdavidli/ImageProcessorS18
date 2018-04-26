@@ -6,8 +6,6 @@ matrix:
     cache:
       directories:
         - "node_modules"
-    notifications:
-      email: false
 
   - language: python
     python:
@@ -18,3 +16,5 @@ matrix:
         - pytest -v --pep8
     notifications:
         email: false
+  notifications:
+    email: false

@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import Drawer from 'material-ui/Drawer'
 import { ListItem, ListItemText } from 'material-ui/List'
-import TitlebarGridList from './TitlebarGridList.js'
 import TextField from 'material-ui/TextField'
+import TitlebarGridList from './TitlebarGridList.js'
 
 const drawerWidth = 240
 const styles = theme => ({
@@ -86,7 +86,7 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        
+        <TitlebarGridList />
       </main>
     </div>
   )
