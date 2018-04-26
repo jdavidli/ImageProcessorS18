@@ -42,8 +42,8 @@ def post_user():
         init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
         #added this for testing
-        data = {"message": image_paths}
-        return jsonify(proc_data, 400)
+        # data = {"message": image_paths}
+        # return jsonify(proc_data, 400)
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
         if not np.any(stat):
