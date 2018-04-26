@@ -8,6 +8,7 @@ test_filepaths.append('test_images/test_image2.png')
 test_filepaths.append('test_images/does_not_exist.png')
 test_filepaths.append('test_images/test_image3.jpg')
 test_filepaths.append('test_images/does_not_exist.jpg')
+test_filepaths.append('test_images/test_gray1.jpg')
 
 invalid_input_filepaths = []
 invalid_input_filepaths.append('test_images/test_image1.tif')
@@ -49,6 +50,7 @@ def test_open_images():
     assert(images[3] is None)
     assert(images[4] is not None)
     assert(images[5] is None)
+    assert(images[6] is not None)
 
     images = open_images('test_images/does_not_exist.png')
     assert(images[0] is None)
@@ -61,6 +63,7 @@ def test_histogram_equalization():
     eq1 = io.imread('test_images/eq1.png')
     eq2 = io.imread('test_images/eq2.png')
     eq3 = io.imread('test_images/eq3.png')
+    gray_eq1 = io.imread('test_images/gray_eq1.png')
 
     images = open_images(test_filepaths)
     p_images, p_status, _ = histogram_equalization(images)
@@ -68,12 +71,14 @@ def test_histogram_equalization():
     assert(np.allclose(eq1, p_images[0]))
     assert(np.allclose(eq2, p_images[2]))
     assert(np.allclose(eq3, p_images[4]))
+    assert(np.allclose(gray_eq1, p_images[6]))
     assert(p_images[1] is None)
     assert(p_images[3] is None)
     assert(p_images[5] is None)
     assert(p_status[0])
     assert(p_status[2])
     assert(p_status[4])
+    assert(p_status[6])
     assert(not p_status[1])
     assert(not p_status[3])
     assert(not p_status[5])
@@ -84,12 +89,15 @@ def test_contrast_stretching():
     from image_processor import open_images, contrast_stretching
 
     cs4 = io.imread('test_images/cs4.png')
+    gray_cs1 = io.imread('test_images/gray_cs1.png')
 
-    images = open_images('test_images/test_image4.png')
+    images = open_images(['test_images/test_image4.png',
+                          'test_images/test_gray1.jpg'])
     p_images, p_status, _ = contrast_stretching(images)
 
-    assert(np.allclose(cs4, p_images))
-    assert(p_status)
+    assert(np.allclose(cs4, p_images[0]))
+    assert(np.allclose(gray_cs1, p_images[1]))
+    assert(np.all(p_status))
 
     images = open_images('')
     p_images, p_status, _ = contrast_stretching(images)
@@ -130,6 +138,7 @@ def test_reverse_video():
     rv1 = io.imread('test_images/rv1.png')
     rv2 = io.imread('test_images/rv2.png')
     rv3 = io.imread('test_images/rv3.png')
+    gray_rv1 = io.imread('test_images/gray_rv1.png')
 
     images = open_images(test_filepaths)
     p_images, p_status, _ = reverse_video(images)
@@ -137,12 +146,14 @@ def test_reverse_video():
     assert(np.allclose(rv1, p_images[0]))
     assert(np.allclose(rv2, p_images[2]))
     assert(np.allclose(rv3, p_images[4]))
+    assert(np.allclose(gray_rv1, p_images[6]))
     assert(p_images[1] is None)
     assert(p_images[3] is None)
     assert(p_images[5] is None)
     assert(p_status[0])
     assert(p_status[2])
     assert(p_status[4])
+    assert(p_status[6])
     assert(not p_status[1])
     assert(not p_status[3])
     assert(not p_status[5])
@@ -155,6 +166,7 @@ def test_canny_edge_detection():
     edge1 = io.imread('test_images/edge1.png')
     edge2 = io.imread('test_images/edge2.png')
     edge3 = io.imread('test_images/edge3.png')
+    gray_edge1 = io.imread('test_images/gray_edge1.png')
 
     images = open_images(test_filepaths)
     p_images, p_status, _ = canny_edge_detection(images)
@@ -162,12 +174,14 @@ def test_canny_edge_detection():
     assert(np.allclose(edge1, p_images[0]))
     assert(np.allclose(edge2, p_images[2]))
     assert(np.allclose(edge3, p_images[4]))
+    assert(np.allclose(gray_edge1, p_images[6]))
     assert(p_images[1] is None)
     assert(p_images[3] is None)
     assert(p_images[5] is None)
     assert(p_status[0])
     assert(p_status[2])
     assert(p_status[4])
+    assert(p_status[6])
     assert(not p_status[1])
     assert(not p_status[3])
     assert(not p_status[5])
