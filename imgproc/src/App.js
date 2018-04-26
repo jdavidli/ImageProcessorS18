@@ -5,6 +5,7 @@ import Typography from 'material-ui/Typography'
 import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
 import axios from 'axios'
+import TitlebarGridList from './TitlebarGridList.js'
 
 class App extends React.Component {
   constructor (props) {
@@ -72,8 +73,12 @@ class App extends React.Component {
             </Typography>
             <Upload callbackFromUpload={this.myCallbackUpload} />
           </Toolbar>
-          <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
+
         </AppBar>
+        <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
+        <div>
+        HelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHello
+        </div>
       </div>
     )
   }
