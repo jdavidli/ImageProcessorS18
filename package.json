@@ -33,6 +33,10 @@
       "/imgproc/src/index.js",
       "/imgproc/src/registerServiceWorker.js",
       "/imgproc/src/App.test.js"
-    ]
+    ],
+    "parser": "babel-eslint"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3"
   }
 }

@@ -36,7 +36,7 @@ class ClippedDrawer extends React.Component {
     this.props = props
   }
 
-  onCommand = (cmd) => { // eslint-disable-line
+  onCommand = (cmd) => {
     this.props.callbackFromCommand(cmd)
   }
 
@@ -52,19 +52,19 @@ class ClippedDrawer extends React.Component {
           }}
         >
           <div className={classes.toolbar} />
-          <ListItem button onClick={() => { this.onCommand(1)}}>
+          <ListItem button onClick={() => { this.onCommand(1) }}>
             <ListItemText primary='Histogram Equalization' />
           </ListItem>
-          <ListItem button onClick={() => { this.onCommand(2)}}>
+          <ListItem button onClick={() => { this.onCommand(2) }}>
             <ListItemText primary='Contrast Stretching' />
           </ListItem>
-          <ListItem button onClick={() => { this.onCommand(3)}}>
+          <ListItem button onClick={() => { this.onCommand(3) }}>
             <ListItemText primary='Log Compression' />
           </ListItem>
-          <ListItem button onClick={() => { this.onCommand(4)}}>
+          <ListItem button onClick={() => { this.onCommand(4) }}>
             <ListItemText primary='Reverse Video' />
           </ListItem>
-          <ListItem button onClick={() => { this.onCommand(5)}}>
+          <ListItem button onClick={() => { this.onCommand(5) }}>
             <ListItemText primary='Edge Detection' />
           </ListItem>
         </Drawer>

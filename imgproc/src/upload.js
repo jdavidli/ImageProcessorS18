@@ -1,18 +1,18 @@
-import React from 'react';
-import Button from 'material-ui/Button';
+import React from 'react'
+import Button from 'material-ui/Button'
 import Dropzone from 'react-dropzone'
 
 class Upload extends React.Component {
-  onDrop = (files) => { // eslint-disable-line
+  onDrop = (files) => {
     this.props.callbackFromUpload(files)
   }
 
-  render() {
+  render () {
     const dropzoneStyle = {
-    width  : "100%",
-    height : "100%",
-    border : "0px solid black"
-    };
+      width: '100%',
+      height: '100%',
+      border: '0px solid black'
+    }
 
     return (
       <div>
@@ -22,8 +22,8 @@ class Upload extends React.Component {
           </Button>
         </Dropzone>
       </div>
-    );
+    )
   }
 }
 
-export default Upload;
+export default Upload
