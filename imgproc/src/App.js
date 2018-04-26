@@ -36,7 +36,7 @@ class App extends React.Component {
     var object = {}
     var images = []
     files.forEach(file => {
-      const reader = new window.FileReader() // eslint-disable-line
+      const reader = new window.FileReader()
       reader.readAsDataURL(file)
       reader.onloadend = () => {
         images.push(reader.result)
@@ -72,7 +72,7 @@ class App extends React.Component {
             </Typography>
             <Upload callbackFromUpload={this.myCallbackUpload} />
           </Toolbar>
-          <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}/>
+          <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
         </AppBar>
       </div>
     )
