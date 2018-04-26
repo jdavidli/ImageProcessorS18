@@ -41,7 +41,7 @@ class ClippedDrawer extends React.Component {
     super()
     this.props = props
     this.state = {
-      "nameTextField": ""
+      text: ''
     }
   }
 
@@ -49,15 +49,9 @@ class ClippedDrawer extends React.Component {
     this.props.callbackFromCommand(cmd)
   }
 
-  handleChange = name => event => {
-  this.setState({
-    [name]: event.target.value,
-  });
-}
-
 onNameTextFieldChange = (event) => {
-  // Update the nameTextField state whenever the text field is changed or perturbed in any way:
-  this.setState({"nameTextField": event.target.value});
+  this.setState({"text": event.target.value})
+  this.props.callbackFromEmail(event)
 }
 
   render () {
@@ -73,7 +67,7 @@ onNameTextFieldChange = (event) => {
         >
           <div className={classes.toolbar} />
           <TextField id='email' label='Email' margin='normal' className={classes.textField}
-            value={this.state.nameTextField} onChange={this.onNameTextFieldChange} />
+            value={this.state.text} onChange={this.onNameTextFieldChange} />
           <ListItem button onClick={() => { this.onCommand(1) }}>
             <ListItemText primary='Histogram Equalization' />
           </ListItem>
