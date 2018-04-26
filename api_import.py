@@ -39,10 +39,10 @@ def post_user():
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
         add_images(email_v, image_paths, comm_arr, dt_arr)
+        init_proc_status(user, num_images)
         #added this for testing
         data = {"message": image_paths}
         return jsonify(data, 400)
-        init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
