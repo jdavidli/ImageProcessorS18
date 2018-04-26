@@ -110,9 +110,10 @@ def test_log_compression():
 
     from image_processor import open_images, log_compression
 
-    lc1 = np.load('test_images/lc1.npy')
-    lc2 = np.load('test_images/lc2.npy')
-    lc3 = np.load('test_images/lc3.npy')
+    lc1 = io.imread('test_images/lc1.png')
+    lc2 = io.imread('test_images/lc2.png')
+    lc3 = io.imread('test_images/lc3.png')
+    gray_lc1 = io.imread('test_images/gray_lc1.png')
 
     images = open_images(test_filepaths)
     p_images, p_status, _ = log_compression(images)
@@ -120,12 +121,14 @@ def test_log_compression():
     assert(np.allclose(lc1, p_images[0]))
     assert(np.allclose(lc2, p_images[2]))
     assert(np.allclose(lc3, p_images[4]))
+    assert(np.allclose(gray_lc1, p_images[6]))
     assert(p_images[1] is None)
     assert(p_images[3] is None)
     assert(p_images[5] is None)
     assert(p_status[0])
     assert(p_status[2])
     assert(p_status[4])
+    assert(p_status[6])
     assert(not p_status[1])
     assert(not p_status[3])
     assert(not p_status[5])
