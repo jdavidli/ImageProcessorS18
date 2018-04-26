@@ -142,12 +142,13 @@ def histogram_equalization(images):
             status = False
         else:
             try:
-                if i.shape[2] == 4:
-                    i = rgba2rgb(i)
-                if i.shape[2] == 3:
-                    i_hsv = rgb2hsv(i)
-                    i_hsv[:, :, 2] = equalize_hist(i_hsv[:, :, 2])
-                    p_image = hsv2rgb(i_hsv)
+                if len(i.shape) == 3:
+                    if i.shape[2] == 4:
+                        i = rgba2rgb(i)
+                    if i.shape[2] == 3:
+                        i_hsv = rgb2hsv(i)
+                        i_hsv[:, :, 2] = equalize_hist(i_hsv[:, :, 2])
+                        p_image = hsv2rgb(i_hsv)
                 else:
                     p_image = equalize_hist(i)
                 p_image = 255*p_image
@@ -271,8 +272,9 @@ def reverse_video(images):
             status = False
         else:
             try:
-                if i.shape[2] == 4:
-                    i = 255*rgba2rgb(i)
+                if len(i.shape) == 3:
+                    if i.shape[2] == 4:
+                        i = 255*rgba2rgb(i)
                 p_image = 255 - i
                 status = True
             except:
