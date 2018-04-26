@@ -38,6 +38,9 @@ def post_user():
             folder_path, images_v, num_images, start_i)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
+        #added this for testing
+        data = {"message": image_paths}
+        return jsonify(data, 400)
         add_images(email_v, image_paths, comm_arr, dt_arr)
         init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
@@ -48,9 +51,6 @@ def post_user():
             return jsonify(data), 400
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, start_i, stat)
-        #added this for testing
-        data = {"message": multi_proc_paths}
-        return jsonify(data, 400)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
