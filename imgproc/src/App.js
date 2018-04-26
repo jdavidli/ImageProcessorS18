@@ -11,7 +11,8 @@ class App extends React.Component {
     super(props)
     this.state = {
       filesDataFromChild: [],
-      commandFromChild: '1'
+      commandFromChild: '1',
+      emailFromChild: ''
     }
   }
 
@@ -20,6 +21,12 @@ class App extends React.Component {
     this.setState({commandFromChild: cmd})
     console.log(cmd)
   }
+
+  // get the value from TextInput onChangeText event
+  myCallbackEmail = (e) => {
+  this.setState({emailFromChild: e.target.value})
+  console.log(e.target.value)
+}
 
   // gets uploaded file information from upload button
   myCallbackUpload = (files) => {
@@ -32,7 +39,7 @@ class App extends React.Component {
       reader.onloadend = () => {
         images.push(reader.result)
         object.images = images
-        object.email = 'jdl@duke.edu'
+        object.email = 'not@working.com'
         object.command = Number(this.state.commandFromChild)
         var date = new Date()
         var pyDate = date.toISOString()
@@ -61,7 +68,7 @@ class App extends React.Component {
             <Typography variant='title' color='inherit' style={{flex: 1}}>
             Image Processor
             </Typography>
-            <Upload callbackFromUpload={this.myCallbackUpload} />
+            <Upload callbackFromUpload={this.myCallbackUpload} callbackFromEmail={this.myCallbackEmail}/>
           </Toolbar>
           <ClippedDrawer callbackFromCommand={this.myCallbackCommand} />
         </AppBar>

@@ -22,3 +22,5 @@ single json for all images
 on upload user selects what type the want back like a string
 i need a header. i will get header and string
 on download save just the string
+
+error getting response

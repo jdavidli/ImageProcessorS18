@@ -4,6 +4,7 @@ import { withStyles } from 'material-ui/styles'
 import Drawer from 'material-ui/Drawer'
 import { ListItem, ListItemText } from 'material-ui/List'
 import TitlebarGridList from './TitlebarGridList.js'
+import TextField from 'material-ui/TextField'
 
 const drawerWidth = 240
 const styles = theme => ({
@@ -13,6 +14,11 @@ const styles = theme => ({
     overflow: 'hidden',
     position: 'relative',
     display: 'flex'
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1
@@ -34,11 +40,25 @@ class ClippedDrawer extends React.Component {
   constructor (props) {
     super()
     this.props = props
+    this.state = {
+      "nameTextField": ""
+    }
   }
 
   onCommand = (cmd) => {
     this.props.callbackFromCommand(cmd)
   }
+
+  handleChange = name => event => {
+  this.setState({
+    [name]: event.target.value,
+  });
+}
+
+onNameTextFieldChange = (event) => {
+  // Update the nameTextField state whenever the text field is changed or perturbed in any way:
+  this.setState({"nameTextField": event.target.value});
+}
 
   render () {
     const { classes } = this.props
@@ -52,6 +72,8 @@ class ClippedDrawer extends React.Component {
           }}
         >
           <div className={classes.toolbar} />
+          <TextField id='email' label='Email' margin='normal' className={classes.textField}
+            value={this.state.nameTextField} onChange={this.onNameTextFieldChange} />
           <ListItem button onClick={() => { this.onCommand(1) }}>
             <ListItemText primary='Histogram Equalization' />
           </ListItem>
