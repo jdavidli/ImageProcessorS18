@@ -3,7 +3,7 @@ import Button from 'material-ui/Button';
 import Dropzone from 'react-dropzone'
 
 class Upload extends React.Component {
-  onDrop = (files) => {
+  onDrop = (files) => { // eslint-disable-line
     this.props.callbackFromUpload(files)
   }
 

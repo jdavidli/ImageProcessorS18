@@ -36,7 +36,7 @@ class ClippedDrawer extends React.Component {
     this.props = props
   }
 
-  onCommand = (cmd) => {
+  onCommand = (cmd) => { // eslint-disable-line
     this.props.callbackFromCommand(cmd)
   }
 

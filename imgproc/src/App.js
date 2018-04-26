@@ -15,7 +15,7 @@ class App extends React.Component {
     }
   }
 
-  myCallbackCommand = (cmd) => {
+  myCallbackCommand = (cmd) => { // eslint-disable-line
     this.setState({commandFromChild: cmd});
     console.log(cmd)
   }
