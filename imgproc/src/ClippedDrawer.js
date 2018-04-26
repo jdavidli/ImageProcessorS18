@@ -86,7 +86,7 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <TitlebarGridList />
+        this.props.filesFromParent
       </main>
     </div>
   )

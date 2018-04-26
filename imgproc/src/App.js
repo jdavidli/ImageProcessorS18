@@ -13,7 +13,8 @@ class App extends React.Component {
     this.state = {
       filesDataFromChild: [],
       commandFromChild: '1',
-      emailFromChild: ''
+      emailFromChild: '',
+      imageString: ''
     }
   }
 
@@ -40,6 +41,8 @@ class App extends React.Component {
       const reader = new window.FileReader()
       reader.readAsDataURL(file)
       reader.onloadend = () => {
+        this.setState({imageString: reader.result})
+        // pushes image string into array
         images.push(reader.result)
         object.images = images
         object.email = this.state.emailFromChild
@@ -74,7 +77,9 @@ class App extends React.Component {
             <Upload callbackFromUpload={this.myCallbackUpload} />
           </Toolbar>
         </AppBar>
-        <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
+        <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
+        filesFromParent={this.state.filesDataFromChild} />
+        <img src = {this.state.imageString} alt="res target"/>
       </div>
     )
   }

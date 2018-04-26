@@ -26,3 +26,10 @@ on download save just the string
 error getting response
 
 array of json with images
+
+triggered by upload button?
+need to change on upload
+need to change again on responses
+image responses are between single quotes
+
+setstate triggers re-render?
