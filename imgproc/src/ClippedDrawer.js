@@ -103,6 +103,7 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
+        <img src = {this.props.oImgParent} />
           <GridList cellHeight={180} className={classes.gridList}>
             <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
             {tileData.map(tile => (
