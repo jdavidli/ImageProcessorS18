@@ -5,7 +5,6 @@ import Typography from 'material-ui/Typography'
 import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
 import axios from 'axios'
-import TitlebarGridList from './TitlebarGridList.js'
 
 class App extends React.Component {
   constructor (props) {
@@ -59,10 +58,10 @@ class App extends React.Component {
           .then(response => {
             console.log(response)
             var cleanedImg = ''
-            cleanedImg = response.data.proc_images[0][2]
+            cleanedImg = response.data.proc_images[0][0]
             //removes b' from beginning and ' from end
             cleanedImg = cleanedImg.slice(2,-1)
-            cleanedImg = response.data.headers[2] + cleanedImg
+            cleanedImg = response.data.headers[0] + cleanedImg
             this.setState({processedImageString: cleanedImg})
           })
           .catch(error => {
