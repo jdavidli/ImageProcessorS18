@@ -68,9 +68,10 @@ render () {
   const { classes } = this.props
   var tileData = [
     {
-      img: this.props.oImgParent,
-      title: 'Image',
-      author: 'author'
+      img: this.props.oImgParent
+    },
+    {
+      img: this.props.pImgParent
     }
   ]
   return (
@@ -102,7 +103,6 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <img src = {this.props.oImgParent} />
           <GridList cellHeight={180} className={classes.gridList}>
             <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
             {tileData.map(tile => (

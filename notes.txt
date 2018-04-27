@@ -22,6 +22,7 @@ single json for all images
 on upload user selects what type the want back like a string
 i need a header. i will get header and string
 on download save just the string
+pass in empty list to tile data initially
 
 error getting response
 
@@ -43,5 +44,5 @@ this props in child
 set default state empty string
 
 generate histogram as an image on the backend and sent to front
-send data for histogram and display using recharts on frontend
+*send data for histogram and display using recharts on frontend
 do all of the image processing and display on frontend

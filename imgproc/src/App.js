@@ -16,7 +16,7 @@ class App extends React.Component {
       emailFromChild: '',
       processedResponse: null,
       originalImageString: '',
-      processedImage: ''
+      processedImageString: ''
     }
   }
 
@@ -31,7 +31,7 @@ class App extends React.Component {
     this.setState({
       emailFromChild: e.target.value
     })
-    console.log(e.target.value)
+    //console.log(e.target.value)
   }
 
   // gets uploaded file information from upload button
@@ -58,7 +58,12 @@ class App extends React.Component {
         return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
           .then(response => {
             console.log(response)
-            this.setState({processedResponse: response.data})
+            var cleanedImg = ''
+            cleanedImg = response.data.proc_images[0][2]
+            //removes b' from beginning and ' from end
+            cleanedImg = cleanedImg.slice(2,-1)
+            cleanedImg = response.data.headers[2] + cleanedImg
+            this.setState({processedImageString: cleanedImg})
           })
           .catch(error => {
             console.log(error.response)
@@ -67,17 +72,6 @@ class App extends React.Component {
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
     })
-  }
-
-  onDisplay = (procssedImage) => {
-    //removes b' from beginning and ' from end
-    var cleanedImg = ''
-    cleanedImg = this.state.processedResponse.proc_images[0][0]
-    cleanedImg = cleanedImg.slice(2,-1)
-    cleanedImg = this.state.processedResponse.headers[0] + cleanedImg
-    console.log('parent')
-    console.log(cleanedImg)
-    this.setState({processedImage: cleanedImg})
   }
 
   render () {
@@ -92,7 +86,7 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
-        oImgParent={this.state.originalImageString} />
+        oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}/>
       </div>
     )
   }
