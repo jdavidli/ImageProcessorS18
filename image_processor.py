@@ -44,7 +44,7 @@ def run_image_processing(filepaths, command):
 
     # Return data:
     processed_data = {"message": message,
-                      "valid_filepaths": filepaths,
+                      "filepaths": filepaths,
                       "command": command,
                       "processed_images": p_images,
                       "processing_status": p_status,
@@ -83,6 +83,33 @@ def validate_inputs(filepaths, command):
     return valid_filepaths, valid_command
 
 
+def check_dimensions(image):
+    """ Downsamples image if any dimension exceeds 1024 pixels
+    :param image: image
+    :type image: array
+    :returns: downsampled image
+    """
+
+    from skimage.filters import gaussian
+    from skimage.transform import rescale
+
+    scale = 1.0
+    if image.shape[0] > image.shape[1]:
+        if image.shape[0] > 1024:
+            scale = 1024/image.shape[0]
+    else:
+        if image.shape[1] > 1024:
+            scale = 1024/image.shape[1]
+    if scale != 1.0:
+        image = gaussian(image, sigma=(1-scale)/2,
+                         mode='reflect',
+                         multichannel=True,
+                         preserve_range=True)
+        image = rescale(image, scale)
+
+    return image
+
+
 def open_images(filepaths):
     """ Reads images from files and returns the list of images
 
@@ -99,6 +126,7 @@ def open_images(filepaths):
     if type(filepaths) is str:
         try:
             image = io.imread(filepaths)
+            image = check_dimensions(image)
             images.append(image)
         except FileNotFoundError:
             images.append(None)
@@ -106,6 +134,7 @@ def open_images(filepaths):
         for f in filepaths:
             try:
                 image = io.imread(f)
+                image = check_dimensions(image)
                 images.append(image)
             except FileNotFoundError:
                 images.append(None)
