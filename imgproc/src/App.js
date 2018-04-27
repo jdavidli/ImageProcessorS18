@@ -14,7 +14,9 @@ class App extends React.Component {
       filesDataFromChild: [],
       commandFromChild: '1',
       emailFromChild: '',
-      imageString: ''
+      imageString: '',
+      returnedHeader: '',
+      returnedImage: ''
     }
   }
 
@@ -37,6 +39,7 @@ class App extends React.Component {
     this.setState({filesDataFromChild: files})
     var object = {}
     var images = []
+    var cleanedImg = ''
     files.forEach(file => {
       const reader = new window.FileReader()
       reader.readAsDataURL(file)
@@ -56,6 +59,11 @@ class App extends React.Component {
         return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
           .then(response => {
             console.log(response)
+            //removes b' from beginning and ' from end
+            cleanedImg = response.data.proc_images[0][0]
+            cleanedImg = cleanedImg.slice(2,-1)
+            console.log(cleanedImg)
+            this.setState({returnedHeader: response.data.headers[0], returnedImage: cleanedImg})
           })
           .catch(error => {
             console.log(error.response)
@@ -79,7 +87,8 @@ class App extends React.Component {
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
         filesFromParent={this.state.filesDataFromChild} />
-        <img src = {this.state.imageString} alt="res target"/>
+        <img src = {this.state.imageString}/>
+        <img src = {this.state.returnedHeader+this.state.returnedImage}/>
       </div>
     )
   }

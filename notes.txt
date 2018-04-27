@@ -33,3 +33,6 @@ need to change again on responses
 image responses are between single quotes
 
 setstate triggers re-render?
+will display processed jpg
+
+*default email and error catching?
