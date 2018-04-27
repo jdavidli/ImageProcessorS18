@@ -101,21 +101,21 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-          <GridList cellHeight={200} className={classes.gridList}>
-            <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
-            {tileData.map((tile,i) => (
-              <GridListTile key={tile.img+i}>
-                <img src={tile.img} />
-                <GridListTileBar
-                  actionIcon={
-                    <IconButton className={classes.icon}>
-                      <InfoIcon />
-                    </IconButton>
-                  }
-                />
-              </GridListTile>
-            ))}
-          </GridList>
+        <GridList cellHeight={200} className={classes.gridList}>
+          <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
+          {tileData.map((tile, i) => (
+            <GridListTile key={tile.img + i}>
+              <img src={tile.img} />
+              <GridListTileBar
+                actionIcon={
+                  <IconButton className={classes.icon}>
+                    <InfoIcon />
+                  </IconButton>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
       </main>
     </div>
   )

@@ -30,7 +30,7 @@ class App extends React.Component {
     this.setState({
       emailFromChild: e.target.value
     })
-    //console.log(e.target.value)
+    // console.log(e.target.value)
   }
 
   // gets uploaded file information from upload button
@@ -59,8 +59,8 @@ class App extends React.Component {
             console.log(response)
             var cleanedImg = ''
             cleanedImg = response.data.proc_images[0][0]
-            //removes b' from beginning and ' from end
-            cleanedImg = cleanedImg.slice(2,-1)
+            // removes b' from beginning and ' from end
+            cleanedImg = cleanedImg.slice(2, -1)
             cleanedImg = response.data.headers[0] + cleanedImg
             this.setState({processedImageString: cleanedImg})
           })
@@ -85,7 +85,7 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
-        oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}/>
+          oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString} />
       </div>
     )
   }
