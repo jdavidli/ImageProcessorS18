@@ -14,9 +14,9 @@ class App extends React.Component {
       filesDataFromChild: [],
       commandFromChild: '1',
       emailFromChild: '',
-      imageString: '',
-      returnedHeader: '',
-      returnedImage: ''
+      processedResponse: null,
+      originalImageString: '',
+      processedImage: ''
     }
   }
 
@@ -39,12 +39,11 @@ class App extends React.Component {
     this.setState({filesDataFromChild: files})
     var object = {}
     var images = []
-    var cleanedImg = ''
     files.forEach(file => {
       const reader = new window.FileReader()
       reader.readAsDataURL(file)
       reader.onloadend = () => {
-        this.setState({imageString: reader.result})
+        this.setState({originalImageString: reader.result})
         // pushes image string into array
         images.push(reader.result)
         object.images = images
@@ -59,11 +58,7 @@ class App extends React.Component {
         return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
           .then(response => {
             console.log(response)
-            //removes b' from beginning and ' from end
-            cleanedImg = response.data.proc_images[0][0]
-            cleanedImg = cleanedImg.slice(2,-1)
-            console.log(cleanedImg)
-            this.setState({returnedHeader: response.data.headers[0], returnedImage: cleanedImg})
+            this.setState({processedResponse: response.data})
           })
           .catch(error => {
             console.log(error.response)
@@ -72,6 +67,17 @@ class App extends React.Component {
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
     })
+  }
+
+  onDisplay = (procssedImage) => {
+    //removes b' from beginning and ' from end
+    var cleanedImg = ''
+    cleanedImg = this.state.processedResponse.proc_images[0][0]
+    cleanedImg = cleanedImg.slice(2,-1)
+    cleanedImg = this.state.processedResponse.headers[0] + cleanedImg
+    console.log('parent')
+    console.log(cleanedImg)
+    this.setState({processedImage: cleanedImg})
   }
 
   render () {
@@ -86,9 +92,7 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
-        filesFromParent={this.state.filesDataFromChild} />
-        <img src = {this.state.imageString}/>
-        <img src = {this.state.returnedHeader+this.state.returnedImage}/>
+        oImgParent={this.state.originalImageString} />
       </div>
     )
   }

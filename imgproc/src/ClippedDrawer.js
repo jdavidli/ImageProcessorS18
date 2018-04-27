@@ -56,7 +56,6 @@ onNameTextFieldChange = (event) => {
 
 render () {
   const { classes } = this.props
-
   return (
     <div className={classes.root}>
       <Drawer
@@ -86,7 +85,7 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        this.props.filesFromParent
+        <img src = {this.props.oImgParent}/>
       </main>
     </div>
   )
