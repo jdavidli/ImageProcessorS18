@@ -46,14 +46,6 @@ const styles = theme => ({
   toolbar: theme.mixins.toolbar
 })
 
-const tileData = [
-  {
-    img: image,
-    title: 'Image',
-    author: 'author'
-  }
-]
-
 class ClippedDrawer extends React.Component {
   constructor (props) {
     super()
@@ -74,6 +66,13 @@ onNameTextFieldChange = (event) => {
 
 render () {
   const { classes } = this.props
+  var tileData = [
+    {
+      img: this.props.oImgParent,
+      title: 'Image',
+      author: 'author'
+    }
+  ]
   return (
     <div className={classes.root}>
       <Drawer
