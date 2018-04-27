@@ -5,6 +5,10 @@ import Drawer from 'material-ui/Drawer'
 import { ListItem, ListItemText } from 'material-ui/List'
 import TextField from 'material-ui/TextField'
 import TitlebarGridList from './TitlebarGridList.js'
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
+import IconButton from 'material-ui/IconButton'
+import InfoIcon from '@material-ui/icons/Info'
+import image from './breakfast.jpg'
 
 const drawerWidth = 240
 const styles = theme => ({
@@ -14,6 +18,12 @@ const styles = theme => ({
     overflow: 'hidden',
     position: 'relative',
     display: 'flex'
+  },
+  gridList: {
+    width: 500
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)'
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -35,6 +45,14 @@ const styles = theme => ({
   },
   toolbar: theme.mixins.toolbar
 })
+
+const tileData = [
+  {
+    img: image,
+    title: 'Image',
+    author: 'author'
+  }
+]
 
 class ClippedDrawer extends React.Component {
   constructor (props) {
@@ -85,7 +103,21 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <img src = {this.props.oImgParent}/>
+          <GridList cellHeight={180} className={classes.gridList}>
+            <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
+            {tileData.map(tile => (
+              <GridListTile key={tile.img}>
+                <img src={tile.img} alt={tile.title} />
+                <GridListTileBar
+                  actionIcon={
+                    <IconButton className={classes.icon}>
+                      <InfoIcon />
+                    </IconButton>
+                  }
+                />
+              </GridListTile>
+            ))}
+          </GridList>
       </main>
     </div>
   )
