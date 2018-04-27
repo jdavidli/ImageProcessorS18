@@ -109,15 +109,14 @@ def test_decode_save_images():
     assert(file_name == "image0.jpg")
     os.remove(file_name)
 
+
 def test_encode_proc_images():
     paths = [["pup.jpg", "pup.tif", "pup.png"]]
     text_file = open("pupbase64.txt", "r")
     string = text_file.read()
-    num_images =  1
+    num_images = 1
     base64img = encode_proc_images(paths, num_images)
     assert(string == base64img[0][0])
-    paths= [['', '', '']]
+    paths = [['', '', '']]
     base64img = encode_proc_images(paths, num_images)
     assert(paths == base64img)
-
-    
