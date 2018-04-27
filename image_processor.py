@@ -1,4 +1,5 @@
 import numpy as np
+from skimage.color import rgba2rgb
 from time import time
 
 DEFAULT_COMMAND = 1
@@ -125,7 +126,6 @@ def histogram_equalization(images):
     """
 
     from skimage.exposure import equalize_hist
-    from skimage.color import rgba2rgb
     from skimage.color import hsv2rgb
     from skimage.color import rgb2hsv
 
@@ -163,7 +163,7 @@ def histogram_equalization(images):
         if p_image is None:
             p_images.append(p_image)
         else:
-            p_images.append(p_image.astype(int))
+            p_images.append(p_image.astype('uint8'))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -194,7 +194,10 @@ def contrast_stretching(images):
             status = False
         else:
             try:
-                p_image = rescale_intensity(i)
+                if len(i.shape) == 3:
+                    if i.shape[2] == 4:
+                        i = 255*rgba2rgb(i)
+                p_image = 255*rescale_intensity(i)
                 status = True
             except:
                 p_image = i
@@ -203,7 +206,10 @@ def contrast_stretching(images):
         end_time = time()
         elapsed_time = end_time - start_time
 
-        p_images.append(p_image)
+        if p_image is None:
+            p_images.append(p_image)
+        else:
+            p_images.append(p_image.astype('uint8'))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -232,11 +238,14 @@ def log_compression(images):
             status = False
         else:
             try:
+                if len(i.shape) == 3:
+                    if i.shape[2] == 4:
+                        i = 255*rgba2rgb(i)
                 log_image = np.log(i.astype(float) + 1)
                 min_val = np.min(log_image)
                 max_val = np.max(log_image)
                 p_image = 255*(log_image - min_val)/(max_val - min_val)
-                p_image = p_image.astype(int)
+                p_image = p_image.astype('uint8')
                 status = True
             except:
                 p_image = i
@@ -260,8 +269,6 @@ def reverse_video(images):
     :returns: inverted images, processing status,
               and processing times
     """
-
-    from skimage.color import rgba2rgb
 
     p_images = []
     p_status = []
@@ -291,7 +298,7 @@ def reverse_video(images):
         if p_image is None:
             p_images.append(p_image)
         else:
-            p_images.append(p_image.astype(int))
+            p_images.append(p_image.astype('uint8'))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -325,7 +332,7 @@ def canny_edge_detection(images):
             try:
                 i_gray = rgb2gray(i)
                 i_edge = canny(i_gray)
-                p_image = 255*i_edge.astype(int)
+                p_image = 255*i_edge.astype('uint8')
                 status = True
             except:
                 p_image = i
