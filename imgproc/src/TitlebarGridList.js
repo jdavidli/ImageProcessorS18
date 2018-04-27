@@ -15,8 +15,7 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper
   },
   gridList: {
-    width: 500,
-    height: 500
+    width: 500
   },
   icon: {
     color: 'rgba(255, 255, 255, 0.54)'
@@ -31,28 +30,35 @@ const tileData = [
   }
 ]
 
-function TitlebarGridList (props) {
-  const { classes } = props
+class TitlebarGridList extends React.Component {
+  constructor (props) {
+    super()
+    this.props = props
+  }
 
-  return (
-    <div className={classes.root}>
-      <GridList cellHeight={180} className={classes.gridList}>
-        <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
-        {tileData.map(tile => (
-          <GridListTile key={tile.img}>
-            <img src={tile.img} alt={tile.title} />
-            <GridListTileBar
-              actionIcon={
-                <IconButton className={classes.icon}>
-                  <InfoIcon />
-                </IconButton>
-              }
-            />
-          </GridListTile>
-        ))}
-      </GridList>
-    </div>
-  )
+  render () {
+    const { classes } = this.props
+
+    return (
+      <div className={classes.root}>
+        <GridList cellHeight={180} className={classes.gridList}>
+          <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
+          {tileData.map(tile => (
+            <GridListTile key={tile.img}>
+              <img src={tile.img} alt={tile.title} />
+              <GridListTileBar
+                actionIcon={
+                  <IconButton className={classes.icon}>
+                    <InfoIcon />
+                  </IconButton>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
+      </div>
+    )
+  }
 }
 
 TitlebarGridList.propTypes = {

@@ -12,7 +12,10 @@ class App extends React.Component {
     this.state = {
       filesDataFromChild: [],
       commandFromChild: '1',
-      emailFromChild: ''
+      emailFromChild: '',
+      processedResponse: null,
+      originalImageString: '',
+      processedImageString: ''
     }
   }
 
@@ -27,7 +30,7 @@ class App extends React.Component {
     this.setState({
       emailFromChild: e.target.value
     })
-    console.log(e.target.value)
+    // console.log(e.target.value)
   }
 
   // gets uploaded file information from upload button
@@ -39,6 +42,8 @@ class App extends React.Component {
       const reader = new window.FileReader()
       reader.readAsDataURL(file)
       reader.onloadend = () => {
+        this.setState({originalImageString: reader.result})
+        // pushes image string into array
         images.push(reader.result)
         object.images = images
         object.email = this.state.emailFromChild
@@ -52,6 +57,12 @@ class App extends React.Component {
         return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
           .then(response => {
             console.log(response)
+            var cleanedImg = ''
+            cleanedImg = response.data.proc_images[0][0]
+            // removes b' from beginning and ' from end
+            cleanedImg = cleanedImg.slice(2, -1)
+            cleanedImg = response.data.headers[0] + cleanedImg
+            this.setState({processedImageString: cleanedImg})
           })
           .catch(error => {
             console.log(error.response)
@@ -72,8 +83,9 @@ class App extends React.Component {
             </Typography>
             <Upload callbackFromUpload={this.myCallbackUpload} />
           </Toolbar>
-          <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
         </AppBar>
+        <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
+          oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString} />
       </div>
     )
   }

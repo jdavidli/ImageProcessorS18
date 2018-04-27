@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { withStyles } from 'material-ui/styles'
 import Drawer from 'material-ui/Drawer'
 import { ListItem, ListItemText } from 'material-ui/List'
-import TitlebarGridList from './TitlebarGridList.js'
 import TextField from 'material-ui/TextField'
+import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
+import IconButton from 'material-ui/IconButton'
+import InfoIcon from '@material-ui/icons/Info'
 
 const drawerWidth = 240
 const styles = theme => ({
@@ -14,6 +16,12 @@ const styles = theme => ({
     overflow: 'hidden',
     position: 'relative',
     display: 'flex'
+  },
+  gridList: {
+    width: 'auto'
+  },
+  icon: {
+    color: 'rgba(255, 255, 255, 0.54)'
   },
   textField: {
     marginLeft: theme.spacing.unit,
@@ -56,7 +64,14 @@ onNameTextFieldChange = (event) => {
 
 render () {
   const { classes } = this.props
-
+  const tileData = [
+    {
+      img: this.props.oImgParent
+    },
+    {
+      img: this.props.pImgParent
+    }
+  ]
   return (
     <div className={classes.root}>
       <Drawer
@@ -86,7 +101,21 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <TitlebarGridList />
+        <GridList cellHeight={200} className={classes.gridList}>
+          <GridListTile key='Subheader' cols={2} style={{ height: 'auto' }} />
+          {tileData.map((tile, i) => (
+            <GridListTile key={tile.img + i}>
+              <img src={tile.img} />
+              <GridListTileBar
+                actionIcon={
+                  <IconButton className={classes.icon}>
+                    <InfoIcon />
+                  </IconButton>
+                }
+              />
+            </GridListTile>
+          ))}
+        </GridList>
       </main>
     </div>
   )
