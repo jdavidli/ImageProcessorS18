@@ -6,6 +6,8 @@ matrix:
     cache:
       directories:
         - "node_modules"
+    notifications:
+      email: false
 
   - language: python
     python:
@@ -13,8 +15,6 @@ matrix:
     install:
         - pip install -r requirements.txt
     script:
-        - pytest -v --pep8
+        - pytest -v --pep8 -W ignore::UserWarning
     notifications:
         email: false
-  notifications:
-    email: false

@@ -1,4 +1,5 @@
 import numpy as np
+from skimage.color import rgba2rgb
 from time import time
 
 DEFAULT_COMMAND = 1
@@ -43,7 +44,7 @@ def run_image_processing(filepaths, command):
 
     # Return data:
     processed_data = {"message": message,
-                      "valid_filepaths": filepaths,
+                      "filepaths": filepaths,
                       "command": command,
                       "processed_images": p_images,
                       "processing_status": p_status,
@@ -82,6 +83,33 @@ def validate_inputs(filepaths, command):
     return valid_filepaths, valid_command
 
 
+def check_dimensions(image):
+    """ Downsamples image if any dimension exceeds 1024 pixels
+    :param image: image
+    :type image: array
+    :returns: downsampled image
+    """
+
+    from skimage.filters import gaussian
+    from skimage.transform import rescale
+
+    scale = 1.0
+    if image.shape[0] > image.shape[1]:
+        if image.shape[0] > 1024:
+            scale = 1024/image.shape[0]
+    else:
+        if image.shape[1] > 1024:
+            scale = 1024/image.shape[1]
+    if scale != 1.0:
+        image = gaussian(image, sigma=(1-scale)/2,
+                         mode='reflect',
+                         multichannel=True,
+                         preserve_range=True)
+        image = rescale(image, scale)
+
+    return image
+
+
 def open_images(filepaths):
     """ Reads images from files and returns the list of images
 
@@ -98,6 +126,7 @@ def open_images(filepaths):
     if type(filepaths) is str:
         try:
             image = io.imread(filepaths)
+            image = check_dimensions(image)
             images.append(image)
         except FileNotFoundError:
             images.append(None)
@@ -105,6 +134,7 @@ def open_images(filepaths):
         for f in filepaths:
             try:
                 image = io.imread(f)
+                image = check_dimensions(image)
                 images.append(image)
             except FileNotFoundError:
                 images.append(None)
@@ -125,7 +155,6 @@ def histogram_equalization(images):
     """
 
     from skimage.exposure import equalize_hist
-    from skimage.color import rgba2rgb
     from skimage.color import hsv2rgb
     from skimage.color import rgb2hsv
 
@@ -163,7 +192,7 @@ def histogram_equalization(images):
         if p_image is None:
             p_images.append(p_image)
         else:
-            p_images.append(p_image.astype(int))
+            p_images.append(p_image.astype('uint8'))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -194,7 +223,10 @@ def contrast_stretching(images):
             status = False
         else:
             try:
-                p_image = rescale_intensity(i)
+                if len(i.shape) == 3:
+                    if i.shape[2] == 4:
+                        i = 255*rgba2rgb(i)
+                p_image = 255*rescale_intensity(i)
                 status = True
             except:
                 p_image = i
@@ -203,7 +235,10 @@ def contrast_stretching(images):
         end_time = time()
         elapsed_time = end_time - start_time
 
-        p_images.append(p_image)
+        if p_image is None:
+            p_images.append(p_image)
+        else:
+            p_images.append(p_image.astype('uint8'))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -232,11 +267,14 @@ def log_compression(images):
             status = False
         else:
             try:
+                if len(i.shape) == 3:
+                    if i.shape[2] == 4:
+                        i = 255*rgba2rgb(i)
                 log_image = np.log(i.astype(float) + 1)
                 min_val = np.min(log_image)
                 max_val = np.max(log_image)
                 p_image = 255*(log_image - min_val)/(max_val - min_val)
-                p_image = p_image.astype(int)
+                p_image = p_image.astype('uint8')
                 status = True
             except:
                 p_image = i
@@ -260,8 +298,6 @@ def reverse_video(images):
     :returns: inverted images, processing status,
               and processing times
     """
-
-    from skimage.color import rgba2rgb
 
     p_images = []
     p_status = []
@@ -291,7 +327,7 @@ def reverse_video(images):
         if p_image is None:
             p_images.append(p_image)
         else:
-            p_images.append(p_image.astype(int))
+            p_images.append(p_image.astype('uint8'))
         p_status.append(status)
         p_time.append(elapsed_time)
 
@@ -325,7 +361,7 @@ def canny_edge_detection(images):
             try:
                 i_gray = rgb2gray(i)
                 i_edge = canny(i_gray)
-                p_image = 255*i_edge.astype(int)
+                p_image = 255*i_edge.astype('uint8')
                 status = True
             except:
                 p_image = i
