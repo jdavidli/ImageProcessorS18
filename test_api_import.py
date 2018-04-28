@@ -19,7 +19,7 @@ def test_verify_input():
         "email": "suyash@suyashkumar.com",
         "command": 1,
         "timestamp": t,
-        "images": encoded_string
+        "images": [encoded_string]
     }
     email_v, command_v, time_v, images_v, num_images, mess = verify_input(input1)
     assert(email_v == input1["email"])
@@ -39,7 +39,7 @@ def test_verify_input():
         "email": "suyash@suyashkumar.com",
         "command": 1,
         "timestamp": t,
-        "image": encoded_string
+        "image": [encoded_string]
     }
     with pytest.raises(KeyError):
         email_v, command_v, time_v, images_v, num_images, mess = verify_input(input3)
@@ -47,7 +47,7 @@ def test_verify_input():
         "email": 234,
         "command": 1,
         "timestamp": t1,
-        "images": encoded_string
+        "images": [encoded_string]
     }
     with pytest.raises(TypeError):
         email_v, command_v, time_v, images_v, num_images, mess = verify_input(input4)
@@ -55,7 +55,7 @@ def test_verify_input():
         "email": "suyash@suyashkumar.com",
         "command": 7,
         "timestamp": t,
-        "images": encoded_string
+        "images": [encoded_string]
     }
     with pytest.raises(ValueError):
         email_v, command_v, time_v, images_v, num_images, mess = verify_input(input5)
