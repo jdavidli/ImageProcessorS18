@@ -47,14 +47,17 @@ def post_user():
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
         multi_proc_paths = save_proc_images(
-            folder_path, proc_data["processed_images"], num_images, start_i, stat)
+            folder_path, proc_data["processed_images"], num_images,
+            start_i, stat)
         add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat, "headers": [jpg_header, tif_header, png_header]}
+            output = { "proc_images": base64_images, "proc_times": times,
+            "proc_status": stat, "headers":
+            [jpg_header, tif_header, png_header]}
             return jsonify(output), 200
 
 
@@ -80,7 +83,9 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = { "proc_images": base64_images, "proc_times": times, "proc_status": stat, "headers": [jpg_header, tif_header, png_header]}
+            output = { "proc_images": base64_images, "proc_times": times,
+            "proc_status": stat, "headers":
+            [jpg_header, tif_header, png_header]}
             return jsonify(output), 200
 
 def encode_proc_images(paths, num_images):
@@ -97,7 +102,8 @@ def encode_proc_images(paths, num_images):
                     encoded_string2 = base64.b64encode(image_file.read())
                 with open(save_set[2], "rb") as image_file:
                     encoded_string3 = base64.b64encode(image_file.read())
-                base64_imgs.append([str(encoded_string1), str(encoded_string2), str(encoded_string3)])
+                base64_imgs.append([str(encoded_string1), str(encoded_string2),
+                str(encoded_string3)])
         return base64_imgs
     except:
         return []
@@ -187,8 +193,6 @@ def verify_input(input):
         num_images = len(images_v)
         if num_images is 0:
             raise ValueError("No input images passed to post function.")
-        if not images_v:
-            raise ValueError("No input images passed to post function.")
         image_flag = np.zeros(num_images, dtype=bool)
         for i in images_v:
             if isinstance(i, str) is False:
@@ -207,7 +211,8 @@ def verify_input(input):
             raise TypeError("Timestamp input not of type str.")
         if command_v < 1 or command_v > 5:
             raise ValueError(
-                "Integer command passed is not associated with a processing function.")
+                "Input integer command is not associated with a \
+                processing function.")
 
         message = "SUCCESS: Input validation passed."
         time_v = datetime.datetime.strptime(time_v, "%Y-%m-%d %H:%M:%S.%f")
@@ -217,8 +222,10 @@ def verify_input(input):
     except TypeError as inst:
         return [], [], [], [], [], str(inst)
     except KeyError:
-        inst = "Input keys incorrect. Pass email, processing command, timestamp and image(s)."
+        inst = "Input keys incorrect. Pass email, processing command, \
+        timestamp and image(s)."
         return [], [], [], [], [], str(inst)
     except:
-        inst = "Unknown syntax error during validation of expected input type and value."
+        inst = "Unknown syntax error during validation of expected input \
+        type and value."
         return [], [], [], [], [], str(inst)

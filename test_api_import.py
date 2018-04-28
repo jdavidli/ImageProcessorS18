@@ -35,33 +35,54 @@ def test_verify_input():
         "timestamp": t,
         "images": []
     }
-    with pytest.raises(ValueError):
-        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input2)
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input2)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess == "No input images passed to post function.")
     input3 = {
         "email": "suyash@suyashkumar.com",
         "command": 1,
         "timestamp": t,
         "image": [encoded_string]
     }
-    with pytest.raises(KeyError):
-        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input3)
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input3)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess == "Input keys incorrect. Pass email, processing command, \
+                    timestamp and image(s).")
     input4 = {
         "email": 234,
         "command": 1,
         "timestamp": t,
         "images": [encoded_string]
     }
-    with pytest.raises(TypeError):
-        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input4)
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input4)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess == "User email not of type string.")
     input5 = {
         "email": "suyash@suyashkumar.com",
         "command": 7,
         "timestamp": t,
         "images": [encoded_string]
     }
-    with pytest.raises(ValueError):
-        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input5)
-    return
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input5)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess ==
+        "Integer command passed is not associated with a processing function.")
 
 
 def test_access_folder():
