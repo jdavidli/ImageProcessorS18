@@ -204,3 +204,20 @@ def test_canny_edge_detection():
     assert(not p_status[1])
     assert(not p_status[3])
     assert(not p_status[5])
+
+
+def test_create_histograms():
+
+    from image_processor import create_histograms
+
+    test_image = np.zeros([3, 256])
+    test_image[0, :] = range(256)
+    test_image[1, :] = range(256)
+    test_image[2, :] = range(256)
+
+    test_images = []
+    test_images.append(test_image.astype('uint8'))
+    histograms = create_histograms(test_images)
+
+    for n, h in enumerate(histograms[0]):
+        assert(h == 3)
