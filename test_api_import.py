@@ -18,34 +18,31 @@ def test_verify_input():
     input1 = {
         "email": "suyash@suyashkumar.com",
         "command": 1,
-        "timestamp": t1,
+        "timestamp": t,
         "images": encoded_string
     }
-    email_v, command_v, time_v, images_v, num_images, mess = verify_input(
-        input1)
+    email_v, command_v, time_v, images_v, num_images, mess = verify_input(input1)
     assert(email_v == input1["email"])
     assert(command_v == input1["command"])
-    assert(time_v == input1["timestamp"])
+    assert(time_v == t1)
     assert(images_v == input1["images"])
     assert(num_images == 1)
     input2 = {
         "email": "suyash@suyashkumar.com",
         "command": 1,
-        "timestamp": t1,
+        "timestamp": t,
         "images": []
     }
     with pytest.raises(ValueError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(
-            input2)
+        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input2)
     input3 = {
         "email": "suyash@suyashkumar.com",
         "command": 1,
-        "timestamp": t1,
+        "timestamp": t,
         "image": encoded_string
     }
     with pytest.raises(KeyError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(
-            input3)
+        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input3)
     input4 = {
         "email": 234,
         "command": 1,
@@ -53,17 +50,15 @@ def test_verify_input():
         "images": encoded_string
     }
     with pytest.raises(TypeError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(
-            input4)
+        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input4)
     input5 = {
         "email": "suyash@suyashkumar.com",
         "command": 7,
-        "timestamp": t1,
+        "timestamp": t,
         "images": encoded_string
     }
     with pytest.raises(ValueError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(
-            input5)
+        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input5)
     return
 
 
@@ -96,7 +91,7 @@ def test_create_datetime_arr():
     dt1 = create_datetime_arr(t1, num1)
     dt2 = create_datetime_arr(t1, num2)
     assert(dt1 == [t1])
-    assert(dt2 == [t1, t1, t1])
+    assert(dt2 == [t1, t1])
 
 
 def test_decode_save_images():
@@ -114,14 +109,13 @@ def test_decode_save_images():
     assert(file_name == "image0.jpg")
     os.remove(file_name)
 
-
 def test_encode_proc_images():
     paths = [["pup.jpg", "pup.tif", "pup.png"]]
     text_file = open("pupbase64.txt", "r")
     string = text_file.read()
-    num_images = 1
+    num_images =  1
     base64img = encode_proc_images(paths, num_images)
     assert(string == base64img[0][0])
-    paths = [['', '', '']]
+    paths= [['', '', '']]
     base64img = encode_proc_images(paths, num_images)
     assert(paths == base64img)
