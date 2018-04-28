@@ -25,7 +25,8 @@ def post_user():
     input = request.get_json()
     if os.path.exists(main_image_folder) is False:
         os.makedirs(main_image_folder)
-    email_v, command_v, time_v, images_v, num_images, mess = verify_input(input)
+    email_v, command_v, time_v, images_v, num_images, mess = verify_input(
+        input)
     if email_v == []:
         data = {"message": mess}
         return jsonify(data), 400
@@ -55,11 +56,10 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = { "proc_images": base64_images, "proc_times": times,
-            "proc_status": stat, "headers":
-            [jpg_header, tif_header, png_header]}
+            output = {"proc_images": base64_images, "proc_times": times,
+                      "proc_status": stat, "headers":
+                      [jpg_header, tif_header, png_header]}
             return jsonify(output), 200
-
 
     except:
         folder_path = access_folder(main_image_folder, email_v)
@@ -83,10 +83,11 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = { "proc_images": base64_images, "proc_times": times,
-            "proc_status": stat, "headers":
-            [jpg_header, tif_header, png_header]}
+            output = {"proc_images": base64_images, "proc_times": times,
+                      "proc_status": stat, "headers":
+                      [jpg_header, tif_header, png_header]}
             return jsonify(output), 200
+
 
 def encode_proc_images(paths, num_images):
     base64_imgs = []
@@ -103,7 +104,7 @@ def encode_proc_images(paths, num_images):
                 with open(save_set[2], "rb") as image_file:
                     encoded_string3 = base64.b64encode(image_file.read())
                 base64_imgs.append([str(encoded_string1), str(encoded_string2),
-                str(encoded_string3)])
+                                    str(encoded_string3)])
         return base64_imgs
     except:
         return []
@@ -130,7 +131,7 @@ def save_proc_images(folder_path, proc_imgs, num_images, start, stat):
             sp.imsave(png_img_name, proc_imgs[i])
             image_paths.append([jpg_img_name, tif_img_name, png_img_name])
         if stat[i] is False:
-            image_paths.append(['','',''])
+            image_paths.append(['', '', ''])
     return image_paths
 
 
@@ -154,7 +155,7 @@ def decode_save_images(folder_path, images, num_images, start):
         img = images[i]
         stripped_img = img.split(",", 1)[1]
         find_ext = img.split(";", 1)[0]
-        ext= find_ext.split("/", 2)[1]
+        ext = find_ext.split("/", 2)[1]
         image_dec = base64.b64decode(stripped_img)
         image_name = '/image' + str(start + i)
         full_img_name = folder_path + image_name + '.' + ext
@@ -170,7 +171,7 @@ def create_command_arr(command_v, num_images):
 
 
 def create_datetime_arr(time_v, num_images):
-    dt_arr =[]
+    dt_arr = []
     for x in range(num_images):
         dt_arr.append(time_v)
     return dt_arr
@@ -211,8 +212,7 @@ def verify_input(input):
             raise TypeError("Timestamp input not of type str.")
         if command_v < 1 or command_v > 5:
             raise ValueError(
-                "Input integer command is not associated with a \
-                processing function.")
+                "Input command not associated with a processing function.")
 
         message = "SUCCESS: Input validation passed."
         time_v = datetime.datetime.strptime(time_v, "%Y-%m-%d %H:%M:%S.%f")
@@ -222,10 +222,8 @@ def verify_input(input):
     except TypeError as inst:
         return [], [], [], [], [], str(inst)
     except KeyError:
-        inst = "Input keys incorrect. Pass email, processing command, \
-        timestamp and image(s)."
+        inst = "Input keys incorrect."
         return [], [], [], [], [], str(inst)
     except:
-        inst = "Unknown syntax error during validation of expected input \
-        type and value."
+        inst = "Unknown syntax error during input validation."
         return [], [], [], [], [], str(inst)

@@ -54,8 +54,7 @@ def test_verify_input():
     assert(time_v == [])
     assert(img_v == [])
     assert(num_imgs == [])
-    assert(mess == "Input keys incorrect. Pass email, processing command, \
-                    timestamp and image(s).")
+    assert(mess == "Input keys incorrect.")
     input4 = {
         "email": 234,
         "command": 1,
@@ -82,7 +81,7 @@ def test_verify_input():
     assert(img_v == [])
     assert(num_imgs == [])
     assert(mess ==
-        "Integer command passed is not associated with a processing function.")
+           "Input command not associated with a processing function.")
 
 
 def test_access_folder():
