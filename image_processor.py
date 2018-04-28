@@ -42,13 +42,19 @@ def run_image_processing(filepaths, command):
     elif(command == 5):
         p_images, p_status, p_time = canny_edge_detection(images)
 
+    # Get histograms:
+    histogram_images = create_histograms(images)
+    histogram_p_images = create_histograms(p_images)
+
     # Return data:
     processed_data = {"message": message,
                       "filepaths": filepaths,
                       "command": command,
                       "processed_images": p_images,
                       "processing_status": p_status,
-                      "processing_times": p_time}
+                      "processing_times": p_time,
+                      "original_histograms": histogram_images,
+                      "processed_histograms": histogram_p_images}
     return processed_data
 
 
@@ -375,3 +381,26 @@ def canny_edge_detection(images):
         p_time.append(elapsed_time)
 
     return p_images, p_status, p_time
+
+
+def create_histograms(images):
+
+    from skimage.color import rgb2gray
+    from skimage.exposure import histogram
+
+    histograms = []
+
+    for i in images:
+        if i is None:
+            hist_vals = None
+        else:
+            try:
+                i_gray = rgb2gray(i)
+                i_hist = histogram(i_gray)
+                hist_vals = i_hist[0]
+            except:
+                hist_vals = None
+
+        histograms.append(hist_vals)
+
+    return histograms
