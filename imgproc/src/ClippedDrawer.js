@@ -7,6 +7,7 @@ import TextField from 'material-ui/TextField'
 import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
 import InfoIcon from '@material-ui/icons/Info'
+import Dialog, { DialogTitle, DialogContent, DialogContentText} from 'material-ui/Dialog'
 
 const drawerWidth = 240
 const styles = theme => ({
@@ -49,7 +50,8 @@ class ClippedDrawer extends React.Component {
     super()
     this.props = props
     this.state = {
-      text: ''
+      text: '',
+      open: false
     }
   }
 
@@ -62,14 +64,26 @@ onNameTextFieldChange = (event) => {
   this.props.callbackFromEmail(event)
 }
 
+  handleClickOpen = () => {
+    this.setState({ open: true });
+  };
+
+  handleClose = () => {
+    this.setState({ open: false });
+  };
+
+
 render () {
   const { classes } = this.props
   const tileData = [
     {
-      img: this.props.oImgParent
+      img: this.props.oImgParent,
+      uptime: this.props.uTime
     },
     {
-      img: this.props.pImgParent
+      img: this.props.pImgParent,
+      uptime: this.props.uTime,
+      proctime: this.props.pTime
     }
   ]
   return (
@@ -108,7 +122,20 @@ render () {
               <img src={tile.img} />
               <GridListTileBar
                 actionIcon={
-                  <IconButton className={classes.icon}>
+                  <IconButton className={classes.icon} onClick={this.handleClickOpen}>
+                  <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Image Information"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {tile.uptime}
+            </DialogContentText>
+          </DialogContent>
+        </Dialog>
                     <InfoIcon />
                   </IconButton>
                 }

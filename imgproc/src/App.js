@@ -15,7 +15,9 @@ class App extends React.Component {
       emailFromChild: '',
       processedResponse: null,
       originalImageString: '',
-      processedImageString: ''
+      processedImageString: '',
+      uploadTime: '',
+      processTime: ''
     }
   }
 
@@ -53,10 +55,12 @@ class App extends React.Component {
         pyDate = pyDate.replace('T', ' ')
         pyDate = pyDate.replace('Z', '')
         object.timestamp = pyDate
+        this.setState({uploadTime: pyDate})
         console.log(object)
         return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
           .then(response => {
             console.log(response)
+            this.setState({processTime: response.data.proc_times})
             var cleanedImg = ''
             cleanedImg = response.data.proc_images[0][0]
             // removes b' from beginning and ' from end
@@ -85,7 +89,8 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
-          oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString} />
+          oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
+          uTime={this.state.uploadTime} pTime={this.state.processTime}/>
       </div>
     )
   }
