@@ -21,7 +21,7 @@ def test_verify_input():
         "timestamp": t,
         "images": [encoded_string]
     }
-    email_v, command_v, time_v, images_v, num_images, mess = verify_input(input1)
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input1)
     assert(email_v == input1["email"])
     assert(command_v == input1["command"])
     assert(time_v == t1)
@@ -34,7 +34,7 @@ def test_verify_input():
         "images": []
     }
     with pytest.raises(ValueError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input2)
+        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input2)
     input3 = {
         "email": "suyash@suyashkumar.com",
         "command": 1,
@@ -42,7 +42,7 @@ def test_verify_input():
         "image": [encoded_string]
     }
     with pytest.raises(KeyError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input3)
+        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input3)
     input4 = {
         "email": 234,
         "command": 1,
@@ -50,7 +50,7 @@ def test_verify_input():
         "images": [encoded_string]
     }
     with pytest.raises(TypeError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input4)
+        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input4)
     input5 = {
         "email": "suyash@suyashkumar.com",
         "command": 7,
@@ -58,14 +58,14 @@ def test_verify_input():
         "images": [encoded_string]
     }
     with pytest.raises(ValueError):
-        email_v, command_v, time_v, images_v, num_images, mess = verify_input(input5)
+        em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input5)
     return
 
 
 def test_access_folder():
     email = 'email@email.com'
     main_image_folder = os.getcwd()
-    path = access_folder(email)
+    path = access_folder(main_image_folder, email)
     assert(path == main_image_folder+email)
     assert(os.path.exists(path) is True)
     os.rmdir(path)
@@ -109,13 +109,14 @@ def test_decode_save_images():
     assert(file_name == "image0.jpg")
     os.remove(file_name)
 
+
 def test_encode_proc_images():
     paths = [["pup.jpg", "pup.tif", "pup.png"]]
     text_file = open("pupbase64.txt", "r")
     string = text_file.read()
-    num_images =  1
+    num_images = 1
     base64img = encode_proc_images(paths, num_images)
     assert(string == base64img[0][0])
-    paths= [['', '', '']]
+    paths = [['', '', '']]
     base64img = encode_proc_images(paths, num_images)
     assert(paths == base64img)
