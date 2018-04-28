@@ -384,6 +384,11 @@ def canny_edge_detection(images):
 
 
 def create_histograms(images):
+    """ Create histograms for images
+
+    :param images: images
+    :type images: array
+    """
 
     from skimage.color import rgb2gray
     from skimage.exposure import histogram
@@ -395,8 +400,8 @@ def create_histograms(images):
             hist_vals = None
         else:
             try:
-                i_gray = rgb2gray(i)
-                i_hist = histogram(i_gray)
+                i_gray = 255*rgb2gray(i)
+                i_hist = histogram(i_gray.astype('uint8'))
                 hist_vals = i_hist[0]
             except:
                 hist_vals = None
