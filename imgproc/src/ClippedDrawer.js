@@ -79,12 +79,14 @@ render () {
     {
       img: this.props.oImgParent,
       uptime: this.props.uTime,
-      upSize: this.props.uSize
+      proctime: this.props.pTime,
+      upsize: this.props.uSize
     },
     {
       img: this.props.pImgParent,
       uptime: this.props.uTime,
-      proctime: this.props.pTime
+      proctime: this.props.pTime,
+      upsize: this.props.uSize
     }
   ]
   return (
@@ -137,7 +139,7 @@ render () {
               <br/>
               Processing time: {tile.proctime}
               <br/>
-              Image size: {tile.upSize}
+              Image size: {tile.upsize}
             </DialogContentText>
           </DialogContent>
         </Dialog>

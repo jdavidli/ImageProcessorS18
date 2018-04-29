@@ -54,7 +54,9 @@ class App extends React.Component {
       reader.onloadend = () => {
         this.setState({originalImageString: reader.result})
         // gets image size
+        this.setState({upSize: i.width + ' x ' + i.height})
         console.log(i.width, i.height);
+        console.log(this.state.upSize)
 
         // pushes image string into array
         images.push(reader.result)
