@@ -59,11 +59,11 @@ def post_user():
             return jsonify(data), 400
         else:
             output = {"proc_images": base64_images,
-                "proc_times": times,
-                "proc_status": stat,
-                "headers":[jpg_header, tif_header, png_header],
-                "orig_hist": orig_hist,
-                "proc_hist": proc_hist}
+                      "proc_times": times,
+                      "proc_status": stat,
+                      "headers": [jpg_header, tif_header, png_header],
+                      "orig_hist": orig_hist,
+                      "proc_hist": proc_hist}
             return jsonify(output), 200
 
     except:
@@ -91,11 +91,11 @@ def post_user():
             return jsonify(data), 400
         else:
             output = {"proc_images": base64_images,
-                "proc_times": times,
-                "proc_status": stat,
-                "headers":[jpg_header, tif_header, png_header],
-                "orig_hist": orig_hist,
-                "proc_hist": proc_hist}
+                      "proc_times": times,
+                      "proc_status": stat,
+                      "headers": [jpg_header, tif_header, png_header],
+                      "orig_hist": orig_hist,
+                      "proc_hist": proc_hist}
             return jsonify(output), 200
 
 
@@ -196,7 +196,7 @@ def verify_input(input):
         email_v = input["email"]
         if not email_v:
             raise ValueError("Empty email/username field.")
-        #check that it is an email and remove above
+        # check that it is an email and remove above
         email_flag = isinstance(email_v, str)
         command_v = input["command"]
         command_flag = isinstance(command_v, int)
