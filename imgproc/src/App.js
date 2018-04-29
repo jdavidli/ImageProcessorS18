@@ -36,28 +36,25 @@ class App extends React.Component {
     // console.log(e.target.value)
   }
 
+  upSizeCallback = (width, height) => {
+    console.log(width)
+    console.log(height)
+  }
+
   // gets uploaded file information from upload button
   myCallbackUpload = (files) => {
     this.setState({filesDataFromChild: files})
+    const file = files.find(f => f)
+    const i = new Image()
     var object = {}
     var images = []
-    files.forEach(file => {
+    i.onload = () => {
       const reader = new window.FileReader()
       reader.readAsDataURL(file)
       reader.onloadend = () => {
         this.setState({originalImageString: reader.result})
         // gets image size
-        var img = new Image()
-        var width, height
-        img.onload = function() {
-          upSizeCallback(img.width, img.height)
-          }
-        img.src = reader.result
-        function upSizeCallback(width, height) {
-          console.log(width)
-          console.log(height)
-          this.setState({upSize: width + ' x '+ height})
-        }
+        console.log(i.width, i.height);
 
         // pushes image string into array
         images.push(reader.result)
@@ -88,7 +85,10 @@ class App extends React.Component {
       }
       reader.onabort = () => console.log('file reading was aborted')
       reader.onerror = () => console.log('file reading has failed')
-    })
+    }
+    i.src = file.preview
+
+
   }
 
   render () {
