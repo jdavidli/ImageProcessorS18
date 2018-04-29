@@ -82,7 +82,21 @@ def test_verify_input():
     assert(num_imgs == [])
     assert(mess ==
            "Input command not associated with a processing function.")
+    input6 = {
+        "email": "suyash@suyashkumar.com",
+        "command": 1,
+        "timestamp": t,
+        "images": [encoded_string, encoded_string]
+    }
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input5)
+    assert(em_v == "suyash@suyashkumar.com")
+    assert(comm_v == 1 )
+    assert(time_v == t1)
+    assert(img_v == [encoded_string, encoded_string])
+    assert(num_imgs == 2)
+    assert(mess == "SUCCESS: Input validation passed.")
 
+    #add one to test if the string is an email (for empty and not an actual email)
 
 def test_access_folder():
     email = 'email@email.com'
@@ -90,7 +104,10 @@ def test_access_folder():
     path = access_folder(main_image_folder, email)
     assert(path == main_image_folder+email)
     assert(os.path.exists(path) is True)
+    path = access_folder(main_image_folder, email)
+    assert(path == main_image_folder+email)
     os.rmdir(path)
+    #reject special characters? for folder name.. or do this in email check
     return
 
 
