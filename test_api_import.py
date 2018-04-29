@@ -96,7 +96,7 @@ def test_verify_input():
     assert(num_imgs == 2)
     assert(mess == "SUCCESS: Input validation passed.")
 
-    # add one to test if the string is an email (for empty and not an actual email)
+    # add test to see if string is email (@)
 
 
 def test_access_folder():
