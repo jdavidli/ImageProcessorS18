@@ -63,7 +63,7 @@ def post_user():
                 "proc_status": stat,
                 "headers":[jpg_header, tif_header, png_header],
                 "orig_hist": orig_hist,
-                "proc_hist" = proc_hist}
+                "proc_hist": proc_hist}
             return jsonify(output), 200
 
     except:
@@ -95,7 +95,7 @@ def post_user():
                 "proc_status": stat,
                 "headers":[jpg_header, tif_header, png_header],
                 "orig_hist": orig_hist,
-                "proc_hist" = proc_hist}
+                "proc_hist": proc_hist}
             return jsonify(output), 200
 
 
