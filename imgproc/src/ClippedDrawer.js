@@ -132,7 +132,8 @@ render () {
           <DialogTitle id="alert-dialog-title">{"Image Information"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {tile.uptime}
+              Uploaded time: {tile.uptime}
+              Processing time: {tile.proctime}
             </DialogContentText>
           </DialogContent>
         </Dialog>
