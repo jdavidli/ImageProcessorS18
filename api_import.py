@@ -45,7 +45,13 @@ def post_user():
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
         orig_hist = proc_data["original_histograms"]
+        orig_hist_list = []
+        for hh in orig_hist:
+            orig_hist_list.append(hh.tolist())
         proc_hist = proc_data["processed_histograms"]
+        proc_hist_list = []
+        for hh in proc_list:
+            proc_hist_list.append(hh.tolist())
         if not np.any(stat):
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
@@ -62,8 +68,8 @@ def post_user():
                       "proc_times": times,
                       "proc_status": stat,
                       "headers": [jpg_header, tif_header, png_header],
-                      "orig_hist": orig_hist,
-                      "proc_hist": proc_hist}
+                      "orig_hist": orig_hist_list,
+                      "proc_hist": proc_hist_list}
             return jsonify(output), 200
 
     except:
@@ -78,7 +84,13 @@ def post_user():
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
         orig_hist = proc_data["original_histograms"]
+        orig_hist_list = []
+        for hh in orig_hist:
+            orig_hist_list.append(hh.tolist())
         proc_hist = proc_data["processed_histograms"]
+        proc_hist_list = []
+        for hh in proc_hist:
+            proc_hist_list.append(hh.tolist())
         if not np.any(stat):
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
@@ -94,8 +106,8 @@ def post_user():
                       "proc_times": times,
                       "proc_status": stat,
                       "headers": [jpg_header, tif_header, png_header],
-                      "orig_hist": orig_hist,
-                      "proc_hist": proc_hist}
+                      "orig_hist": orig_hist_list,
+                      "proc_hist": proc_hist_list}
             return jsonify(output), 200
 
 
