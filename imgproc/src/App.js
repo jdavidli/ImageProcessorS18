@@ -17,7 +17,8 @@ class App extends React.Component {
       originalImageString: '',
       processedImageString: '',
       uploadTime: '',
-      processTime: ''
+      processTime: '',
+      upSize: ''
     }
   }
 
@@ -45,6 +46,19 @@ class App extends React.Component {
       reader.readAsDataURL(file)
       reader.onloadend = () => {
         this.setState({originalImageString: reader.result})
+        // gets image size
+        var img = new Image()
+        var width, height
+        img.onload = function() {
+          upSizeCallback(img.width, img.height)
+          }
+        img.src = reader.result
+        function upSizeCallback(width, height) {
+          console.log(width)
+          console.log(height)
+          this.setState({upSize: width + ' x '+ height})
+        }
+
         // pushes image string into array
         images.push(reader.result)
         object.images = images
@@ -90,7 +104,7 @@ class App extends React.Component {
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
           oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
-          uTime={this.state.uploadTime} pTime={this.state.processTime}/>
+          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}/>
       </div>
     )
   }

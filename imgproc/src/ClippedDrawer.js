@@ -78,7 +78,8 @@ render () {
   const tileData = [
     {
       img: this.props.oImgParent,
-      uptime: this.props.uTime
+      uptime: this.props.uTime,
+      upSize: this.props.uSize
     },
     {
       img: this.props.pImgParent,
@@ -133,7 +134,10 @@ render () {
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               Uploaded time: {tile.uptime}
+              <br/>
               Processing time: {tile.proctime}
+              <br/>
+              Image size: {tile.upSize}
             </DialogContentText>
           </DialogContent>
         </Dialog>
