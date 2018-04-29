@@ -58,10 +58,12 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = {"proc_images": base64_images, "proc_times": times,
-                      "proc_status": stat, "headers":
-                      [jpg_header, tif_header, png_header],
-                      "orig_hist": orig_hist, "proc_hist" = proc_hist}
+            output = {"proc_images": base64_images,
+                "proc_times": times,
+                "proc_status": stat,
+                "headers":[jpg_header, tif_header, png_header],
+                "orig_hist": orig_hist,
+                "proc_hist" = proc_hist}
             return jsonify(output), 200
 
     except:
@@ -88,10 +90,12 @@ def post_user():
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
-            output = {"proc_images": base64_images, "proc_times": times,
-                      "proc_status": stat, "headers":
-                      [jpg_header, tif_header, png_header],
-                      "orig_hist": orig_hist, "proc_hist" = proc_hist}
+            output = {"proc_images": base64_images,
+                "proc_times": times,
+                "proc_status": stat,
+                "headers":[jpg_header, tif_header, png_header],
+                "orig_hist": orig_hist,
+                "proc_hist" = proc_hist}
             return jsonify(output), 200
 
 
