@@ -149,11 +149,10 @@ render () {
           <DialogTitle id="alert-dialog-title">{"Image Information"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-            <AreaChart width={600} height={400} data={oData}
-                  margin={{top: 10, right: 30, left: 0, bottom: 0}}>
-              <CartesianGrid strokeDasharray="3 3"/>
-              <XAxis dataKey="name"/>
-              <YAxis/>
+            <AreaChart width={550} height={400} data={oData}
+                  margin={{top: 10, right: 10, left: 0, bottom: 0}}>
+              <XAxis ticks={[0,255]} />
+              <YAxis />
               <Area type='monotone' dataKey='R' stackId="1" stroke='#8884d8' fill='#8884d8' />
             </AreaChart>
               Uploaded time: {tile.uptime}
