@@ -4,6 +4,7 @@ import Toolbar from 'material-ui/Toolbar'
 import Typography from 'material-ui/Typography'
 import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
+import TitlebarGridList from './TitlebarGridList.js'
 import axios from 'axios'
 
 class App extends React.Component {
@@ -106,10 +107,10 @@ class App extends React.Component {
             <Upload callbackFromUpload={this.myCallbackUpload} />
           </Toolbar>
         </AppBar>
-        <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
-          oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
-          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
-          oHist={this.state.origHist}/>
+        <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
+        <TitlebarGridList oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
+        uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
+        oHist={this.state.origHist} />
       </div>
     )
   }
