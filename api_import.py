@@ -189,7 +189,10 @@ def decode_save_images(folder_path, images, num_images, start):
 
 
 def create_command_arr(command_v, num_images):
-    return command_v*np.ones([1, num_images])
+    comm_arr = []
+    for x in range(num_images):
+        comm_arr.append(command_v)
+    return comm_arr
 
 
 def create_datetime_arr(time_v, num_images):
