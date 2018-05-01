@@ -48,7 +48,7 @@ class App extends React.Component {
   myCallbackUpload = (files) => {
     this.setState({filesDataFromChild: files})
     const file = files.find(f => f)
-    const i = new Image()
+    const i = new Image() /* global Image */
     var object = {}
     var images = []
     i.onload = () => {
