@@ -91,7 +91,7 @@ def post_user():
             return jsonify(data), 400
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, 0, stat)
-        create_user(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths, proc_times, stat)
+        create_user(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths, times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
@@ -125,14 +125,6 @@ def encode_proc_images(paths, num_images):
         return base64_imgs
     except:
         return []
-
-
-def add_proc_data(u, paths, times, stati, num_images, start_i):
-    u.proc_img_paths.extend(paths)
-    u.proc_time.extend(times)
-    u.proc_status[start_i: start_i + num_images] = stati
-    u.save()
-    return(input, 200)
 
 
 def save_proc_images(folder_path, proc_imgs, num_images, start, stat):
