@@ -39,8 +39,6 @@ def post_user():
             folder_path, images_v, num_images, start_i)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
-        add_images(email_v, image_paths, comm_arr, dt_arr)
-        init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
@@ -58,7 +56,7 @@ def post_user():
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images,
             start_i, stat)
-        add_proc_data(user, multi_proc_paths, times, stat, num_images, start_i)
+        add_images(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths, times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
@@ -77,9 +75,6 @@ def post_user():
         image_paths = decode_save_images(folder_path, images_v, num_images, 0)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
-        create_user(email_v, image_paths, comm_arr, dt_arr)
-        user = models.User.objects.raw({"_id": email_v}).first()
-        init_proc_status(user, num_images)
         proc_data = run_image_processing(image_paths, command_v)
         times = proc_data["processing_times"]
         stat = proc_data["processing_status"]
@@ -96,7 +91,7 @@ def post_user():
             return jsonify(data), 400
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, 0, stat)
-        add_proc_data(user, multi_proc_paths, times, stat, num_images, 0)
+        create_user(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths, proc_times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
@@ -162,13 +157,6 @@ def access_folder(main, email):
     if os.path.exists(folder_path) is False:
         os.makedirs(folder_path)
     return folder_path
-
-
-def init_proc_status(u, num):
-    status = np.zeros([1, num])
-    u.proc_status.extend(status)
-    u.save(full_clean=False)
-    return
 
 
 def decode_save_images(folder_path, images, num_images, start):

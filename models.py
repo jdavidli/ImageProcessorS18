@@ -14,7 +14,7 @@ class User(MongoModel):
     proc_status = fields.ListField(field=fields.BooleanField())
 
 
-def create_user(email, img_paths, comm, times):
+def create_user(email, img_paths, comm, times, proc_paths, proc_times, stat):
     """Create new user and save to db
 
     :param email: email of user
@@ -26,10 +26,13 @@ def create_user(email, img_paths, comm, times):
     u.command.extend(comm)
     u.orig_img_paths.extend(img_paths)
     u.orig_timestamp.extend(times)
-    u.save(full_clean=False)  # save the user to the database
+    u.proc_time.extend(proc_times)
+    u.proc_status.extend(stat)
+    u.proc_img_paths.extend(proc_paths)
+    u.save()  # save the user to the database
 
 
-def add_images(email, img_paths, comms, times):
+def add_images(email, img_paths, comms, times,  proc_paths, proc_times, stat):
     """Appends new images to existing User and save to db
 
     :param email: email of user
@@ -42,4 +45,7 @@ def add_images(email, img_paths, comms, times):
     user.orig_img_paths.extend(img_paths)
     user.command.extend(comms)
     user.orig_timestamp.extend(times)
-    user.save(full_clean=False)  # save the user to the database
+    user.proc_time.extend(proc_times)
+    user.proc_status.extend(stat)
+    user.proc_img_paths.extend(proc_paths)
+    user.save()  # save the user to the database
