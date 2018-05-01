@@ -18,7 +18,8 @@ class App extends React.Component {
       processedImageString: '',
       uploadTime: '',
       processTime: '',
-      upSize: ''
+      upSize: '',
+      origHist: []
     }
   }
 
@@ -80,6 +81,7 @@ class App extends React.Component {
             cleanedImg = cleanedImg.slice(2, -1)
             cleanedImg = response.data.headers[0] + cleanedImg
             this.setState({processedImageString: cleanedImg})
+            this.setState({origHist: response.data.orig_hist})
           })
           .catch(error => {
             console.log(error.response)
@@ -106,7 +108,8 @@ class App extends React.Component {
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail}
           oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
-          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}/>
+          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
+          oHist={this.state.origHist}/>
       </div>
     )
   }

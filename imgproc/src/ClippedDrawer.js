@@ -8,6 +8,7 @@ import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
 import IconButton from 'material-ui/IconButton'
 import InfoIcon from '@material-ui/icons/Info'
 import Dialog, { DialogTitle, DialogContent, DialogContentText} from 'material-ui/Dialog'
+import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
 
 const drawerWidth = 240
 const styles = theme => ({
@@ -73,6 +74,7 @@ onNameTextFieldChange = (event) => {
   };
 
 
+
 render () {
   const { classes } = this.props
   const tileData = [
@@ -89,6 +91,18 @@ render () {
       upsize: this.props.uSize
     }
   ]
+
+  // graphing
+  const preOData = this.props.oHist[0]
+  const lgProps = [{ dataKey: 'R', values: preOData}]
+  console.log(lgProps)
+  var oData = []
+  var oJSON = {}
+  for (var i in preOData) {
+    oData.push({"R": preOData[i]})
+  }
+  console.log(oData)
+
   return (
     <div className={classes.root}>
       <Drawer
@@ -135,6 +149,13 @@ render () {
           <DialogTitle id="alert-dialog-title">{"Image Information"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
+            <AreaChart width={600} height={400} data={oData}
+                  margin={{top: 10, right: 30, left: 0, bottom: 0}}>
+              <CartesianGrid strokeDasharray="3 3"/>
+              <XAxis dataKey="name"/>
+              <YAxis/>
+              <Area type='monotone' dataKey='R' stackId="1" stroke='#8884d8' fill='#8884d8' />
+            </AreaChart>
               Uploaded time: {tile.uptime}
               <br/>
               Processing time: {tile.proctime}
