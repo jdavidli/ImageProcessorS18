@@ -4,11 +4,6 @@ import { withStyles } from 'material-ui/styles'
 import Drawer from 'material-ui/Drawer'
 import { ListItem, ListItemText } from 'material-ui/List'
 import TextField from 'material-ui/TextField'
-import GridList, { GridListTile, GridListTileBar } from 'material-ui/GridList'
-import IconButton from 'material-ui/IconButton'
-import InfoIcon from '@material-ui/icons/Info'
-import Dialog, { DialogTitle, DialogContent, DialogContentText} from 'material-ui/Dialog'
-import {AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip} from 'recharts'
 
 const drawerWidth = 240
 const styles = theme => ({

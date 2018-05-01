@@ -20,14 +20,15 @@ class App extends React.Component {
       uploadTime: '',
       processTime: '',
       upSize: '',
-      origHist: []
+      origHist: [],
+      procHist: []
     }
   }
 
   // gets processing command from drawer component
   myCallbackCommand = (cmd) => {
     this.setState({commandFromChild: cmd})
-    console.log(cmd)
+    // console.log(cmd)
   }
 
   // get the value from email textfield onChange event
@@ -57,8 +58,8 @@ class App extends React.Component {
         this.setState({originalImageString: reader.result})
         // gets image size
         this.setState({upSize: i.width + ' x ' + i.height})
-        console.log(i.width, i.height);
-        console.log(this.state.upSize)
+        // console.log(i.width, i.height)
+        // console.log(this.state.upSize)
 
         // pushes image string into array
         images.push(reader.result)
@@ -71,7 +72,7 @@ class App extends React.Component {
         pyDate = pyDate.replace('Z', '')
         object.timestamp = pyDate
         this.setState({uploadTime: pyDate})
-        console.log(object)
+        // console.log(object)
         return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
           .then(response => {
             console.log(response)
@@ -83,6 +84,7 @@ class App extends React.Component {
             cleanedImg = response.data.headers[0] + cleanedImg
             this.setState({processedImageString: cleanedImg})
             this.setState({origHist: response.data.orig_hist})
+            this.setState({procHist: response.data.proc_hist})
           })
           .catch(error => {
             console.log(error.response)
@@ -92,8 +94,6 @@ class App extends React.Component {
       reader.onerror = () => console.log('file reading has failed')
     }
     i.src = file.preview
-
-
   }
 
   render () {
@@ -109,8 +109,8 @@ class App extends React.Component {
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
         <TitlebarGridList oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
-        uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
-        oHist={this.state.origHist} />
+          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
+          oHist={this.state.origHist} pHist={this.state.procHist} />
       </div>
     )
   }

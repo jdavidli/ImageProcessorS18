@@ -46,3 +46,5 @@ set default state empty string
 generate histogram as an image on the backend and sent to front
 *send data for histogram and display using recharts on frontend
 do all of the image processing and display on frontend
+
+dynamically create dialog in children?
