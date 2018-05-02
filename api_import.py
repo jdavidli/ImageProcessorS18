@@ -54,7 +54,7 @@ def post_user():
             orig_hist_list.append(hh.tolist())
         proc_hist = proc_data["processed_histograms"]
         proc_hist_list = []
-        for hh in proc_list:
+        for hh in proc_hist:
             proc_hist_list.append(hh.tolist())
         if not np.any(stat):
             lg.debug(' | ABORTED: No images processed.')
@@ -120,7 +120,7 @@ def post_user():
                       "headers": [jpg_header, tif_header, png_header],
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
-                      "image_dims": img_dim}
+                      "image_dims": img_dims}
             return jsonify(output), 200
 
 
