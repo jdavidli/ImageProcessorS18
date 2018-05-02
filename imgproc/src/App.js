@@ -17,11 +17,13 @@ class App extends React.Component {
       processedResponse: null,
       originalImageString: '',
       processedImageString: '',
-      uploadTime: '',
-      processTime: '',
-      upSize: '',
+      uploadTime: [],
+      processTime: [],
+      upSize: [],
       origHist: [],
-      procHist: []
+      procHist: [],
+      originalImages: [],
+      processedImages: []
     }
   }
 
@@ -48,44 +50,52 @@ class App extends React.Component {
   myCallbackUpload = (files) => {
     this.setState({filesDataFromChild: files})
     var object = {}
-    var images = []
-    files.forEach(file => {
-      const reader = new window.FileReader()
-      reader.readAsDataURL(file)
-      reader.onloadend = () => {
-        this.setState({originalImageString: reader.result})
-        // pushes image string into array
-        images.push(reader.result)
-    }
-  })
-  object.images = images
-  object.email = this.state.emailFromChild
-  object.command = Number(this.state.commandFromChild)
-  var date = new Date()
-  var pyDate = date.toISOString()
-  pyDate = pyDate.replace('T', ' ')
-  pyDate = pyDate.replace('Z', '')
-  object.timestamp = pyDate
-  console.log(JSON.stringify(object))
-  return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
-    .then(response => {
-      console.log('response')
-      console.log(response)
-      this.setState({processTime: response.data.proc_times})
-            var cleanedImg = ''
-            cleanedImg = response.data.proc_images[0][0]
-            // removes b' from beginning and ' from end
-            cleanedImg = cleanedImg.slice(2, -1)
-            cleanedImg = response.data.headers[0] + cleanedImg
-            this.setState({processedImageString: cleanedImg})
-            this.setState({origHist: response.data.orig_hist})
-            this.setState({procHist: response.data.proc_hist})
-    })
-    .catch(error => {
-      console.log('there was error')
-      console.log(error.response)
-    })
 
+    var images = files.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new window.FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = () => {
+          this.setState({originalImageString: reader.result});
+          resolve(reader.result); // resolve the promise
+        }
+      });
+    });
+
+    // Wait for the promises to resolve into the real data, THEN call the callback
+    Promise.all(images).then(images_resolved => {
+      object.images = images_resolved
+      object.email = this.state.emailFromChild
+      object.command = Number(this.state.commandFromChild)
+      var date = new Date()
+      var pyDate = date.toISOString()
+      pyDate = pyDate.replace('T', ' ')
+      pyDate = pyDate.replace('Z', '')
+      object.timestamp = pyDate
+      //console.log(JSON.stringify(object))
+      return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
+        .then(response => {
+          console.log('response')
+          console.log(response)
+          this.setState({originalImages: images_resolved})
+          this.setState({uploadTime: pyDate})
+          this.setState({processTime: response.data.proc_times})
+          this.setState({upSize: response.data.image_dims})
+          this.setState({origHist: response.data.orig_hist})
+          this.setState({procHist: response.data.proc_hist})
+          this.setState({processedImages: response.data.proc_images})
+          var cleanedImg = ''
+          //cleanedImg = response.data.proc_images[0][0]
+          // removes b' from beginning and ' from end
+          //cleanedImg = cleanedImg.slice(2, -1)
+          //cleanedImg = response.data.headers[0] + cleanedImg
+          //this.setState({processedImageString: cleanedImg})
+        })
+        .catch(error => {
+          console.log('there was error')
+          console.log(error.response)
+        })
+    });
 }
 
   render () {
