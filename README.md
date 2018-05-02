@@ -25,7 +25,11 @@ Alternatively, to launch the app on your local machine:
 3. Run `npm start` to launch the app  
 4. Navigate to `localhost:3000`  
 
-## Others:  
+## Documentation:  
 
-Link to documentation: `<insert URL>`  
-Link to RFC: `<insert URL>`
+1. Navigate to `./docs`
+2. Run `make html`
+3. Link to documentation will be in `./docs/_build/html/index.html`  
+
+## RFC:
+Link to RFC is [here](https://docs.google.com/document/d/1FFBqq40pDFD-H9ySttweP7yp4EPdtybOCdWYpvqcGrI/edit?ts=5ace36d4#heading=h.ht3dizgas7v2)
