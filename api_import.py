@@ -324,10 +324,10 @@ def verify_input(input1):
         lg.debug(' | ABORTED: TypeError: %s' % str(inst))
         return [], [], [], [], [], str(inst)
     except KeyError:
-        lg.debug(' | ABORTED: KeyError: %s' % str(inst))
         inst = "Input keys incorrect."
+        lg.debug(' | ABORTED: KeyError: %s' % inst)
         return [], [], [], [], [], str(inst)
     except:
-        lg.debug(' | ABORTED: UnknownError: %s' % str(inst))
         inst = "Unknown syntax error during input validation."
+        lg.debug(' | ABORTED: UnknownError: %s' % inst)
         return [], [], [], [], [], str(inst)
