@@ -92,6 +92,7 @@ def validate_inputs(filepaths, command):
 
 def check_dimensions(image):
     """ Downsamples image if any dimension exceeds 1024 pixels
+
     :param image: image
     :type image: array
     :returns: downsampled image
