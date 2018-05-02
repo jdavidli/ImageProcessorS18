@@ -23,7 +23,8 @@ class App extends React.Component {
       origHist: [],
       procHist: [],
       originalImages: [],
-      processedImages: []
+      processedImages: [],
+      numberImages: ''
     }
   }
 
@@ -84,7 +85,7 @@ class App extends React.Component {
           this.setState({origHist: response.data.orig_hist})
           this.setState({procHist: response.data.proc_hist})
           this.setState({processedImages: response.data.proc_images})
-          var cleanedImg = ''
+          //var cleanedImg = ''
           //cleanedImg = response.data.proc_images[0][0]
           // removes b' from beginning and ' from end
           //cleanedImg = cleanedImg.slice(2, -1)
@@ -110,9 +111,9 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
-        <TitlebarGridList oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
+        <TitlebarGridList oImgParent={this.state.originalImages} pImgParent={this.state.processedImages}
           uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
-          oHist={this.state.origHist} pHist={this.state.procHist} />
+          oHist={this.state.origHist} pHist={this.state.procHist}/>
       </div>
     )
   }
