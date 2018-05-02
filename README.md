@@ -10,7 +10,7 @@ To use LaserEye Image Processor (**David to verify this**):
 1. Navigate to `<insert URL>`  
 2. You should see this on the home page: 
 
-![homepage](readme_images/LaserEye_Image_Processor_WelcomePage.jpg)
+![homepage](readme_images/homepage.jpg)
 
 3. Enter your email address.
 4. Select the desired image processing command from the list on the left sidebar.
