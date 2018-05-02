@@ -1,0 +1,495 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>image_processor &#8212; LaserEye Image Processor  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for image_processor</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">skimage.color</span> <span class="k">import</span> <span class="n">rgba2rgb</span>
+<span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+
+<span class="n">DEFAULT_COMMAND</span> <span class="o">=</span> <span class="mi">1</span>
+
+
+<div class="viewcode-block" id="run_image_processing"><a class="viewcode-back" href="../image_processor.html#image_processor.run_image_processing">[docs]</a><span class="k">def</span> <span class="nf">run_image_processing</span><span class="p">(</span><span class="n">filepaths</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Reads uploaded images from file (if file exists) and returns processed</span>
+<span class="sd">        images with associated metadata. If an image fails to be processed,</span>
+<span class="sd">        the processed image will be the same as the uploaded image.</span>
+
+<span class="sd">    :param filepaths: paths to image files to process</span>
+<span class="sd">    :param command: image processing command</span>
+<span class="sd">    :type filepaths: string, or list of strings</span>
+<span class="sd">    :type command: int</span>
+<span class="sd">    :returns: processed images, processing status,</span>
+<span class="sd">              and processing times</span>
+<span class="sd">    :rtype: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Validate inputs and open images:</span>
+    <span class="n">filepaths</span><span class="p">,</span> <span class="n">command</span> <span class="o">=</span> <span class="n">validate_inputs</span><span class="p">(</span><span class="n">filepaths</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+    <span class="n">images</span><span class="p">,</span> <span class="n">image_dimensions</span> <span class="o">=</span> <span class="n">open_images</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)</span>
+
+    <span class="c1"># Process images:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">command</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">command</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">):</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">DEFAULT_COMMAND</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Invalid command. Processing images with default &quot;</span>
+                   <span class="s2">&quot;command = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Processing images with command = </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">command</span><span class="p">))</span>
+
+    <span class="k">if</span><span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span> <span class="o">=</span> <span class="n">histogram_equalization</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="mi">2</span><span class="p">):</span>
+        <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span> <span class="o">=</span> <span class="n">contrast_stretching</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span> <span class="o">=</span> <span class="n">log_compression</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="mi">4</span><span class="p">):</span>
+        <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span> <span class="o">=</span> <span class="n">reverse_video</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="k">elif</span><span class="p">(</span><span class="n">command</span> <span class="o">==</span> <span class="mi">5</span><span class="p">):</span>
+        <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span> <span class="o">=</span> <span class="n">canny_edge_detection</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+
+    <span class="c1"># Get histograms:</span>
+    <span class="n">histogram_images</span> <span class="o">=</span> <span class="n">create_histograms</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="n">histogram_p_images</span> <span class="o">=</span> <span class="n">create_histograms</span><span class="p">(</span><span class="n">p_images</span><span class="p">)</span>
+
+    <span class="c1"># Return data:</span>
+    <span class="n">processed_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="n">message</span><span class="p">,</span>
+                      <span class="s2">&quot;filepaths&quot;</span><span class="p">:</span> <span class="n">filepaths</span><span class="p">,</span>
+                      <span class="s2">&quot;command&quot;</span><span class="p">:</span> <span class="n">command</span><span class="p">,</span>
+                      <span class="s2">&quot;processed_images&quot;</span><span class="p">:</span> <span class="n">p_images</span><span class="p">,</span>
+                      <span class="s2">&quot;processing_status&quot;</span><span class="p">:</span> <span class="n">p_status</span><span class="p">,</span>
+                      <span class="s2">&quot;processing_times&quot;</span><span class="p">:</span> <span class="n">p_time</span><span class="p">,</span>
+                      <span class="s2">&quot;original_histograms&quot;</span><span class="p">:</span> <span class="n">histogram_images</span><span class="p">,</span>
+                      <span class="s2">&quot;processed_histograms&quot;</span><span class="p">:</span> <span class="n">histogram_p_images</span><span class="p">,</span>
+                      <span class="s2">&quot;image_dimensions&quot;</span><span class="p">:</span> <span class="n">image_dimensions</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">processed_data</span></div>
+
+
+<div class="viewcode-block" id="validate_inputs"><a class="viewcode-back" href="../image_processor.html#image_processor.validate_inputs">[docs]</a><span class="k">def</span> <span class="nf">validate_inputs</span><span class="p">(</span><span class="n">filepaths</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Validate input parameter types. Removes invalid filepaths and</span>
+<span class="sd">        sets invalid command to default.</span>
+
+<span class="sd">    :param filepaths: paths to image files</span>
+<span class="sd">    :param command: image processing command</span>
+<span class="sd">    :type filepaths: string, or list of strings</span>
+<span class="sd">    :type command: int</span>
+<span class="sd">    :returns: valid filepaths and command</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">valid_filepaths</span> <span class="o">=</span> <span class="n">filepaths</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+        <span class="n">valid_filepaths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filepaths</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="n">valid_filepaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">valid_filepaths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">valid_filepaths</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">command</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">valid_command</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">valid_command</span> <span class="o">=</span> <span class="n">command</span>
+
+    <span class="k">return</span> <span class="n">valid_filepaths</span><span class="p">,</span> <span class="n">valid_command</span></div>
+
+
+<div class="viewcode-block" id="check_dimensions"><a class="viewcode-back" href="../image_processor.html#image_processor.check_dimensions">[docs]</a><span class="k">def</span> <span class="nf">check_dimensions</span><span class="p">(</span><span class="n">image</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Downsamples image if any dimension exceeds 1024 pixels</span>
+
+<span class="sd">    :param image: image</span>
+<span class="sd">    :type image: array</span>
+<span class="sd">    :returns: downsampled image</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">skimage.filters</span> <span class="k">import</span> <span class="n">gaussian</span>
+    <span class="kn">from</span> <span class="nn">skimage.transform</span> <span class="k">import</span> <span class="n">rescale</span>
+
+    <span class="n">scale</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1024</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="mi">1024</span><span class="o">/</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1024</span><span class="p">:</span>
+            <span class="n">scale</span> <span class="o">=</span> <span class="mi">1024</span><span class="o">/</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="o">!=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">gaussian</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">scale</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">,</span>
+                         <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;reflect&#39;</span><span class="p">,</span>
+                         <span class="n">multichannel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                         <span class="n">preserve_range</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="n">rescale</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">image</span></div>
+
+
+<div class="viewcode-block" id="open_images"><a class="viewcode-back" href="../image_processor.html#image_processor.open_images">[docs]</a><span class="k">def</span> <span class="nf">open_images</span><span class="p">(</span><span class="n">filepaths</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Reads images from files and returns the list of images</span>
+
+<span class="sd">    :param filepaths: paths to image files</span>
+<span class="sd">    :type filepaths: string, or list of strings</span>
+<span class="sd">    :returns: images and image dimensions</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">skimage</span> <span class="k">import</span> <span class="n">io</span>
+
+    <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">image_dimensions</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">filepaths</span><span class="p">)</span>
+            <span class="n">image</span> <span class="o">=</span> <span class="n">check_dimensions</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+            <span class="n">image_dimensions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+            <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+            <span class="n">image_dimensions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filepaths</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">check_dimensions</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
+                <span class="n">image_dimensions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">except</span> <span class="ne">FileNotFoundError</span><span class="p">:</span>
+                <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">image_dimensions</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">images</span><span class="p">,</span> <span class="n">image_dimensions</span></div>
+
+
+<div class="viewcode-block" id="histogram_equalization"><a class="viewcode-back" href="../image_processor.html#image_processor.histogram_equalization">[docs]</a><span class="k">def</span> <span class="nf">histogram_equalization</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Performs histogram equalization on the images.</span>
+<span class="sd">        For color images, RGBA is converted to RGB.</span>
+<span class="sd">        RGB is converted to HSV.</span>
+<span class="sd">        Histogram equalization is performed on V.</span>
+
+<span class="sd">    :param images: images to process</span>
+<span class="sd">    :type images: array</span>
+<span class="sd">    :returns: histogram-equalized images, processing status,</span>
+<span class="sd">              and processing times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">skimage.exposure</span> <span class="k">import</span> <span class="n">equalize_hist</span>
+    <span class="kn">from</span> <span class="nn">skimage.color</span> <span class="k">import</span> <span class="n">hsv2rgb</span>
+    <span class="kn">from</span> <span class="nn">skimage.color</span> <span class="k">import</span> <span class="n">rgb2hsv</span>
+
+    <span class="n">p_images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_status</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_image</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="n">rgba2rgb</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="n">i_hsv</span> <span class="o">=</span> <span class="n">rgb2hsv</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                        <span class="n">i_hsv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">equalize_hist</span><span class="p">(</span><span class="n">i_hsv</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">])</span>
+                        <span class="n">p_image</span> <span class="o">=</span> <span class="n">hsv2rgb</span><span class="p">(</span><span class="n">i_hsv</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">p_image</span> <span class="o">=</span> <span class="n">equalize_hist</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">p_image</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="k">if</span> <span class="n">p_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">))</span>
+        <span class="n">p_status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">p_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span></div>
+
+
+<div class="viewcode-block" id="contrast_stretching"><a class="viewcode-back" href="../image_processor.html#image_processor.contrast_stretching">[docs]</a><span class="k">def</span> <span class="nf">contrast_stretching</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Rescales the intensity of the images to the maximum range</span>
+
+<span class="sd">    :param images: images to process</span>
+<span class="sd">    :type images: array</span>
+<span class="sd">    :returns: contrast-stretched images, processing status,</span>
+<span class="sd">              and processing times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">skimage.exposure</span> <span class="k">import</span> <span class="n">rescale_intensity</span>
+
+    <span class="n">p_images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_status</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_image</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">rgba2rgb</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">rescale_intensity</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="k">if</span> <span class="n">p_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">))</span>
+        <span class="n">p_status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">p_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span></div>
+
+
+<div class="viewcode-block" id="log_compression"><a class="viewcode-back" href="../image_processor.html#image_processor.log_compression">[docs]</a><span class="k">def</span> <span class="nf">log_compression</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the logarithm of the image</span>
+
+<span class="sd">    :param images: images to process</span>
+<span class="sd">    :type images: array</span>
+<span class="sd">    :returns: log images, processing status,</span>
+<span class="sd">              and processing times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">p_images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_status</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_image</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">rgba2rgb</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">log_image</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="n">min_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">log_image</span><span class="p">)</span>
+                <span class="n">max_val</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">log_image</span><span class="p">)</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="p">(</span><span class="n">log_image</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">max_val</span> <span class="o">-</span> <span class="n">min_val</span><span class="p">)</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="n">p_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="p">)</span>
+        <span class="n">p_status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">p_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span></div>
+
+
+<div class="viewcode-block" id="reverse_video"><a class="viewcode-back" href="../image_processor.html#image_processor.reverse_video">[docs]</a><span class="k">def</span> <span class="nf">reverse_video</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Inverts the color of the images i.e. negative</span>
+
+<span class="sd">    :param images: images to process</span>
+<span class="sd">    :type images: array</span>
+<span class="sd">    :returns: inverted images, processing status,</span>
+<span class="sd">              and processing times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">p_images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_status</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_image</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                        <span class="n">i</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">rgba2rgb</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">i</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="k">if</span> <span class="n">p_image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">))</span>
+        <span class="n">p_status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">p_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span></div>
+
+
+<div class="viewcode-block" id="canny_edge_detection"><a class="viewcode-back" href="../image_processor.html#image_processor.canny_edge_detection">[docs]</a><span class="k">def</span> <span class="nf">canny_edge_detection</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Performs Canny edge detection on the images</span>
+
+<span class="sd">    :param images: images to process</span>
+<span class="sd">    :type images: array</span>
+<span class="sd">    :returns: edge-detected images, processing status,</span>
+<span class="sd">              and processing times</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">skimage.color</span> <span class="k">import</span> <span class="n">rgb2gray</span>
+    <span class="kn">from</span> <span class="nn">skimage.feature</span> <span class="k">import</span> <span class="n">canny</span>
+
+    <span class="n">p_images</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_status</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">p_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">p_image</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i_gray</span> <span class="o">=</span> <span class="n">rgb2gray</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">i_edge</span> <span class="o">=</span> <span class="n">canny</span><span class="p">(</span><span class="n">i_gray</span><span class="p">)</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">i_edge</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">)</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">p_image</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">status</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+        <span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span>
+
+        <span class="n">p_images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p_image</span><span class="p">)</span>
+        <span class="n">p_status</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+        <span class="n">p_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">p_images</span><span class="p">,</span> <span class="n">p_status</span><span class="p">,</span> <span class="n">p_time</span></div>
+
+
+<div class="viewcode-block" id="create_histograms"><a class="viewcode-back" href="../image_processor.html#image_processor.create_histograms">[docs]</a><span class="k">def</span> <span class="nf">create_histograms</span><span class="p">(</span><span class="n">images</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create histograms for images</span>
+
+<span class="sd">    :param images: images</span>
+<span class="sd">    :type images: array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="kn">from</span> <span class="nn">skimage.color</span> <span class="k">import</span> <span class="n">rgb2gray</span>
+    <span class="kn">from</span> <span class="nn">skimage.exposure</span> <span class="k">import</span> <span class="n">histogram</span>
+
+    <span class="n">histograms</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">images</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">hist_vals</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i_gray</span> <span class="o">=</span> <span class="mi">255</span><span class="o">*</span><span class="n">rgb2gray</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">i_hist</span> <span class="o">=</span> <span class="n">histogram</span><span class="p">(</span><span class="n">i_gray</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">))</span>
+                <span class="n">hist_vals</span> <span class="o">=</span> <span class="n">i_hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">hist_vals</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="n">histograms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hist_vals</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">histograms</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  <li><a href="index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Kristen Hagan, David Li, Jessica Loo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
