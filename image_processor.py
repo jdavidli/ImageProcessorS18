@@ -407,9 +407,14 @@ def create_histograms(images):
             hist_vals = None
         else:
             try:
-                i_gray = 255*rgb2gray(i)
+                if len(i.shape) > 2:
+                    i_gray = 255*rgb2gray(i)
+                else:
+                    i_gray = i
                 i_hist = histogram(i_gray.astype('uint8'))
-                hist_vals = i_hist[0]
+                n_bins = len(i_hist[0])
+                hist_vals = np.zeros([1, 256])
+                hist_vals[0, 0:n_bins] = i_hist[0]
             except:
                 hist_vals = None
 
