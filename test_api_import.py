@@ -95,9 +95,48 @@ def test_verify_input():
     assert(img_v == [encoded_string, encoded_string])
     assert(num_imgs == 2)
     assert(mess == "SUCCESS: Input validation passed.")
-
-    # add test to see if string is email (@)
-
+    input7 = {
+        "email": "",
+        "command": 1,
+        "timestamp": t,
+        "images": [encoded_string]
+    }
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input7)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess ==
+           "Empty email/username field.")
+    input8 = {
+        "email": "suyash@suyashkumar.com",
+        "command": 1,
+        "timestamp": t,
+        "images": encoded_string
+    }
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input8)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess ==
+           "Images not uploaded as list of strings.")
+    input9 = {
+        "email": "suyash@suyashkumar.com",
+        "command": 1,
+        "timestamp": "03/09/2018 10:00:36",
+        "images": [encoded_string]
+    }
+    em_v, comm_v, time_v, img_v, num_imgs, mess = verify_input(input9)
+    assert(em_v == [])
+    assert(comm_v == [])
+    assert(time_v == [])
+    assert(img_v == [])
+    assert(num_imgs == [])
+    assert(mess ==
+           "Unknown syntax error during input validation.")
 
 def test_access_folder():
     email = 'email@email.com'

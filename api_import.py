@@ -53,10 +53,12 @@ def post_user():
         if not np.any(stat):
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
+        img_dims = proc_data["image_dimensions"]
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images,
             start_i, stat)
-        add_images(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths, times, stat)
+        add_images(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths,
+            times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
@@ -67,7 +69,8 @@ def post_user():
                       "proc_status": stat,
                       "headers": [jpg_header, tif_header, png_header],
                       "orig_hist": orig_hist_list,
-                      "proc_hist": proc_hist_list}
+                      "proc_hist": proc_hist_list,
+                      "image_dims": img_dims}
             return jsonify(output), 200
 
     except:
@@ -89,9 +92,11 @@ def post_user():
         if not np.any(stat):
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
+        img_dims = proc_data["image_dimensions"]
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, 0, stat)
-        create_user(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths, times, stat)
+        create_user(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths,
+            times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
@@ -102,7 +107,8 @@ def post_user():
                       "proc_status": stat,
                       "headers": [jpg_header, tif_header, png_header],
                       "orig_hist": orig_hist_list,
-                      "proc_hist": proc_hist_list}
+                      "proc_hist": proc_hist_list,
+                      "image_dims": img_dim}
             return jsonify(output), 200
 
 
@@ -263,7 +269,6 @@ def verify_input(input1):
         email_v = input1["email"]
         if not email_v:
             raise ValueError("Empty email/username field.")
-        # check that it is an email and remove above
         email_flag = isinstance(email_v, str)
         command_v = input1["command"]
         command_flag = isinstance(command_v, int)
@@ -278,7 +283,6 @@ def verify_input(input1):
         for i in images_v:
             if isinstance(i, str) is False:
                 image_flag[i] = True
-                print(i)
         if any(image_flag) is True:
             raise TypeError(
                 "At least one uploaded image is not of type string.")
