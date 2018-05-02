@@ -306,7 +306,7 @@ def verify_input(input1):
         message = "SUCCESS: Input validation passed."
         try:
             time_v = datetime.datetime.strptime(time_v,
-            "%Y-%m-%d %H:%M:%S.%f")
+                                                "%Y-%m-%d %H:%M:%S.%f")
         except:
             raise TypeError("Timestamp string not correct format.")
         return email_v, command_v, time_v, images_v, num_images, message
