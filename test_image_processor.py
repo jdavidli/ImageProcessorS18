@@ -226,5 +226,5 @@ def test_create_histograms():
     test_images.append(test_image.astype('uint8'))
     histograms = create_histograms(test_images)
 
-    for n, h in enumerate(histograms[0]):
+    for n, h in enumerate(histograms[0][0]):
         assert(h == 3)
