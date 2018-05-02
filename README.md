@@ -12,7 +12,7 @@ To use LaserEye Image Processor (**David to verify this**):
 4. Navigate to `localhost:3000`  
 5. You should see this on the home page: 
 
-![homepage](readme_images/LaserEye_ImageProcessor_WelcomePage.jpg)
+![homepage](readme_images/LaserEye_Image_Processor_WelcomePage.jpg)
 
 6. Enter your email address.
 7. Select the desired image processing command from the list on the left sidebar.
