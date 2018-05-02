@@ -15,14 +15,17 @@ class User(MongoModel):
 
 
 def create_user(email, img_paths, comm, times, proc_paths, proc_times, stat):
-    """Create new user and save to db
+    """Create new user with images and metadata and save to db
 
     :param email: email of user
-    :param orig_img_paths: list of image paths
-    :param command: array of int corresponding to command
-    :param orig_timestamp: array of datetimes corresponding to each input image
+    :param img_paths: list of image paths
+    :param proc_paths: list of processed image paths
+    :param stat: list of processing status for each image
+    :param comm: list of int corresponding to command
+    :param times: list of datetimes corresponding to each input image
+    :param proc_times: list of processing times for each image
     """
-    u = User(email, [], [], [], [], [], [])  # create a new User instance
+    u = User(email, [], [], [], [], [], [])
     u.command.extend(comm)
     u.orig_img_paths.extend(img_paths)
     u.orig_timestamp.extend(times)
@@ -33,12 +36,15 @@ def create_user(email, img_paths, comm, times, proc_paths, proc_times, stat):
 
 
 def add_images(email, img_paths, comms, times,  proc_paths, proc_times, stat):
-    """Appends new images to existing User and save to db
+    """Appends new images and metadata to existing User and save to db
 
     :param email: email of user
-    :param orig_img_paths: list of image paths
-    :param command: array of int corresponding to command
-    :param orig_timestamp: array of datetimes corresponding to each input image
+    :param img_paths: list of image paths
+    :param proc_paths: list of processed image paths
+    :param stat: list of processing status for each image
+    :param comm: list of int corresponding to command
+    :param times: list of datetimes corresponding to each input image
+    :param proc_times: list of processing times for each image
     """
     # Get the first user where _id=email
     user = User.objects.raw({"_id": email}).first()
