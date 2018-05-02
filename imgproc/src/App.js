@@ -70,6 +70,15 @@ class App extends React.Component {
   return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
     .then(response => {
       console.log(response)
+      this.setState({processTime: response.data.proc_times})
+            var cleanedImg = ''
+            cleanedImg = response.data.proc_images[0][0]
+            // removes b' from beginning and ' from end
+            cleanedImg = cleanedImg.slice(2, -1)
+            cleanedImg = response.data.headers[0] + cleanedImg
+            this.setState({processedImageString: cleanedImg})
+            this.setState({origHist: response.data.orig_hist})
+            this.setState({procHist: response.data.proc_hist})
     })
     .catch(error => {
       console.log(error.response)
