@@ -21,7 +21,7 @@ def run_image_processing(filepaths, command):
 
     # Validate inputs and open images:
     filepaths, command = validate_inputs(filepaths, command)
-    images = open_images(filepaths)
+    images, image_dimensions = open_images(filepaths)
 
     # Process images:
     if not (command > 0 and command < 6):
@@ -54,7 +54,8 @@ def run_image_processing(filepaths, command):
                       "processing_status": p_status,
                       "processing_times": p_time,
                       "original_histograms": histogram_images,
-                      "processed_histograms": histogram_p_images}
+                      "processed_histograms": histogram_p_images,
+                      "image_dimensions": image_dimensions}
     return processed_data
 
 
@@ -121,31 +122,36 @@ def open_images(filepaths):
 
     :param filepaths: paths to image files
     :type filepaths: string, or list of strings
-    :returns: list of valid filepaths and images
+    :returns: images and image dimensions
     :rtype: list
     """
 
     from skimage import io
 
     images = []
+    image_dimensions = []
 
     if type(filepaths) is str:
         try:
             image = io.imread(filepaths)
             image = check_dimensions(image)
             images.append(image)
+            image_dimensions.append((image.shape[0], image.shape[1]))
         except FileNotFoundError:
             images.append(None)
+            image_dimensions.append((0, 0))
     else:
         for f in filepaths:
             try:
                 image = io.imread(f)
                 image = check_dimensions(image)
                 images.append(image)
+                image_dimensions.append((image.shape[0], image.shape[1]))
             except FileNotFoundError:
                 images.append(None)
+                image_dimensions.append((0, 0))
 
-    return images
+    return images, image_dimensions
 
 
 def histogram_equalization(images):
