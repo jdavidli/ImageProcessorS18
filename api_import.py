@@ -33,6 +33,7 @@ def post_user():
     email_v, command_v, time_v, images_v, num_images, mess = verify_input(
         client_input)
     if email_v == []:
+        lg.debug(' | ABORTED: Input Validation failed.')
         data = {"message": mess}
         return jsonify(data), 400
 
@@ -56,6 +57,7 @@ def post_user():
         for hh in proc_list:
             proc_hist_list.append(hh.tolist())
         if not np.any(stat):
+            lg.debug(' | ABORTED: No images processed.')
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
         img_dims = proc_data["image_dimensions"]
@@ -66,9 +68,11 @@ def post_user():
                    times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
+            lg.debug(' | ABORTED: base64 encoding of processed images failed.')
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
+            lg.info(' | SUCCESS: Image processing complete.')
             output = {"proc_images": base64_images,
                       "proc_times": times,
                       "proc_status": stat,
@@ -95,6 +99,7 @@ def post_user():
         for hh in proc_hist:
             proc_hist_list.append(hh.tolist())
         if not np.any(stat):
+            lg.debug(' | ABORTED: No images processed.')
             data = {"message": "Status codes indicate no images processed."}
             return jsonify(data), 400
         img_dims = proc_data["image_dimensions"]
@@ -104,9 +109,11 @@ def post_user():
                     times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
+            lg.debug(' | ABORTED: base64 encoding of processed images failed.')
             data = {"message": "Encoding processed images in base64 failed."}
             return jsonify(data), 400
         else:
+            lg.info(' | SUCCESS: Image processing complete.')
             output = {"proc_images": base64_images,
                       "proc_times": times,
                       "proc_status": stat,
@@ -311,12 +318,16 @@ def verify_input(input1):
             raise TypeError("Timestamp string not correct format.")
         return email_v, command_v, time_v, images_v, num_images, message
     except ValueError as inst:
+        lg.debug(' | ABORTED: ValueError: %s' % str(inst))
         return [], [], [], [], [], str(inst)
     except TypeError as inst:
+        lg.debug(' | ABORTED: TypeError: %s' % str(inst))
         return [], [], [], [], [], str(inst)
     except KeyError:
+        lg.debug(' | ABORTED: KeyError: %s' % str(inst))
         inst = "Input keys incorrect."
         return [], [], [], [], [], str(inst)
     except:
+        lg.debug(' | ABORTED: UnknownError: %s' % str(inst))
         inst = "Unknown syntax error during input validation."
         return [], [], [], [], [], str(inst)
