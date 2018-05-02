@@ -23,4 +23,15 @@ Alternatively, to launch the app on your local machine:
 1. Clone the `master` branch of this repository  
 2. Run `npm install` to install the necessary dependencies
 3. Run `npm start` to launch the app  
-4. Navigate to `localhost:3000`
+4. Navigate to `localhost:3000`  
+
+## Others:
+
+#### Documentation:  
+
+1. Navigate to `./docs`
+2. Run `make html`
+3. Link to documentation will be in `./docs/_build/html/index.html`  
+
+#### RFC:
+Link to RFC is [here.](https://docs.google.com/document/d/1FFBqq40pDFD-H9ySttweP7yp4EPdtybOCdWYpvqcGrI/edit?ts=5ace36d4#heading=h.ht3dizgas7v2)
