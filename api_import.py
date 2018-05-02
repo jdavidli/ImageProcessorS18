@@ -58,7 +58,7 @@ def post_user():
             folder_path, proc_data["processed_images"], num_images,
             start_i, stat)
         add_images(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths,
-            times, stat)
+                   times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}
@@ -96,7 +96,7 @@ def post_user():
         multi_proc_paths = save_proc_images(
             folder_path, proc_data["processed_images"], num_images, 0, stat)
         create_user(email_v, image_paths, comm_arr, dt_arr, multi_proc_paths,
-            times, stat)
+                    times, stat)
         base64_images = encode_proc_images(multi_proc_paths, num_images)
         if base64_images == []:
             data = {"message": "Encoding processed images in base64 failed."}

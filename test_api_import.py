@@ -138,6 +138,7 @@ def test_verify_input():
     assert(mess ==
            "Unknown syntax error during input validation.")
 
+
 def test_access_folder():
     email = 'email@email.com'
     main_image_folder = os.getcwd()
