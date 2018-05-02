@@ -1,7 +1,12 @@
+pymodm
+flask
 numpy
-scikit-image
+requests
 pytest
 pytest-pep8
 pytest-cov
+gunicorn
+flask-cors
+scikit-image
 ipython
-sphinx
+scipy
