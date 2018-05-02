@@ -10,3 +10,4 @@ flask-cors
 scikit-image
 ipython
 scipy
+sphinx
