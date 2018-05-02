@@ -47,54 +47,35 @@ class App extends React.Component {
   // gets uploaded file information from upload button
   myCallbackUpload = (files) => {
     this.setState({filesDataFromChild: files})
-    const file = files.find(f => f)
-    const i = new Image() /* global Image */
     var object = {}
     var images = []
-    i.onload = () => {
+    files.forEach(file => {
       const reader = new window.FileReader()
       reader.readAsDataURL(file)
       reader.onloadend = () => {
         this.setState({originalImageString: reader.result})
-        // gets image size
-        this.setState({upSize: i.width + ' x ' + i.height})
-        // console.log(i.width, i.height)
-        // console.log(this.state.upSize)
-
         // pushes image string into array
         images.push(reader.result)
-        object.images = images
-        object.email = this.state.emailFromChild
-        object.command = Number(this.state.commandFromChild)
-        var date = new Date()
-        var pyDate = date.toISOString()
-        pyDate = pyDate.replace('T', ' ')
-        pyDate = pyDate.replace('Z', '')
-        object.timestamp = pyDate
-        this.setState({uploadTime: pyDate})
-        // console.log(object)
-        return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
-          .then(response => {
-            console.log(response)
-            this.setState({processTime: response.data.proc_times})
-            var cleanedImg = ''
-            cleanedImg = response.data.proc_images[0][0]
-            // removes b' from beginning and ' from end
-            cleanedImg = cleanedImg.slice(2, -1)
-            cleanedImg = response.data.headers[0] + cleanedImg
-            this.setState({processedImageString: cleanedImg})
-            this.setState({origHist: response.data.orig_hist})
-            this.setState({procHist: response.data.proc_hist})
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-      }
-      reader.onabort = () => console.log('file reading was aborted')
-      reader.onerror = () => console.log('file reading has failed')
     }
-    i.src = file.preview
-  }
+  })
+  object.images = images
+  object.email = this.state.emailFromChild
+  object.command = Number(this.state.commandFromChild)
+  var date = new Date()
+  var pyDate = date.toISOString()
+  pyDate = pyDate.replace('T', ' ')
+  pyDate = pyDate.replace('Z', '')
+  object.timestamp = pyDate
+  console.log(object)
+  return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log(error.response)
+    })
+
+}
 
   render () {
     return (
