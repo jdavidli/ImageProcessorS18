@@ -66,9 +66,10 @@ class App extends React.Component {
   pyDate = pyDate.replace('T', ' ')
   pyDate = pyDate.replace('Z', '')
   object.timestamp = pyDate
-  console.log(object)
+  console.log(JSON.stringify(object))
   return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
     .then(response => {
+      console.log('response')
       console.log(response)
       this.setState({processTime: response.data.proc_times})
             var cleanedImg = ''
@@ -81,6 +82,7 @@ class App extends React.Component {
             this.setState({procHist: response.data.proc_hist})
     })
     .catch(error => {
+      console.log('there was error')
       console.log(error.response)
     })
 
