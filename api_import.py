@@ -9,6 +9,7 @@ import scipy.misc as sp
 import os
 import base64
 from image_processor import run_image_processing
+import logging as lg
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +19,10 @@ main_image_folder = "/home/vcm/images/"
 jpg_header = "data:image/jpg;base64,"
 png_header = "data:image/png;base64,"
 tif_header = "data:image/tif;base64,"
+lg.basicConfig(filename='process_image_post.log',
+               level=lg.DEBUG,
+               format='%(asctime)s %(message)s',
+               datefmt='%m/%d/%Y %I:%M:%S %p')
 
 
 @app.route("/process_image", methods=["POST"])
@@ -299,7 +304,11 @@ def verify_input(input1):
                 "Input command not associated with a processing function.")
 
         message = "SUCCESS: Input validation passed."
-        time_v = datetime.datetime.strptime(time_v, "%Y-%m-%d %H:%M:%S.%f")
+        try:
+            time_v = datetime.datetime.strptime(time_v,
+            "%Y-%m-%d %H:%M:%S.%f")
+        except:
+            raise TypeError("Timestamp string not correct format.")
         return email_v, command_v, time_v, images_v, num_images, message
     except ValueError as inst:
         return [], [], [], [], [], str(inst)

@@ -136,7 +136,7 @@ def test_verify_input():
     assert(img_v == [])
     assert(num_imgs == [])
     assert(mess ==
-           "Unknown syntax error during input validation.")
+           "Timestamp string not correct format.")
 
 
 def test_access_folder():
