@@ -215,7 +215,7 @@ def test_canny_edge_detection():
 
 def test_create_histograms():
 
-    from image_processor import create_histograms
+    from image_processor import open_images, create_histograms
 
     test_image = np.zeros([3, 256])
     test_image[0, :] = range(256)
@@ -226,5 +226,17 @@ def test_create_histograms():
     test_images.append(test_image.astype('uint8'))
     histograms = create_histograms(test_images)
 
-    for n, h in enumerate(histograms[0][0]):
+    for n, h in enumerate(histograms[0]):
         assert(h == 3)
+
+    # Check dimensions:
+    images, _ = open_images(test_filepaths)
+    histograms = create_histograms(images)
+
+    assert(histograms[0].shape == (256,))
+    assert(histograms[2].shape == (256,))
+    assert(histograms[4].shape == (256,))
+    assert(histograms[6].shape == (256,))
+    assert(histograms[1] is None)
+    assert(histograms[3] is None)
+    assert(histograms[5] is None)
