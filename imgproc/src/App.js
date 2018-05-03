@@ -76,7 +76,7 @@ class App extends React.Component {
       pyDate = pyDate.replace('Z', '')
       object.timestamp = pyDate
       console.log(object)
-      return axios.post('https://vcm-3580.vm.duke.edu:5000/process_image', object)
+      return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
         .then(response => {
           console.log('response')
           console.log(response)
