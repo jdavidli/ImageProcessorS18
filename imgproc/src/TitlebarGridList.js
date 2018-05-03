@@ -51,6 +51,13 @@ class TitlebarGridList extends React.Component {
 
   render () {
     const { classes } = this.props
+    var origTileData = []
+    for (var i = 0; i < this.props.oImgParent.length; i++) {
+      origTileData.push({img: this.props.oImgParent[i],
+      uptime: this.props.uTime, upsize: this.props.uSize[i]})
+      console.log(i)
+    }
+
     const tileData = [
       {
         img: this.props.oImgParent,
@@ -88,7 +95,7 @@ class TitlebarGridList extends React.Component {
       <div className={classes.root}>
         <GridList cellHeight={200} className={classes.gridList}>
           <GridListTile key='Subheader' cols={1} style={{ height: 'auto' }} />
-          {tileData.map((tile, i) => (
+          {origTileData.map((tile, i) => (
             <GridListTile key={tile.img + i}>
               <img src={tile.img} />
               <GridListTileBar
