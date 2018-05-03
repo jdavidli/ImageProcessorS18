@@ -51,10 +51,22 @@ class TitlebarGridList extends React.Component {
 
   render () {
     const { classes } = this.props
-    var origTileData = []
+    const origTileData = []
     for (var i = 0; i < this.props.oImgParent.length; i++) {
       origTileData.push({img: this.props.oImgParent[i],
       uptime: this.props.uTime, upsize: this.props.uSize[i]})
+      console.log(i)
+    }
+
+    const procTileData = []
+    for (var j = 0; j < this.props.pImgParent.length; j++) {
+      var cleanedImg = ''
+      cleanedImg = this.props.pImgParent[j][0]
+      // removes b' from beginning and ' from end
+      cleanedImg = cleanedImg.slice(2, -1)
+      cleanedImg = 'data:image/jpg;base64,' + cleanedImg
+      procTileData.push({img: cleanedImg,
+      proctime: this.props.pTime[j], upsize: this.props.uSize[j]})
       console.log(i)
     }
 
@@ -132,7 +144,7 @@ class TitlebarGridList extends React.Component {
 
         <GridList cellHeight={200} className={classes.gridList}>
           <GridListTile key='Subheader2' cols={1} style={{ height: 'auto' }} />
-          {tileData2.map((tile, j) => (
+          {procTileData.map((tile, j) => (
             <GridListTile key={tile.img + j}>
               <img src={tile.img} />
               <GridListTileBar
