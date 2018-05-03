@@ -6,6 +6,7 @@ import IconButton from 'material-ui/IconButton'
 import InfoIcon from '@material-ui/icons/Info'
 import Dialog, { DialogTitle, DialogContent, DialogContentText} from 'material-ui/Dialog'
 import {AreaChart, Area, XAxis, YAxis} from 'recharts'
+import SimpleDialog from './SimpleDialog.js'
 
 const styles = theme => ({
   root: {
@@ -33,12 +34,14 @@ class TitlebarGridList extends React.Component {
     }
   }
 
+
+
   handleClickOpen = () => {
-    this.setState({ open: true })
+    this.setState({open: true });
   };
 
   handleClose = () => {
-    this.setState({ open: false })
+    this.setState({ open: false });
   };
 
   handleClickOpen2 = () => {
@@ -65,22 +68,7 @@ class TitlebarGridList extends React.Component {
               <GridListTileBar
                 actionIcon={
                   <IconButton className={classes.icon} onClick={this.handleClickOpen}>
-                    <Dialog
-                      open={this.state.open}
-                      onClose={this.handleClose}
-                      aria-labelledby='alert-dialog-title'
-                      aria-describedby='alert-dialog-description'
-                    >
-                      <DialogTitle id='alert-dialog-title'>{'Original Image Information'}</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText id='alert-dialog-description'>
-
-            Uploaded time: {tile.uptime}
-                          <br />
-            Image size: {tile.upsize}
-                        </DialogContentText>
-                      </DialogContent>
-                    </Dialog>
+                    <SimpleDialog open={this.state.open} onClose={this.handleClose}/>
                     <InfoIcon />
                   </IconButton>
                 }
