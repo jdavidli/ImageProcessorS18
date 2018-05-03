@@ -17,11 +17,16 @@ class App extends React.Component {
       processedResponse: null,
       originalImageString: '',
       processedImageString: '',
-      uploadTime: '',
-      processTime: '',
-      upSize: '',
+      uploadTime: [],
+      processTime: [],
+      upSize: [],
       origHist: [],
-      procHist: []
+      procHist: [],
+      originalImages: [],
+      processedImages: [],
+      origTiles: [],
+      procTiles: [],
+      imgLoaded: false
     }
   }
 
@@ -47,53 +52,92 @@ class App extends React.Component {
   // gets uploaded file information from upload button
   myCallbackUpload = (files) => {
     this.setState({filesDataFromChild: files})
-    const file = files.find(f => f)
-    const i = new Image() /* global Image */
     var object = {}
-    var images = []
-    i.onload = () => {
-      const reader = new window.FileReader()
-      reader.readAsDataURL(file)
-      reader.onloadend = () => {
-        this.setState({originalImageString: reader.result})
-        // gets image size
-        this.setState({upSize: i.width + ' x ' + i.height})
-        // console.log(i.width, i.height)
-        // console.log(this.state.upSize)
 
-        // pushes image string into array
-        images.push(reader.result)
-        object.images = images
-        object.email = this.state.emailFromChild
-        object.command = Number(this.state.commandFromChild)
-        var date = new Date()
-        var pyDate = date.toISOString()
-        pyDate = pyDate.replace('T', ' ')
-        pyDate = pyDate.replace('Z', '')
-        object.timestamp = pyDate
-        this.setState({uploadTime: pyDate})
-        // console.log(object)
-        return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
-          .then(response => {
-            console.log(response)
-            this.setState({processTime: response.data.proc_times})
+    var images = files.map(file => {
+      return new Promise((resolve, reject) => {
+        const reader = new window.FileReader()
+        reader.readAsDataURL(file)
+        reader.onloadend = () => {
+          this.setState({originalImageString: reader.result})
+          resolve(reader.result) // resolve the promise
+        }
+      })
+    })
+
+    // Wait for the promises to resolve into the real data, THEN call the callback
+    Promise.all(images).then(imagesResolved => {
+      object.images = imagesResolved
+      object.email = this.state.emailFromChild
+      object.command = Number(this.state.commandFromChild)
+      var date = new Date()
+      var pyDate = date.toISOString()
+      pyDate = pyDate.replace('T', ' ')
+      pyDate = pyDate.replace('Z', '')
+      object.timestamp = pyDate
+      console.log(object)
+      return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
+        .then(response => {
+          console.log('response')
+          console.log(response)
+          this.setState({originalImages: imagesResolved})
+          this.setState({uploadTime: pyDate})
+          this.setState({processTime: response.data.proc_times})
+          this.setState({upSize: response.data.image_dims})
+          this.setState({origHist: response.data.orig_hist})
+          this.setState({procHist: response.data.proc_hist})
+          this.setState({processedImages: response.data.proc_images})
+          // creates Tiles
+          const origTileData = []
+          for (var i = 0; i < this.state.originalImages.length; i++) {
+            // generates histogram data
+            const preOData = this.state.origHist[i]
+            var oData = []
+            for (var m in preOData) {
+              oData.push({'R': preOData[m]})
+            }
+            origTileData.push({img: this.state.originalImages[i],
+              uptime: this.state.uploadTime,
+              upsize: this.state.upSize[i],
+              oHist: oData})
+          }
+          // console.log(origTileData)
+
+          const procTileData = []
+          for (var j = 0; j < this.state.processedImages.length; j++) {
+            // cleans up response image string
             var cleanedImg = ''
-            cleanedImg = response.data.proc_images[0][0]
+            cleanedImg = this.state.processedImages[j][0]
             // removes b' from beginning and ' from end
             cleanedImg = cleanedImg.slice(2, -1)
-            cleanedImg = response.data.headers[0] + cleanedImg
-            this.setState({processedImageString: cleanedImg})
-            this.setState({origHist: response.data.orig_hist})
-            this.setState({procHist: response.data.proc_hist})
-          })
-          .catch(error => {
-            console.log(error.response)
-          })
-      }
-      reader.onabort = () => console.log('file reading was aborted')
-      reader.onerror = () => console.log('file reading has failed')
-    }
-    i.src = file.preview
+            cleanedImg = 'data:image/jpg;base64,' + cleanedImg
+            // generates histogram data
+            const prePData = this.state.procHist[j]
+            var pData = []
+            for (var n in prePData) {
+              pData.push({'R': prePData[n]})
+            }
+            procTileData.push({img: cleanedImg,
+              proctime: this.state.processTime[j],
+              upsize: this.state.upSize[j],
+              pHist: pData})
+          }
+          // console.log(procTileData)
+          this.setState({origTiles: origTileData})
+          this.setState({procTiles: procTileData})
+          this.setState({imgLoaded: true})
+          // var cleanedImg = ''
+          // cleanedImg = response.data.proc_images[0][0]
+          // removes b' from beginning and ' from end
+          // cleanedImg = cleanedImg.slice(2, -1)
+          // cleanedImg = response.data.headers[0] + cleanedImg
+          // this.setState({processedImageString: cleanedImg})
+        })
+        .catch(error => {
+          console.log('there was error')
+          console.log(error.response)
+        })
+    })
   }
 
   render () {
@@ -108,9 +152,7 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
-        <TitlebarGridList oImgParent={this.state.originalImageString} pImgParent={this.state.processedImageString}
-          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
-          oHist={this.state.origHist} pHist={this.state.procHist} />
+        <TitlebarGridList oTile={this.state.origTiles} pTile={this.state.procTiles} />
       </div>
     )
   }
