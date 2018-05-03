@@ -102,14 +102,14 @@ def test_contrast_stretching():
 
     from image_processor import open_images, contrast_stretching
 
-    cs4 = io.imread('test_images/cs4.png')
+    sd4 = io.imread('test_images/squishy_dog_command2.png')
     gray_cs1 = io.imread('test_images/gray_cs1.png')
 
-    images, _ = open_images(['test_images/test_image4.png',
+    images, _ = open_images(['test_images/squishy_dog.jpg',
                              'test_images/test_gray1.jpg'])
     p_images, p_status, _ = contrast_stretching(images)
 
-    assert(np.allclose(cs4, p_images[0]))
+    assert(np.allclose(sd4, p_images[0]))
     assert(np.allclose(gray_cs1, p_images[1]))
     assert(np.all(p_status))
 
