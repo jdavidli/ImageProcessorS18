@@ -2,18 +2,37 @@
   "name": "imgproc",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://jdavidli.github.io/ImageProcessorS18",
   "dependencies": {
-    "image-size": "^0.6.2",
-    "react": "^16.3.1",
-    "react-dom": "^16.3.1",
+    "@material-ui/icons": "^1.0.0-beta.42",
+    "axios": "^0.18.0",
+    "material-ui": "^1.0.0-beta.38",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
     "react-dropzone": "^4.2.9",
     "react-scripts": "1.1.4",
-    "recharts": "^1.0.0-beta.10"
+    "recharts": "^1.0.0-beta.10",
+    "standard": "^11.0.1"
+  },
+  "standard": {
+    "ignore": [
+      "/node_modules/",
+      "/src/index.js",
+      "/src/registerServiceWorker.js",
+      "/src/App.test.js"
+    ],
+    "parser": "babel-eslint"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "gh-pages": "^1.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "test": "standard",
+    "predeploy": "npm run build",
+    "deploy": "npm run build&&gh-pages -d build"
   }
 }
