@@ -78,6 +78,7 @@ class TitlebarGridList extends React.Component {
       <div className={classes.root}>
         <GridList cellHeight={200} className={classes.gridList}>
           <GridListTile key='Subheader' cols={1} style={{ height: 'auto' }} />
+          //{console.log(origTileData[0])}
           {origTileData.map((tile, i) => (
             <GridListTile key={tile.img + i}>
               <img src={tile.img} />
@@ -125,7 +126,7 @@ class TitlebarGridList extends React.Component {
                       <DialogTitle id='alert-dialog-title2'>{'Processed Image Information'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText id='alert-dialog-description2'>
-                          
+
             Processing time: {tile.proctime}
                           <br />
             Image size: {tile.upsize}

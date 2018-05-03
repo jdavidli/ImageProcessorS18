@@ -25,7 +25,8 @@ class App extends React.Component {
       originalImages: [],
       processedImages: [],
       origTiles: [],
-      procTiles: []
+      procTiles: [],
+      imgLoaded: false
     }
   }
 
@@ -74,7 +75,7 @@ class App extends React.Component {
       pyDate = pyDate.replace('T', ' ')
       pyDate = pyDate.replace('Z', '')
       object.timestamp = pyDate
-      //console.log(object)
+      console.log(object)
       return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
         .then(response => {
           console.log('response')
@@ -92,7 +93,7 @@ class App extends React.Component {
             origTileData.push({img: this.state.originalImages[i],
             uptime: this.state.uploadTime, upsize: this.state.upSize[i]})
           }
-          console.log(origTileData)
+          //console.log(origTileData)
           const procTileData = []
           for (var j = 0; j < this.state.processedImages.length; j++) {
             var cleanedImg = ''
@@ -103,9 +104,10 @@ class App extends React.Component {
             procTileData.push({img: cleanedImg,
             proctime: this.state.processTime[j], upsize: this.state.upSize[j]})
           }
-          console.log(procTileData)
+          //console.log(procTileData)
           this.setState({origTiles: origTileData})
           this.setState({procTiles: procTileData})
+          this.setState({imgLoaded: true})
           //var cleanedImg = ''
           //cleanedImg = response.data.proc_images[0][0]
           // removes b' from beginning and ' from end
