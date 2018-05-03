@@ -24,3 +24,7 @@ env/
 .coverage
 .pytest_cache/
 __pycache__/
+docs/_build/
+docs/_static/
+docs/_template/
+

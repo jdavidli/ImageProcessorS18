@@ -44,7 +44,7 @@ def test_open_images():
 
     from image_processor import open_images
 
-    images = open_images(test_filepaths)
+    images, image_dimensions = open_images(test_filepaths)
     assert(images[0] is not None)
     assert(images[1] is None)
     assert(images[2] is not None)
@@ -53,11 +53,18 @@ def test_open_images():
     assert(images[5] is None)
     assert(images[6] is not None)
     assert(images[7] is not None)
-    assert(images[7].shape[0] < 1025)
-    assert(images[7].shape[1] < 1025)
+    assert(image_dimensions[0] == (461, 752))
+    assert(image_dimensions[1] == (0, 0))
+    assert(image_dimensions[2] == (349, 620))
+    assert(image_dimensions[3] == (0, 0))
+    assert(image_dimensions[4] == (747, 498))
+    assert(image_dimensions[5] == (0, 0))
+    assert(image_dimensions[6] == (683, 1024))
+    assert(image_dimensions[7] == (683, 1024))
 
-    images = open_images('test_images/does_not_exist.png')
+    images, image_dimensions = open_images('test_images/does_not_exist.png')
     assert(images[0] is None)
+    assert(image_dimensions[0] == (0, 0))
 
 
 def test_histogram_equalization():
@@ -70,7 +77,7 @@ def test_histogram_equalization():
     gray_eq1 = io.imread('test_images/gray_eq1.png')
     gray_eq2 = io.imread('test_images/gray_eq2.png')
 
-    images = open_images(test_filepaths)
+    images, _ = open_images(test_filepaths)
     p_images, p_status, _ = histogram_equalization(images)
 
     assert(np.allclose(eq1, p_images[0]))
@@ -95,18 +102,18 @@ def test_contrast_stretching():
 
     from image_processor import open_images, contrast_stretching
 
-    cs4 = io.imread('test_images/cs4.png')
+    sd4 = io.imread('test_images/squishy_dog_command2.png')
     gray_cs1 = io.imread('test_images/gray_cs1.png')
 
-    images = open_images(['test_images/test_image4.png',
-                          'test_images/test_gray1.jpg'])
+    images, _ = open_images(['test_images/squishy_dog.jpg',
+                             'test_images/test_gray1.jpg'])
     p_images, p_status, _ = contrast_stretching(images)
 
-    assert(np.allclose(cs4, p_images[0]))
+    assert(np.allclose(sd4, p_images[0]))
     assert(np.allclose(gray_cs1, p_images[1]))
     assert(np.all(p_status))
 
-    images = open_images('')
+    images, _ = open_images('')
     p_images, p_status, _ = contrast_stretching(images)
 
     assert(p_images[0] is None)
@@ -123,7 +130,7 @@ def test_log_compression():
     gray_lc1 = io.imread('test_images/gray_lc1.png')
     gray_lc2 = io.imread('test_images/gray_lc2.png')
 
-    images = open_images(test_filepaths)
+    images, _ = open_images(test_filepaths)
     p_images, p_status, _ = log_compression(images)
 
     assert(np.allclose(lc1, p_images[0]))
@@ -154,7 +161,7 @@ def test_reverse_video():
     gray_rv1 = io.imread('test_images/gray_rv1.png')
     gray_rv2 = io.imread('test_images/gray_rv2.png')
 
-    images = open_images(test_filepaths)
+    images, _ = open_images(test_filepaths)
     p_images, p_status, _ = reverse_video(images)
 
     assert(np.allclose(rv1, p_images[0]))
@@ -185,7 +192,7 @@ def test_canny_edge_detection():
     gray_edge1 = io.imread('test_images/gray_edge1.png')
     gray_edge2 = io.imread('test_images/gray_edge2.png')
 
-    images = open_images(test_filepaths)
+    images, _ = open_images(test_filepaths)
     p_images, p_status, _ = canny_edge_detection(images)
 
     assert(np.allclose(edge1, p_images[0]))
@@ -208,7 +215,7 @@ def test_canny_edge_detection():
 
 def test_create_histograms():
 
-    from image_processor import create_histograms
+    from image_processor import open_images, create_histograms
 
     test_image = np.zeros([3, 256])
     test_image[0, :] = range(256)
@@ -221,3 +228,15 @@ def test_create_histograms():
 
     for n, h in enumerate(histograms[0]):
         assert(h == 3)
+
+    # Check dimensions:
+    images, _ = open_images(test_filepaths)
+    histograms = create_histograms(images)
+
+    assert(histograms[0].shape == (256,))
+    assert(histograms[2].shape == (256,))
+    assert(histograms[4].shape == (256,))
+    assert(histograms[6].shape == (256,))
+    assert(histograms[1] is None)
+    assert(histograms[3] is None)
+    assert(histograms[5] is None)

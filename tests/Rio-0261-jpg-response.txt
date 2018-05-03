@@ -1,1 +1,0 @@
-POST http://vcm-3580.vm.duke.edu:5000/process_image net::ERR_EMPTY_RESPONSE

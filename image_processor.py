@@ -21,7 +21,7 @@ def run_image_processing(filepaths, command):
 
     # Validate inputs and open images:
     filepaths, command = validate_inputs(filepaths, command)
-    images = open_images(filepaths)
+    images, image_dimensions = open_images(filepaths)
 
     # Process images:
     if not (command > 0 and command < 6):
@@ -54,7 +54,8 @@ def run_image_processing(filepaths, command):
                       "processing_status": p_status,
                       "processing_times": p_time,
                       "original_histograms": histogram_images,
-                      "processed_histograms": histogram_p_images}
+                      "processed_histograms": histogram_p_images,
+                      "image_dimensions": image_dimensions}
     return processed_data
 
 
@@ -91,6 +92,7 @@ def validate_inputs(filepaths, command):
 
 def check_dimensions(image):
     """ Downsamples image if any dimension exceeds 1024 pixels
+
     :param image: image
     :type image: array
     :returns: downsampled image
@@ -121,31 +123,36 @@ def open_images(filepaths):
 
     :param filepaths: paths to image files
     :type filepaths: string, or list of strings
-    :returns: list of valid filepaths and images
+    :returns: images and image dimensions
     :rtype: list
     """
 
     from skimage import io
 
     images = []
+    image_dimensions = []
 
     if type(filepaths) is str:
         try:
             image = io.imread(filepaths)
             image = check_dimensions(image)
             images.append(image)
+            image_dimensions.append((image.shape[0], image.shape[1]))
         except FileNotFoundError:
             images.append(None)
+            image_dimensions.append((0, 0))
     else:
         for f in filepaths:
             try:
                 image = io.imread(f)
                 image = check_dimensions(image)
                 images.append(image)
+                image_dimensions.append((image.shape[0], image.shape[1]))
             except FileNotFoundError:
                 images.append(None)
+                image_dimensions.append((0, 0))
 
-    return images
+    return images, image_dimensions
 
 
 def histogram_equalization(images):
@@ -161,8 +168,7 @@ def histogram_equalization(images):
     """
 
     from skimage.exposure import equalize_hist
-    from skimage.color import hsv2rgb
-    from skimage.color import rgb2hsv
+    from skimage.color import rgb2hsv, hsv2rgb
 
     p_images = []
     p_status = []
@@ -214,6 +220,7 @@ def contrast_stretching(images):
               and processing times
     """
 
+    from skimage.color import rgb2hsv, hsv2rgb
     from skimage.exposure import rescale_intensity
 
     p_images = []
@@ -232,8 +239,13 @@ def contrast_stretching(images):
                 if len(i.shape) == 3:
                     if i.shape[2] == 4:
                         i = 255*rgba2rgb(i)
-                p_image = 255*rescale_intensity(i)
-                status = True
+                    i_hsv = rgb2hsv(i)
+                    i_hsv[:, :, 2] = rescale_intensity(i_hsv[:, :, 2])
+                    p_image = 255*hsv2rgb(i_hsv)
+                    status = True
+                else:
+                    p_image = 255*rescale_intensity(i)
+                    status = True
             except:
                 p_image = i
                 status = False
@@ -400,9 +412,12 @@ def create_histograms(images):
             hist_vals = None
         else:
             try:
-                i_gray = 255*rgb2gray(i)
-                i_hist = histogram(i_gray.astype('uint8'))
-                hist_vals = i_hist[0]
+                if len(i.shape) > 2:
+                    i_gray = 255*rgb2gray(i)
+                else:
+                    i_gray = i
+                hist_vals, _ = np.histogram(i_gray, bins=256,
+                                            range=(-0.5, 255.5))
             except:
                 hist_vals = None
 
