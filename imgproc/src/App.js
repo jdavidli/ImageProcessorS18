@@ -90,8 +90,13 @@ class App extends React.Component {
           // creates Tiles
           const origTileData = []
           for (var i = 0; i < this.state.originalImages.length; i++) {
+            const preOData = this.state.origHist[i]
+            var oData = []
+            for (var m in preOData) {
+              oData.push({'R': preOData[m]})
+            }
             origTileData.push({img: this.state.originalImages[i],
-            uptime: this.state.uploadTime, upsize: this.state.upSize[i]})
+            uptime: this.state.uploadTime, upsize: this.state.upSize[i], oHist: oData})
           }
           //console.log(origTileData)
           const procTileData = []

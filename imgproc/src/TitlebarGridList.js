@@ -7,6 +7,7 @@ import InfoIcon from '@material-ui/icons/Info'
 import Dialog, { DialogTitle, DialogContent, DialogContentText} from 'material-ui/Dialog'
 import {AreaChart, Area, XAxis, YAxis} from 'recharts'
 import SimpleDialog from './SimpleDialog.js'
+import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
 
 const styles = theme => ({
   root: {
@@ -30,11 +31,14 @@ class TitlebarGridList extends React.Component {
     this.props = props
     this.state = {
       open: false,
-      open2: false
+      open2: false,
+      tile: null
     }
   }
 
-
+passItemToModal = (item) => {
+  this.setState({tile: item})
+}
 
   handleClickOpen = () => {
     this.setState({open: true });
@@ -59,16 +63,44 @@ class TitlebarGridList extends React.Component {
     const procTileData = this.props.pTile
 
     return (
+
       <div className={classes.root}>
-        <GridList cellHeight={200} className={classes.gridList}>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Original Image</TableCell>
+            <TableCell>Upload Time</TableCell>
+            <TableCell>Image Size</TableCell>
+            <TableCell>Original Histogram </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {origTileData.map(n => {
+            return (
+              <TableRow>
+                <TableCell><img src={n.img} /></TableCell>
+                <TableCell>{n.uptime}</TableCell>
+                <TableCell>{n.upsize}</TableCell>
+                <TableCell>{<AreaChart width={550} height={400} data={n.oHist}
+                  margin={{top: 10, right: 10, left: 0, bottom: 0}}>
+                  <XAxis ticks={[0, 255]} />
+                  <YAxis />
+                  <Area type='monotone' dataKey='R' stackId='1' stroke='#8884d8' fill='#8884d8' />
+                </AreaChart>}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+        <GridList cellHeight={200} className={classes.gridList} >
           <GridListTile key='Subheader' cols={1} style={{ height: 'auto' }} />
           {origTileData.map((tile, i) => (
             <GridListTile key={tile.img + i}>
               <img src={tile.img} />
               <GridListTileBar
                 actionIcon={
-                  <IconButton className={classes.icon} onClick={this.handleClickOpen}>
-                    <SimpleDialog open={this.state.open} onClose={this.handleClose}/>
+                  <IconButton className={classes.icon} onClick={this.handleClickOpen} >
+                    <SimpleDialog open={this.state.open} onClose={this.handleClose} tile={this.state.tile}/>
                     <InfoIcon />
                   </IconButton>
                 }
