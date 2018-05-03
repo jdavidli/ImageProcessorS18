@@ -13,9 +13,9 @@ import logging as lg
 
 app = Flask(__name__)
 CORS(app)
-comp_with_db = "mongodb://vcm-3580.vm.duke.edu:27017/image_processor"
+comp_with_db = "mongodb://vcm-3580.vm.duke.edu:27017/image_processing"
 connect(comp_with_db)
-main_image_folder = "/home/vcm/images/"
+main_image_folder = "/home/vcm/images_new/"
 jpg_header = "data:image/jpg;base64,"
 png_header = "data:image/png;base64,"
 tif_header = "data:image/tif;base64,"
@@ -77,9 +77,14 @@ def post_user():
                       "proc_times": times,
                       "proc_status": stat,
                       "headers": [jpg_header, tif_header, png_header],
+                 
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
-                      "image_dims": img_dims}
+                      "orig_hist_length": orig_hist_length,
+                      "proc_hist_length": proc_hist_length,
+                      "orig_hist_list_length": orig_hist_list_length,
+                      "proc_hist_list_length": proc_hist_list_length,
+                      "message": proc_data["message"]}
             return jsonify(output), 200
 
     except:
@@ -92,12 +97,20 @@ def post_user():
         stat = proc_data["processing_status"]
         orig_hist = proc_data["original_histograms"]
         orig_hist_list = []
+        orig_hist_length = []
+        orig_hist_list_length = []
         for hh in orig_hist:
             orig_hist_list.append(hh.tolist())
+            orig_hist_length.append(len(hh))
+            orig_hist_list_length.append(len(hh.tolist()))
         proc_hist = proc_data["processed_histograms"]
         proc_hist_list = []
+        proc_hist_length = []
+        proc_hist_list_length = []
         for hh in proc_hist:
             proc_hist_list.append(hh.tolist())
+            proc_hist_length.append(len(hh))
+            proc_hist_list_length.append(len(hh.tolist()))
         if not np.any(stat):
             lg.debug(' | ABORTED: No images processed.')
             data = {"message": "Status codes indicate no images processed."}
@@ -118,9 +131,14 @@ def post_user():
                       "proc_times": times,
                       "proc_status": stat,
                       "headers": [jpg_header, tif_header, png_header],
+                      "image_dims": img_dims,
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
-                      "image_dims": img_dims}
+                      "orig_hist_length": orig_hist_length,
+                      "proc_hist_length": proc_hist_length,
+                      "orig_hist_list_length": orig_hist_list_length,
+                      "proc_hist_list_length": proc_hist_list_length,
+                      "message": proc_data["message"]}
             return jsonify(output), 200
 
 
