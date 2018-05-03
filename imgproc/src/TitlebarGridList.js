@@ -92,6 +92,35 @@ passItemToModal = (item) => {
           })}
         </TableBody>
       </Table>
+
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Processed Image</TableCell>
+            <TableCell>Processing Time</TableCell>
+            <TableCell>Image Size</TableCell>
+            <TableCell>Processed Histogram </TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {procTileData.map(m => {
+            return (
+              <TableRow>
+                <TableCell><img src={m.img} /></TableCell>
+                <TableCell>{m.proctime}</TableCell>
+                <TableCell>{m.upsize}</TableCell>
+                <TableCell>{<AreaChart width={550} height={400} data={m.pHist}
+                  margin={{top: 10, right: 10, left: 0, bottom: 0}}>
+                  <XAxis ticks={[0, 255]} />
+                  <YAxis />
+                  <Area type='monotone' dataKey='R' stackId='1' stroke='#8884d8' fill='#8884d8' />
+                </AreaChart>}</TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+
         <GridList cellHeight={200} className={classes.gridList} >
           <GridListTile key='Subheader' cols={1} style={{ height: 'auto' }} />
           {origTileData.map((tile, i) => (

@@ -90,6 +90,7 @@ class App extends React.Component {
           // creates Tiles
           const origTileData = []
           for (var i = 0; i < this.state.originalImages.length; i++) {
+            // generates histogram data
             const preOData = this.state.origHist[i]
             var oData = []
             for (var m in preOData) {
@@ -99,15 +100,23 @@ class App extends React.Component {
             uptime: this.state.uploadTime, upsize: this.state.upSize[i], oHist: oData})
           }
           //console.log(origTileData)
+
           const procTileData = []
           for (var j = 0; j < this.state.processedImages.length; j++) {
+            // cleans up response image string
             var cleanedImg = ''
             cleanedImg = this.state.processedImages[j][0]
             // removes b' from beginning and ' from end
             cleanedImg = cleanedImg.slice(2, -1)
             cleanedImg = 'data:image/jpg;base64,' + cleanedImg
+            // generates histogram data
+            const prePData = this.state.procHist[j]
+            var pData = []
+            for (var n in prePData) {
+              pData.push({'R': prePData[n]})
+            }
             procTileData.push({img: cleanedImg,
-            proctime: this.state.processTime[j], upsize: this.state.upSize[j]})
+            proctime: this.state.processTime[j], upsize: this.state.upSize[j], pHist: pData})
           }
           //console.log(procTileData)
           this.setState({origTiles: origTileData})
