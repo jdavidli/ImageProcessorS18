@@ -51,24 +51,9 @@ class TitlebarGridList extends React.Component {
 
   render () {
     const { classes } = this.props
-    const origTileData = []
-    for (var i = 0; i < this.props.oImgParent.length; i++) {
-      origTileData.push({img: this.props.oImgParent[i],
-      uptime: this.props.uTime, upsize: this.props.uSize[i]})
-      console.log(i)
-    }
+    const origTileData = this.props.oTile
 
-    const procTileData = []
-    for (var j = 0; j < this.props.pImgParent.length; j++) {
-      var cleanedImg = ''
-      cleanedImg = this.props.pImgParent[j][0]
-      // removes b' from beginning and ' from end
-      cleanedImg = cleanedImg.slice(2, -1)
-      cleanedImg = 'data:image/jpg;base64,' + cleanedImg
-      procTileData.push({img: cleanedImg,
-      proctime: this.props.pTime[j], upsize: this.props.uSize[j]})
-      console.log(i)
-    }
+    const procTileData = this.props.pTile
 
     const tileData = [
       {
@@ -87,21 +72,7 @@ class TitlebarGridList extends React.Component {
       }
     ]
 
-    // graphing
-    const preOData = this.props.oHist[0]
-    const prePData = this.props.pHist[0]
-    // const lgProps = [{ dataKey: 'R', values: preOData}]
-    // console.log(lgProps)
-    var oData = []
-    // var oJSON = {}
-    for (var m in preOData) {
-      oData.push({'R': preOData[m]})
-    }
-    var pData = []
-    for (var n in prePData) {
-      pData.push({'R': prePData[n]})
-    }
-    // console.log(oData)
+
 
     return (
       <div className={classes.root}>
@@ -122,12 +93,7 @@ class TitlebarGridList extends React.Component {
                       <DialogTitle id='alert-dialog-title'>{'Original Image Information'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText id='alert-dialog-description'>
-                          <AreaChart width={550} height={400} data={oData}
-                            margin={{top: 10, right: 10, left: 0, bottom: 0}}>
-                            <XAxis ticks={[0, 255]} />
-                            <YAxis />
-                            <Area type='monotone' dataKey='R' stackId='1' stroke='#8884d8' fill='#8884d8' />
-                          </AreaChart>
+
             Uploaded time: {tile.uptime}
                           <br />
             Image size: {tile.upsize}
@@ -159,12 +125,7 @@ class TitlebarGridList extends React.Component {
                       <DialogTitle id='alert-dialog-title2'>{'Processed Image Information'}</DialogTitle>
                       <DialogContent>
                         <DialogContentText id='alert-dialog-description2'>
-                          <AreaChart width={550} height={400} data={pData}
-                            margin={{top: 10, right: 10, left: 0, bottom: 0}}>
-                            <XAxis ticks={[0, 255]} />
-                            <YAxis />
-                            <Area type='monotone' dataKey='R' stackId='1' stroke='#8884d8' fill='#8884d8' />
-                          </AreaChart>
+                          
             Processing time: {tile.proctime}
                           <br />
             Image size: {tile.upsize}

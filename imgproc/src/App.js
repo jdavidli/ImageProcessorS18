@@ -24,7 +24,8 @@ class App extends React.Component {
       procHist: [],
       originalImages: [],
       processedImages: [],
-      numberImages: ''
+      origTiles: [],
+      procTiles: []
     }
   }
 
@@ -73,7 +74,7 @@ class App extends React.Component {
       pyDate = pyDate.replace('T', ' ')
       pyDate = pyDate.replace('Z', '')
       object.timestamp = pyDate
-      //console.log(JSON.stringify(object))
+      //console.log(object)
       return axios.post('http://vcm-3580.vm.duke.edu:5000/process_image', object)
         .then(response => {
           console.log('response')
@@ -85,6 +86,26 @@ class App extends React.Component {
           this.setState({origHist: response.data.orig_hist})
           this.setState({procHist: response.data.proc_hist})
           this.setState({processedImages: response.data.proc_images})
+          // creates Tiles
+          const origTileData = []
+          for (var i = 0; i < this.state.originalImages.length; i++) {
+            origTileData.push({img: this.state.originalImages[i],
+            uptime: this.state.uploadTime, upsize: this.state.upSize[i]})
+          }
+          console.log(origTileData)
+          const procTileData = []
+          for (var j = 0; j < this.state.processedImages.length; j++) {
+            var cleanedImg = ''
+            cleanedImg = this.state.processedImages[j][0]
+            // removes b' from beginning and ' from end
+            cleanedImg = cleanedImg.slice(2, -1)
+            cleanedImg = 'data:image/jpg;base64,' + cleanedImg
+            procTileData.push({img: cleanedImg,
+            proctime: this.state.processTime[j], upsize: this.state.upSize[j]})
+          }
+          console.log(procTileData)
+          this.setState({origTiles: origTileData})
+          this.setState({procTiles: procTileData})
           //var cleanedImg = ''
           //cleanedImg = response.data.proc_images[0][0]
           // removes b' from beginning and ' from end
@@ -111,9 +132,7 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
-        <TitlebarGridList oImgParent={this.state.originalImages} pImgParent={this.state.processedImages}
-          uTime={this.state.uploadTime} pTime={this.state.processTime} uSize={this.state.upSize}
-          oHist={this.state.origHist} pHist={this.state.procHist}/>
+        <TitlebarGridList oTile={this.state.origTiles} pTile={this.state.procTiles}/>
       </div>
     )
   }
