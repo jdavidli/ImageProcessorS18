@@ -168,8 +168,7 @@ def histogram_equalization(images):
     """
 
     from skimage.exposure import equalize_hist
-    from skimage.color import hsv2rgb
-    from skimage.color import rgb2hsv
+    from skimage.color import rgb2hsv, hsv2rgb
 
     p_images = []
     p_status = []
@@ -221,6 +220,7 @@ def contrast_stretching(images):
               and processing times
     """
 
+    from skimage.color import rgb2hsv, hsv2rgb
     from skimage.exposure import rescale_intensity
 
     p_images = []
@@ -239,8 +239,13 @@ def contrast_stretching(images):
                 if len(i.shape) == 3:
                     if i.shape[2] == 4:
                         i = 255*rgba2rgb(i)
-                p_image = 255*rescale_intensity(i)
-                status = True
+                    i_hsv = rgb2hsv(i)
+                    i_hsv[:, :, 2] = rescale_intensity(i_hsv[:, :, 2])
+                    p_image = 255*hsv2rgb(i_hsv)
+                    status = True
+                else:
+                    p_image = 255*rescale_intensity(i)
+                    status = True
             except:
                 p_image = i
                 status = False
