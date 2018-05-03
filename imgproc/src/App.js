@@ -56,18 +56,18 @@ class App extends React.Component {
 
     var images = files.map(file => {
       return new Promise((resolve, reject) => {
-        const reader = new window.FileReader();
-        reader.readAsDataURL(file);
+        const reader = new window.FileReader()
+        reader.readAsDataURL(file)
         reader.onloadend = () => {
-          this.setState({originalImageString: reader.result});
-          resolve(reader.result); // resolve the promise
+          this.setState({originalImageString: reader.result})
+          resolve(reader.result) // resolve the promise
         }
-      });
-    });
+      })
+    })
 
     // Wait for the promises to resolve into the real data, THEN call the callback
-    Promise.all(images).then(images_resolved => {
-      object.images = images_resolved
+    Promise.all(images).then(imagesResolved => {
+      object.images = imagesResolved
       object.email = this.state.emailFromChild
       object.command = Number(this.state.commandFromChild)
       var date = new Date()
@@ -80,7 +80,7 @@ class App extends React.Component {
         .then(response => {
           console.log('response')
           console.log(response)
-          this.setState({originalImages: images_resolved})
+          this.setState({originalImages: imagesResolved})
           this.setState({uploadTime: pyDate})
           this.setState({processTime: response.data.proc_times})
           this.setState({upSize: response.data.image_dims})
@@ -97,9 +97,11 @@ class App extends React.Component {
               oData.push({'R': preOData[m]})
             }
             origTileData.push({img: this.state.originalImages[i],
-            uptime: this.state.uploadTime, upsize: this.state.upSize[i], oHist: oData})
+              uptime: this.state.uploadTime,
+              upsize: this.state.upSize[i],
+              oHist: oData})
           }
-          //console.log(origTileData)
+          // console.log(origTileData)
 
           const procTileData = []
           for (var j = 0; j < this.state.processedImages.length; j++) {
@@ -116,25 +118,27 @@ class App extends React.Component {
               pData.push({'R': prePData[n]})
             }
             procTileData.push({img: cleanedImg,
-            proctime: this.state.processTime[j], upsize: this.state.upSize[j], pHist: pData})
+              proctime: this.state.processTime[j],
+              upsize: this.state.upSize[j],
+              pHist: pData})
           }
-          //console.log(procTileData)
+          // console.log(procTileData)
           this.setState({origTiles: origTileData})
           this.setState({procTiles: procTileData})
           this.setState({imgLoaded: true})
-          //var cleanedImg = ''
-          //cleanedImg = response.data.proc_images[0][0]
+          // var cleanedImg = ''
+          // cleanedImg = response.data.proc_images[0][0]
           // removes b' from beginning and ' from end
-          //cleanedImg = cleanedImg.slice(2, -1)
-          //cleanedImg = response.data.headers[0] + cleanedImg
-          //this.setState({processedImageString: cleanedImg})
+          // cleanedImg = cleanedImg.slice(2, -1)
+          // cleanedImg = response.data.headers[0] + cleanedImg
+          // this.setState({processedImageString: cleanedImg})
         })
         .catch(error => {
           console.log('there was error')
           console.log(error.response)
         })
-    });
-}
+    })
+  }
 
   render () {
     return (
@@ -148,7 +152,7 @@ class App extends React.Component {
           </Toolbar>
         </AppBar>
         <ClippedDrawer callbackFromCommand={this.myCallbackCommand} callbackFromEmail={this.myCallbackEmail} />
-        <TitlebarGridList oTile={this.state.origTiles} pTile={this.state.procTiles}/>
+        <TitlebarGridList oTile={this.state.origTiles} pTile={this.state.procTiles} />
       </div>
     )
   }
