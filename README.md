@@ -7,19 +7,16 @@ LaserEye Image Processor is an online photo-editing service which allows users t
 
 To use LaserEye Image Processor:  
 
-1. Clone the `master` branch of this repository onto your local machine.
-2. Run `npm install` to install the necessary dependencies.
-3. Go to the directory imgproc and run `npm run start` to launch app.
-4. Navigate to [localhost:3000.](http://localhost:3000)
-5. You should see this on the home page: 
+1. Access the web app [here](https://protected-scrubland-41434.herokuapp.com/)
+2. You should see this on the home page: 
 
 ![homepage](readme_images/homepage.jpg)
 
-6. Enter your email address. This will be your user ID.
-7. Select the desired image processing command from the list on the left sidebar.
-8. Click 'Upload' to upload the images to process.
-9. Upon completion, the processed images will be displayed.
-10. Download the images.  
+3. Enter your email address. This will be your user ID.
+4. Select the desired image processing command from the list on the left sidebar.
+5. Click 'Upload' to upload the images to process.
+6. Upon completion, the processed images will be displayed.
+7. Download the images.  
 
 ## Others:
 
