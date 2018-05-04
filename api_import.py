@@ -349,6 +349,13 @@ def verify_input(input1):
 
 
 def is_zip_input(input_images):
+    """ Check if input is a .zip
+
+    :param input_images: base64 images
+    :type input_images: list
+    :return: True if the header is a .zip header
+    """
+
     first_image = input_images[0]
     if first_image[0:41] == zip_header:
         return True
@@ -357,6 +364,8 @@ def is_zip_input(input_images):
 
 
 def get_header(file_name):
+    """ Get appropriate header for image_type
+    """
 
     dot_positions = [n for n, c in enumerate(file_name) if c == "."]
     n_positions = len(dot_positions)
@@ -371,6 +380,12 @@ def get_header(file_name):
 
 
 def decode_zip_input(input_images):
+    """ Decode base64 zip to extract images
+
+    :param input_images: base64 images
+    :type input_images: list
+    :return: number of images, extracted images
+    """
 
     import zipfile
 
@@ -420,6 +435,8 @@ def decode_zip_input(input_images):
 
 
 def convert_for_front(input_images):
+    """ Strip unnecessary headers
+    """
 
     base64_for_front = []
     for i in input_images:
