@@ -384,7 +384,6 @@ def get_header(file_name):
 
 def decode_zip_input(input_images):
 
-    import os
     import zipfile
 
     # Strip header:
