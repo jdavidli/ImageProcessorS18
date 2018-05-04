@@ -53,10 +53,10 @@ class TitlebarGridList extends React.Component {
             {origTileData.map(n => {
               return (
                 <TableRow>
-                  <TableCell><img src={n.img} /></TableCell>
+                  <TableCell><img src={n.img} style={{width: 500}} /></TableCell>
                   <TableCell>{n.uptime}</TableCell>
                   <TableCell>{n.upsize}</TableCell>
-                  <TableCell>{<AreaChart width={550} height={400} data={n.oHist}
+                  <TableCell>{<AreaChart width={500} height={400} data={n.oHist}
                     margin={{top: 10, right: 10, left: 0, bottom: 0}}>
                     <XAxis ticks={[0, 255]} />
                     <YAxis />
@@ -81,10 +81,10 @@ class TitlebarGridList extends React.Component {
             {procTileData.map(m => {
               return (
                 <TableRow>
-                  <TableCell><img src={m.img} /></TableCell>
+                  <TableCell><img src={m.img} style={{width: 500}} /></TableCell>
                   <TableCell>{m.proctime}</TableCell>
                   <TableCell>{m.upsize}</TableCell>
-                  <TableCell>{<AreaChart width={550} height={400} data={m.pHist}
+                  <TableCell>{<AreaChart width={500} height={400} data={m.pHist}
                     margin={{top: 10, right: 10, left: 0, bottom: 0}}>
                     <XAxis ticks={[0, 255]} />
                     <YAxis />

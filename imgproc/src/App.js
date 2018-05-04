@@ -6,6 +6,7 @@ import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
 import TitlebarGridList from './TitlebarGridList.js'
 import axios from 'axios'
+import Button from 'material-ui/Button'
 
 class App extends React.Component {
   constructor (props) {
@@ -80,7 +81,7 @@ class App extends React.Component {
         .then(response => {
           console.log('response')
           console.log(response)
-          this.setState({originalImages: imagesResolved})
+          this.setState({originalImages: response.data.orig_images})
           this.setState({uploadTime: pyDate})
           this.setState({processTime: response.data.proc_times})
           this.setState({upSize: response.data.image_dims})
@@ -90,15 +91,21 @@ class App extends React.Component {
           // creates Tiles
           const origTileData = []
           for (var i = 0; i < this.state.originalImages.length; i++) {
+            // cleans up response image string
+            var cleanedOImg = ''
+            cleanedOImg = this.state.originalImages[i]
+            // removes b' from beginning and ' from end
+            cleanedOImg = cleanedOImg.slice(2, -1)
+            cleanedOImg = 'data:image/jpg;base64,' + cleanedOImg
             // generates histogram data
             const preOData = this.state.origHist[i]
             var oData = []
             for (var m in preOData) {
               oData.push({'R': preOData[m]})
             }
-            origTileData.push({img: this.state.originalImages[i],
+            origTileData.push({img: cleanedOImg,
               uptime: this.state.uploadTime,
-              upsize: this.state.upSize[i],
+              upsize: this.state.upSize[i][1] + ' x ' + this.state.upSize[i][0],
               oHist: oData})
           }
           // console.log(origTileData)
@@ -106,36 +113,29 @@ class App extends React.Component {
           const procTileData = []
           for (var j = 0; j < this.state.processedImages.length; j++) {
             // cleans up response image string
-            var cleanedImg = ''
-            cleanedImg = this.state.processedImages[j][0]
+            var cleanedPImg = ''
+            cleanedPImg = this.state.processedImages[j][0]
             // removes b' from beginning and ' from end
-            cleanedImg = cleanedImg.slice(2, -1)
-            cleanedImg = 'data:image/jpg;base64,' + cleanedImg
+            cleanedPImg = cleanedPImg.slice(2, -1)
+            cleanedPImg = 'data:image/jpg;base64,' + cleanedPImg
             // generates histogram data
             const prePData = this.state.procHist[j]
             var pData = []
             for (var n in prePData) {
               pData.push({'R': prePData[n]})
             }
-            procTileData.push({img: cleanedImg,
+            procTileData.push({img: cleanedPImg,
               proctime: this.state.processTime[j],
-              upsize: this.state.upSize[j],
+              upsize: this.state.upSize[j][1] + ' x ' + this.state.upSize[j][0],
               pHist: pData})
           }
           // console.log(procTileData)
           this.setState({origTiles: origTileData})
           this.setState({procTiles: procTileData})
-          this.setState({imgLoaded: true})
-          // var cleanedImg = ''
-          // cleanedImg = response.data.proc_images[0][0]
-          // removes b' from beginning and ' from end
-          // cleanedImg = cleanedImg.slice(2, -1)
-          // cleanedImg = response.data.headers[0] + cleanedImg
-          // this.setState({processedImageString: cleanedImg})
         })
         .catch(error => {
-          console.log('there was error')
-          console.log(error.response)
+          console.log('There was an error')
+          console.log(error.response.data.message)
         })
     })
   }

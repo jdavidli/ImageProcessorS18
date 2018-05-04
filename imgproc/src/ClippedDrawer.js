@@ -91,7 +91,10 @@ render () {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-
+        Input your email into the Email text field. Select a processing command.
+        If none are selected, the app will default to histogram equalization.
+        Click the upload button to select your image(s) or zip file.
+        Scroll down to view the original and processed images and their metadata.
       </main>
     </div>
   )
