@@ -52,11 +52,10 @@ class App extends React.Component {
 
   // gets uploaded file information from upload button
   myCallbackUpload = (files) => {
-    var fs = require('fs')
     this.setState({filesDataFromChild: files})
     var object = {}
-
     var images = files.map(file => {
+      // gets images out of zip file
       if (file.type === 'application/x-zip-compressed') {
         console.log('a zip!')
         return new Promise((resolve, reject) => {
@@ -67,12 +66,14 @@ class App extends React.Component {
             zip.loadAsync(reader.result).then(function (zip) {
               Object.keys(zip.files).forEach(function (filename) {
                 zip.files[filename].async('base64').then(function (fileData) {
-                  console.log(fileData) // These are your file contents
+                  //console.log(fileData) // These are your file contents
+                  resolve(fileData)
                 })
               })
             })
           }
         })
+        // single or multiple images
       } else {
         console.log('huh')
         return new Promise((resolve, reject) => {
