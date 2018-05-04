@@ -19,6 +19,7 @@ main_image_folder = "/home/vcm/images_new/"
 jpg_header = "data:image/jpg;base64,"
 png_header = "data:image/png;base64,"
 tif_header = "data:image/tif;base64,"
+zip_header = "data:application/x-zip-compressed;base64,"
 lg.basicConfig(filename='process_image_post.log',
                level=lg.DEBUG,
                format='%(asctime)s %(message)s',
@@ -277,11 +278,17 @@ def verify_input(input1):
     command_flag = False
     time_flag = False
     image_list_flag = False
+    email_format_flag = False
     try:
         email_v = input1["email"]
         if not email_v:
             raise ValueError("Empty email/username field.")
         email_flag = isinstance(email_v, str)
+        if email_flag:
+            check_at_symbol = email_v.find("@")
+            check_dot_com = email_v.find(".com")
+            if (check_at_symbol == -1 or check_dot_com == -1):
+                email_format_flag = True
         command_v = input1["command"]
         command_flag = isinstance(command_v, int)
         time_v = input1["timestamp"]
@@ -302,6 +309,8 @@ def verify_input(input1):
             raise TypeError("Images not uploaded as list of strings.")
         if not email_flag:
             raise TypeError("User email not of type string.")
+        if email_format_flag:
+            raise TypeError("User email is in the wrong format.")
         if not command_flag:
             raise TypeError("Command not of type integer.")
         if not time_flag:
