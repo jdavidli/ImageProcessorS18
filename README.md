@@ -24,7 +24,7 @@ To use LaserEye Image Processor:
 
 1. Watch a single image example [here.](https://gfycat.com/ThunderousMiniatureKiskadee)
 2. Watch a multi-image example [here.](https://gfycat.com/OpulentPhonyArmednylonshrimp)
-3. Watch an example demonstrating single, multiple, and zip functionality [here.](https://gfycat.com/IdealHilariousFreshwatereel)
+3. Watch an example demonstrating single, multiple, and zip functionality [here.](https://photos.google.com/share/AF1QipNshQBWoJTdAjDKydVXBml-GsX8LgPQsRdFvTTeZAYmUtpvXthqVLnXiqUjCh7XhA?key=RzlXWG5TbEV3YnIxR1JPN1p3NHAtYzZvTGdfMjNn)
 
 #### Documentation:  
 
