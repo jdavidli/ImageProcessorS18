@@ -46,7 +46,6 @@ def post_user():
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(
             folder_path, images_v, num_images, start_i)
-        base64_images_orig = encode_orig_images(image_paths)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
         proc_data = run_image_processing(image_paths, command_v)
@@ -84,13 +83,12 @@ def post_user():
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
                       "image_dims": img_dims,
-                      "orig_images": base64_images_orig}
+                      "orig_images": images_v}
             return jsonify(output), 200
 
     except:
         folder_path = access_folder(main_image_folder, email_v)
         image_paths = decode_save_images(folder_path, images_v, num_images, 0)
-        base64_images_orig = encode_orig_images(image_paths)
         comm_arr = create_command_arr(command_v, num_images)
         dt_arr = create_datetime_arr(time_v, num_images)
         proc_data = run_image_processing(image_paths, command_v)
@@ -127,21 +125,8 @@ def post_user():
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
                       "image_dims": img_dims,
-                      "orig_images": base64_images_orig}
+                      "orig_images": images_v}
             return jsonify(output), 200
-
-
-def encode_orig_images(paths):
-
-    base64_imgs = []
-    try:
-        for p in paths:
-            with open(p, "rb") as image_file:
-                encoded_p = str(base64.b64encode(image_file.read()))
-            base64_imgs.append(encoded_p)
-        return base64_imgs
-    except:
-        return []
 
 
 def encode_proc_images(paths, num_images):
@@ -403,7 +388,12 @@ def decode_zip_input(input_images):
     # Unzip file:
     temp_zip_folder = "./temp"
     if os.path.exists(temp_zip_folder):
-        os.remove(temp_zip_folder)
+        all_files = os.listdir(temp_zip_folder)
+        for af in all_files:
+            os.remove(temp_zip_folder + '/' + af)
+    else:
+        os.mkdir(temp_zip_folder)
+
     z = zipfile.ZipFile(temp_zip_filepath, "r")
     z.extractall(temp_zip_folder)
     z.close()
