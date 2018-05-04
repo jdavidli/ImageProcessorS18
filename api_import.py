@@ -130,6 +130,7 @@ def post_user():
                       "orig_images": base64_images_orig}
             return jsonify(output), 200
 
+
 def encode_orig_images(paths):
 
     base64_imgs = []
