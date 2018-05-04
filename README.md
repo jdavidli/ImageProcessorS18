@@ -16,7 +16,7 @@ To use LaserEye Image Processor:
 4. Select the desired image processing command from the list on the left sidebar.
 5. Click 'Upload' to upload the images to process.
 6. Upon completion, the processed images will be displayed.
-7. Download the images.  
+7. Download the images by right-clicking on the image and selecting "Save image as..."
 
 ## Others:
 
