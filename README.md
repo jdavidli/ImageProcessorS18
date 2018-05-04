@@ -32,4 +32,7 @@ To use LaserEye Image Processor:
 3. Link to documentation will be in `./docs/_build/html/index.html`  
 
 #### RFC:
-Link to RFC is [here.](https://docs.google.com/document/d/1FFBqq40pDFD-H9ySttweP7yp4EPdtybOCdWYpvqcGrI/edit?ts=5ace36d4#heading=h.ht3dizgas7v2)
+Link to RFC is [here.](https://docs.google.com/document/d/1FFBqq40pDFD-H9ySttweP7yp4EPdtybOCdWYpvqcGrI/edit?ts=5ace36d4#heading=h.ht3dizgas7v2)  
+
+### Repository: 
+Link to GitHub repository is [here.](https://github.com/jdavidli/ImageProcessorS18)
