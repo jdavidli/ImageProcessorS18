@@ -6,6 +6,7 @@ import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
 import TitlebarGridList from './TitlebarGridList.js'
 import axios from 'axios'
+import * as JSZip from 'jszip'
 
 class App extends React.Component {
   constructor (props) {
@@ -55,14 +56,31 @@ class App extends React.Component {
     var object = {}
 
     var images = files.map(file => {
-      return new Promise((resolve, reject) => {
-        const reader = new window.FileReader()
-        reader.readAsDataURL(file)
-        reader.onloadend = () => {
-          this.setState({originalImageString: reader.result})
-          resolve(reader.result) // resolve the promise
-        }
-      })
+      if (file.type === 'application/x-zip-compressed') {
+        console.log('a zip!')
+        return new Promise((resolve, reject) => {
+          const reader = new window.FileReader()
+          let zip = new JSZip()
+          reader.readAsArrayBuffer(file)
+          reader.onloadend = () => {
+            zip.loadAsync(reader.result).then(function (zip) {
+              zip.forEach(function (relativePath, zipEntry) {
+                console.log(zipEntry.name)
+              })
+            })
+          }
+        })
+      } else {
+        console.log('huh')
+        return new Promise((resolve, reject) => {
+          const reader = new window.FileReader()
+          reader.readAsDataURL(file)
+          reader.onloadend = () => {
+            this.setState({originalImageString: reader.result})
+            resolve(reader.result) // resolve the promise
+          }
+        })
+      }
     })
 
     // Wait for the promises to resolve into the real data, THEN call the callback
