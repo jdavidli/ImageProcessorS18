@@ -39,6 +39,8 @@ def post_user():
         return jsonify(data), 400
     if is_zip_input(images_v):
         num_images, images_v, base64_orig_images = decode_zip_input(images_v)
+    else:
+        base64_orig_images = convert_for_front(images_v)
 
     try:
         user = models.User.objects.raw({"_id": email_v}).first()
@@ -415,3 +417,13 @@ def decode_zip_input(input_images):
 
     # Return base64 strings:
     return n_images, base64_for_back, base64_for_front
+
+
+def convert_for_front(input_images):
+
+    base64_for_front = []
+    for i in input_images:
+        stripped_i = i.split(",", 1)[1]
+        base64_for_front.append("b'" + stripped_i)
+
+    return base64_for_front
