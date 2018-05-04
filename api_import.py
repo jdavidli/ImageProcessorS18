@@ -37,6 +37,8 @@ def post_user():
         lg.debug(' | ABORTED: Input Validation failed.')
         data = {"message": mess}
         return jsonify(data), 400
+    if is_zip_input(images_v):
+        num_images, images_v = decode_zip_input(images_v)
 
     try:
         user = models.User.objects.raw({"_id": email_v}).first()
@@ -340,3 +342,68 @@ def verify_input(input1):
         inst = "Unknown syntax error during input validation."
         lg.debug(' | ABORTED: UnknownError: %s' % inst)
         return [], [], [], [], [], str(inst)
+
+
+def is_zip_input(input_images):
+    first_image = input_images[0]
+    if first_image[0:41] == zip_header:
+        return True
+    else:
+        return False
+
+
+def get_header(file_name):
+
+    dot_positions = [n for n, c in enumerate(file_name) if c == "."]
+    n_positions = len(dot_positions)
+    image_type = file_name[dot_positions[n_positions-1]:]
+
+    if image_type == ".jpg":
+        return jpg_header
+    elif image_type == ".png":
+        return png_header
+    else image_type == ".tif":
+        return tif_header
+
+
+def decode_zip_input(input_images):
+
+    import os
+    import zipfile
+
+    # Strip header:
+    base64_to_decode = input_images[0][41:]
+
+    # Decode base64:
+    base64_decoded = base64.b64decode(base64_to_decode)
+
+    # Write zip file:
+    temp_zip_filepath = "./temp.zip"
+    if os.path.exists(temp_zip_path):
+        os.remove(temp_zip_path)
+    with open(temp_zip_filepath, "wb") as wf:
+        wf.write(base64_decoded)
+
+    # Unzip file:
+    temp_zip_folder = "./temp"
+    if os.path.exists(temp_zip_folder):
+        os.remove(temp_zip_folder)
+    z = zipfile.ZipFile(temp_zip_filepath, "r")
+    z.extractall(temp_zip_folder)
+    z.close()
+
+    # Read images and encode as base64 strings:
+    image_list = os.listdir(temp_zip_folder)
+
+    base64_extracted_images = []
+    for i in image_list:
+        header_to_add = get_header(i)
+        full_path_i = temp_zip_folder + '/' + i
+        with open(full_path_i, "rb") as image_file:
+            i_base64 = str(base64.b64encode(image_file.read()))
+        base64_extracted_images.append(header_to_add + i_base64)
+
+    n_images = len(base64_extracted_images)
+
+    # Return base64 strings:
+    return n_images, base64_extracted_images
