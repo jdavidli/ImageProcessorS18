@@ -20,7 +20,7 @@ To use LaserEye Image Processor:
 
 ## Others:
 
-### Videos:
+#### Videos:
 
 1. Watch a single image example [here.](https://gfycat.com/ThunderousMiniatureKiskadee)
 2. Watch a multi-image example [here.](https://gfycat.com/OpulentPhonyArmednylonshrimp)  
@@ -34,5 +34,5 @@ To use LaserEye Image Processor:
 #### RFC:
 Link to RFC is [here.](https://docs.google.com/document/d/1FFBqq40pDFD-H9ySttweP7yp4EPdtybOCdWYpvqcGrI/edit?ts=5ace36d4#heading=h.ht3dizgas7v2)  
 
-### Repository: 
+#### Repository: 
 Link to GitHub repository is [here.](https://github.com/jdavidli/ImageProcessorS18)
