@@ -17,7 +17,7 @@ class Upload extends React.Component {
     return (
       <div>
         <Dropzone onDrop={this.onDrop} style={dropzoneStyle}>
-          <Button variant='raised' Button color='inherit'>
+          <Button variant='raised' color='inherit'>
             Upload
           </Button>
         </Dropzone>

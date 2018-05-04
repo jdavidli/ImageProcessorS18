@@ -6,7 +6,6 @@ import Upload from './upload.js'
 import ClippedDrawer from './ClippedDrawer.js'
 import TitlebarGridList from './TitlebarGridList.js'
 import axios from 'axios'
-import Button from 'material-ui/Button'
 
 class App extends React.Component {
   constructor (props) {
@@ -43,11 +42,6 @@ class App extends React.Component {
       emailFromChild: e.target.value
     })
     // console.log(e.target.value)
-  }
-
-  upSizeCallback = (width, height) => {
-    console.log(width)
-    console.log(height)
   }
 
   // gets uploaded file information from upload button
