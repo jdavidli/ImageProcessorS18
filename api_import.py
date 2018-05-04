@@ -38,7 +38,7 @@ def post_user():
         data = {"message": mess}
         return jsonify(data), 400
     if is_zip_input(images_v):
-        num_images, images_v = decode_zip_input(images_v)
+        num_images, images_v, base64_orig_images = decode_zip_input(images_v)
 
     try:
         user = models.User.objects.raw({"_id": email_v}).first()
@@ -83,7 +83,7 @@ def post_user():
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
                       "image_dims": img_dims,
-                      "orig_images": images_v}
+                      "orig_images": base64_orig_images}
             return jsonify(output), 200
 
     except:
@@ -125,7 +125,7 @@ def post_user():
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
                       "image_dims": img_dims,
-                      "orig_images": images_v}
+                      "orig_images": base64_orig_images}
             return jsonify(output), 200
 
 
@@ -401,15 +401,17 @@ def decode_zip_input(input_images):
     # Read images and encode as base64 strings:
     image_list = os.listdir(temp_zip_folder)
 
-    base64_extracted_images = []
+    base64_for_front = []
+    base64_for_back = []
     for i in image_list:
         header_to_add = get_header(i)
         full_path_i = temp_zip_folder + '/' + i
         with open(full_path_i, "rb") as image_file:
             i_base64 = str(base64.b64encode(image_file.read()))
-        base64_extracted_images.append(header_to_add + i_base64[2:])
+        base64_for_front.append(i_base64)
+        base64_for_back.append(header_to_add + i_base64[2:])
 
-    n_images = len(base64_extracted_images)
+    n_images = len(base64_for_back)
 
     # Return base64 strings:
-    return n_images, base64_extracted_images
+    return n_images, base64_for_back, base64_for_front
