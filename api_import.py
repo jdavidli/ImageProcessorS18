@@ -290,8 +290,8 @@ def verify_input(input1):
         email_flag = isinstance(email_v, str)
         if email_flag:
             check_at_symbol = email_v.find("@")
-            check_dot_com = email_v.find(".com")
-            if (check_at_symbol == -1 or check_dot_com == -1):
+            check_dot_symbol = email_v[check_at_symbol:].find(".")
+            if (check_at_symbol == -1 or check_dot_symbol == -1):
                 email_format_flag = True
         command_v = input1["command"]
         command_flag = isinstance(command_v, int)
@@ -380,8 +380,8 @@ def decode_zip_input(input_images):
 
     # Write zip file:
     temp_zip_filepath = "./temp.zip"
-    if os.path.exists(temp_zip_path):
-        os.remove(temp_zip_path)
+    if os.path.exists(temp_zip_filepath):
+        os.remove(temp_zip_filepath)
     with open(temp_zip_filepath, "wb") as wf:
         wf.write(base64_decoded)
 
