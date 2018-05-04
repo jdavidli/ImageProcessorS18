@@ -52,6 +52,7 @@ class App extends React.Component {
 
   // gets uploaded file information from upload button
   myCallbackUpload = (files) => {
+    var fs = require('fs')
     this.setState({filesDataFromChild: files})
     var object = {}
 
@@ -64,8 +65,10 @@ class App extends React.Component {
           reader.readAsArrayBuffer(file)
           reader.onloadend = () => {
             zip.loadAsync(reader.result).then(function (zip) {
-              zip.forEach(function (relativePath, zipEntry) {
-                console.log(zipEntry.name)
+              Object.keys(zip.files).forEach(function (filename) {
+                zip.files[filename].async('base64').then(function (fileData) {
+                  console.log(fileData) // These are your file contents
+                })
               })
             })
           }
