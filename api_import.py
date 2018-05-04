@@ -362,7 +362,7 @@ def get_header(file_name):
         return jpg_header
     elif image_type == ".png":
         return png_header
-    else image_type == ".tif":
+    else:
         return tif_header
 
 
