@@ -19,6 +19,7 @@ main_image_folder = "/home/vcm/images_new/"
 jpg_header = "data:image/jpg;base64,"
 png_header = "data:image/png;base64,"
 tif_header = "data:image/tif;base64,"
+zip_header = "data:application/x-zip-compressed;base64,"
 lg.basicConfig(filename='process_image_post.log',
                level=lg.DEBUG,
                format='%(asctime)s %(message)s',
@@ -36,6 +37,10 @@ def post_user():
         lg.debug(' | ABORTED: Input Validation failed.')
         data = {"message": mess}
         return jsonify(data), 400
+    if is_zip_input(images_v):
+        num_images, images_v, base64_orig_images = decode_zip_input(images_v)
+    else:
+        base64_orig_images = convert_for_front(images_v)
 
     try:
         user = models.User.objects.raw({"_id": email_v}).first()
@@ -79,7 +84,8 @@ def post_user():
                       "headers": [jpg_header, tif_header, png_header],
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
-                      "image_dims": img_dims}
+                      "image_dims": img_dims,
+                      "orig_images": base64_orig_images}
             return jsonify(output), 200
 
     except:
@@ -120,7 +126,8 @@ def post_user():
                       "headers": [jpg_header, tif_header, png_header],
                       "orig_hist": orig_hist_list,
                       "proc_hist": proc_hist_list,
-                      "image_dims": img_dims}
+                      "image_dims": img_dims,
+                      "orig_images": base64_orig_images}
             return jsonify(output), 200
 
 
@@ -277,11 +284,17 @@ def verify_input(input1):
     command_flag = False
     time_flag = False
     image_list_flag = False
+    email_format_flag = False
     try:
         email_v = input1["email"]
         if not email_v:
             raise ValueError("Empty email/username field.")
         email_flag = isinstance(email_v, str)
+        if email_flag:
+            check_at_symbol = email_v.find("@")
+            check_dot_symbol = email_v[check_at_symbol:].find(".")
+            if (check_at_symbol == -1 or check_dot_symbol == -1):
+                email_format_flag = True
         command_v = input1["command"]
         command_flag = isinstance(command_v, int)
         time_v = input1["timestamp"]
@@ -302,6 +315,8 @@ def verify_input(input1):
             raise TypeError("Images not uploaded as list of strings.")
         if not email_flag:
             raise TypeError("User email not of type string.")
+        if email_format_flag:
+            raise TypeError("User email is in the wrong format.")
         if not command_flag:
             raise TypeError("Command not of type integer.")
         if not time_flag:
@@ -331,3 +346,84 @@ def verify_input(input1):
         inst = "Unknown syntax error during input validation."
         lg.debug(' | ABORTED: UnknownError: %s' % inst)
         return [], [], [], [], [], str(inst)
+
+
+def is_zip_input(input_images):
+    first_image = input_images[0]
+    if first_image[0:41] == zip_header:
+        return True
+    else:
+        return False
+
+
+def get_header(file_name):
+
+    dot_positions = [n for n, c in enumerate(file_name) if c == "."]
+    n_positions = len(dot_positions)
+    image_type = file_name[dot_positions[n_positions-1]:]
+
+    if image_type == ".jpg":
+        return jpg_header
+    elif image_type == ".png":
+        return png_header
+    else:
+        return tif_header
+
+
+def decode_zip_input(input_images):
+
+    import zipfile
+
+    # Strip header:
+    base64_to_decode = input_images[0][41:]
+
+    # Decode base64:
+    base64_decoded = base64.b64decode(base64_to_decode)
+
+    # Write zip file:
+    temp_zip_filepath = "./temp.zip"
+    if os.path.exists(temp_zip_filepath):
+        os.remove(temp_zip_filepath)
+    with open(temp_zip_filepath, "wb") as wf:
+        wf.write(base64_decoded)
+
+    # Unzip file:
+    temp_zip_folder = "./temp"
+    if os.path.exists(temp_zip_folder):
+        all_files = os.listdir(temp_zip_folder)
+        for af in all_files:
+            os.remove(temp_zip_folder + '/' + af)
+    else:
+        os.mkdir(temp_zip_folder)
+
+    z = zipfile.ZipFile(temp_zip_filepath, "r")
+    z.extractall(temp_zip_folder)
+    z.close()
+
+    # Read images and encode as base64 strings:
+    image_list = os.listdir(temp_zip_folder)
+
+    base64_for_front = []
+    base64_for_back = []
+    for i in image_list:
+        header_to_add = get_header(i)
+        full_path_i = temp_zip_folder + '/' + i
+        with open(full_path_i, "rb") as image_file:
+            i_base64 = str(base64.b64encode(image_file.read()))
+        base64_for_front.append(i_base64)
+        base64_for_back.append(header_to_add + i_base64[2:])
+
+    n_images = len(base64_for_back)
+
+    # Return base64 strings:
+    return n_images, base64_for_back, base64_for_front
+
+
+def convert_for_front(input_images):
+
+    base64_for_front = []
+    for i in input_images:
+        stripped_i = i.split(",", 1)[1]
+        base64_for_front.append("b'" + stripped_i)
+
+    return base64_for_front
