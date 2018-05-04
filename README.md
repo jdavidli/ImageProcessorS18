@@ -7,7 +7,7 @@ LaserEye Image Processor is an online photo-editing service which allows users t
 
 To use LaserEye Image Processor:  
 
-1. Access the web app [here](https://protected-scrubland-41434.herokuapp.com/)
+1. Access the web app [here](http://protected-scrubland-41434.herokuapp.com/)
 2. You should see this on the home page: 
 
 ![homepage](readme_images/homepage.jpg)
