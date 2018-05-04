@@ -407,7 +407,7 @@ def decode_zip_input(input_images):
         full_path_i = temp_zip_folder + '/' + i
         with open(full_path_i, "rb") as image_file:
             i_base64 = str(base64.b64encode(image_file.read()))
-        base64_extracted_images.append(header_to_add + i_base64)
+        base64_extracted_images.append(header_to_add + i_base64[2:])
 
     n_images = len(base64_extracted_images)
 
